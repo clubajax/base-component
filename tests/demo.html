@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Demo create</title>
+    <script src="../bower_components/dom/src/dom.js"></script>
+    <script src="../bower_components/on/dist/on.js"></script>
+    <script src="../src/create.js"></script>
+    <script src="../src/attrs.js"></script>
+    <script src="../src/refs.js"></script>
+    <script src="../src/template.js"></script>
+</head>
+<body>
+    <h1>Create demo</h1>
+    <script>
+        create({
+            tag: 'demo-widget',
+            attrs:['horizontal', 'value'],
+
+            created: function () {
+                if(this.horizontal !== null){
+                    this.classList.add('horizontal');
+                    this.horizontal = true;
+                }
+                this._disabled = false;
+                dom.attr(this, 'tabindex', 0);
+                dom.attr(this, 'role', 'presentation');
+            },
+
+            domReady: function () {
+                dom('div', {html:'demo!'}, this);
+            }
+        });
+    </script>
+    <demo-widget></demo-widget>
+</body>
+</html>
