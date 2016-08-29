@@ -11,9 +11,13 @@
 </head>
 <body>
     <h1>Create demo</h1>
+    <template id="demo-widget-template">
+        <div>Template!</div>
+    </template>
     <script>
         create({
             tag: 'demo-widget',
+            templateId: 'demo-widget-template',
             attrs:['horizontal', 'value'],
 
             created: function () {
@@ -24,6 +28,10 @@
                 this._disabled = false;
                 dom.attr(this, 'tabindex', 0);
                 dom.attr(this, 'role', 'presentation');
+            },
+
+            attached: function () {
+                console.log('attached!');
             },
 
             domReady: function () {

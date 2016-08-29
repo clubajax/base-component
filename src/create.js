@@ -118,6 +118,21 @@
         });
     }
 
+    function clone(template){
+        if (template.content && template.content.children) {
+            return document.importNode(template.content, true);
+        }
+        var
+            frag = document.createDocumentFragment(),
+            cloneNode = document.createElement('div');
+        cloneNode.innerHTML = template.innerHTML;
+
+        while (cloneNode.children.length) {
+            frag.appendChild(cloneNode.children[0]);
+        }
+        return frag;
+    }
+
     function addPlugin () {
 
     }
@@ -125,7 +140,7 @@
     extOptions = {
         createdCallback: {
             value: function () {
-                console.log('tag', this._tag);
+                //console.log('tag', this._tag);
                 this._uid = dom.uid(this._tag);
                 privates[this._uid] = { DOMSTATE: 'created' };
                 plugins('preCreate', this);
@@ -278,6 +293,7 @@
         return constructor;
     }
 
+    create.clone = clone;
     create.plugins = [];
     // TODO - instead of Array, use addPlugin function so optimizations can be made
     create.addPlugin = addPlugin;

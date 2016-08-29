@@ -6,7 +6,7 @@
 
     function insertTemplate (node){
         if(node.templateNode) {
-            node.appendChild(ml.clone(node.templateNode));
+            node.appendChild(create.clone(node.templateNode));
             //assignRefs(node);
             //assignEvents(node);
             inserted[node._uid] = true;
