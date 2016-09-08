@@ -133,11 +133,14 @@
         return frag;
     }
 
-    function addPlugin () {
-
-    }
-
     extOptions = {
+        connectedCallback: function () {
+            console.log('connectedCallback');
+        },
+        disconnectedCallback: function () {
+            console.log('disconnectedCallback');
+        },
+
         createdCallback: {
             value: function () {
                 //console.log('tag', this._tag);
@@ -286,17 +289,46 @@
 
         element = Object.create(baseElement, def);
 
-        constructor = document.registerElement(options.nodeName || options.tag, {
+        constructor = document.registerElement(options.tag, {
             prototype: element
         });
 
         return constructor;
     }
 
-    create.clone = clone;
-    create.plugins = [];
-    // TODO - instead of Array, use addPlugin function so optimizations can be made
-    create.addPlugin = addPlugin;
 
+
+    function addPlugin (plugin) {
+        var i, plugins = create.plugins, order = plugin.order || 100;
+        if(!plugins.length) {
+            plugins.push(plugin);
+        }
+        else if(plugins.length === 1){
+            if(plugins[0].order <= order){
+                plugins.push(plugin);
+            }else{
+                plugins.unshift(plugin);
+            }
+        }
+        else if(plugins[0].order > order){
+            plugins.unshift(plugin);
+        }
+        else{
+
+            for(i = 1; i < plugins.length; i++){
+                if(order === plugins[i-1].order || (order > plugins[i-1].order && order < plugins[i].order)){
+                    plugins.splice(i, 0, plugin);
+                    return;
+                }
+            }
+            // was not inserted...
+            plugins.push(plugin);
+        }
+    }
+
+    create.plugins = [];
+    create.addPlugin = addPlugin;
+    create.clone = clone;
     window.create = create;
+
 }(window.dom, window.on));

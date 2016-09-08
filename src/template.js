@@ -5,6 +5,7 @@
         inserted = {};
 
     function insertTemplate (node){
+        console.log('insert..', node.innerHTML);
         if(node.templateNode) {
             node.appendChild(create.clone(node.templateNode));
             //assignRefs(node);
@@ -15,13 +16,19 @@
 
     function collectLightNodes(node){
         lightNodes[node._uid] = [];
-        while(node.childNodes.length){
+        for(var i = 0; i < node.childNodes.length; i++){
             lightNodes[node._uid].push(node.childNodes[0]);
-            node.removeChild(node.childNodes[0]);
         }
+        return;
+        //while(node.childNodes.length){
+        //    lightNodes[node._uid].push(node.childNodes[0]);
+        //    node.removeChild(node.childNodes[0]);
+        //}
     }
 
-    create.plugins.push({
+    create.addPlugin({
+        name: 'template',
+        order: 10,
         define: function (def, options) {
             var
                 importDoc = window.globalImportDoc || (document._currentScript || document.currentScript).ownerDocument;
@@ -44,9 +51,10 @@
             } else {
                 def.templateNode = {value: null};
             }
-
         },
+
         preAttach: function (node) {
+            console.log('template.preAttach');
             if(!inserted[node._uid] && node.templateNode){
                 console.log(' ~~~ plugins.template.preAttach');
                 collectLightNodes(node);
@@ -54,4 +62,5 @@
             }
         }
     });
+
 }(window.create, window.dom, window.on));

@@ -10,7 +10,9 @@
         return null;
     }
 
-    create.plugins.push({
+    create.addPlugin({
+        name: 'attrs',
+        order: 20,
         preCreate: function (node) {
             // If attribute is set on node, assign them to properties
             if(node.attrs && node.attrs.length){

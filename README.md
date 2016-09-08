@@ -6,7 +6,7 @@ Utility for easily creating and managing web components
 
     bower install clubajax/create-element --save
     
-key-nav has dependencies on clubajax/on and clubajax/dom
+create-element has dependencies on clubajax/on and clubajax/dom
 
 ## License
 
