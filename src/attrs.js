@@ -1,44 +1,31 @@
 (function (create, dom, on) {
 
-    function getAttr(node, attr){
-        if(node.hasAttribute(attr)){
-            var value = node.getAttribute(attr);
-            if(value !== '' && value !== null){
-                return value;
+    function setAttr (node, name, value) {
+        value = dom.normalize(value);
+        if(name in node){
+            if (typeof node[name] === 'function') {
+                node[name](value);
+            }else{
+                node[name] = value;
             }
         }
-        return null;
     }
 
     create.addPlugin({
         name: 'attrs',
         order: 20,
-        preCreate: function (node) {
-            // If attribute is set on node, assign them to properties
-            if(node.attrs && node.attrs.length){
-                node.attrs.forEach(function (attr) {
-                    var value = getAttr(node, attr);
-                    if(value) {
-                        if (typeof node[attr] === 'function') {
-                            node[attr](value);
-                        }
-                        else {
-                            node[attr] = value;
-                        }
-                    }
-                });
+
+        preDomReady: function (node) {
+            var i, value, name;
+            for(i = 0; i < node.attributes.length; i++){
+                name = node.attributes[i].name;
+                value = dom.normalize(node.attributes[i].value);
+                setAttr(node, name, value);
             }
         },
 
-        preAttributeChanged: function (node, attr, value, oldValue) {
-            if(node.attrs && node.attrs.indexOf(attr) > -1){
-                if (typeof node[attr] === 'function') {
-                    node[attr](value);
-                }
-                else {
-                    node[attr] = value;
-                }
-            }
+        preAttributeChanged: function (node, name, value, oldValue) {
+            setAttr(node, name, value);
         }
     });
 

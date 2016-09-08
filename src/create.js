@@ -63,7 +63,7 @@
 
     function onDomReady() {
         privates[this._uid].DOMSTATE = 'domready';
-
+        plugins('preDomReady', this);
         // call this.domReady first, so that the component
         // can finish initializing before firing any
         // subsequent events
@@ -75,6 +75,8 @@
         }
 
         this.fire('domready');
+
+        plugins('postDomReady', this);
     }
 
     function onCheckDomReady () {
@@ -296,6 +298,17 @@
         return constructor;
     }
 
+    create.onDomReady = function (node, callback) {
+        if(node.DOMSTATE === 'domready'){
+            callback(node);
+        }else{
+            node.addEventListener('domready', function () {
+                callback(node);
+                // domReady should only fire once, but it doesn't - it might fire multiple times.
+                callback = function () {};
+            });
+        }
+    };
 
 
     function addPlugin (plugin) {

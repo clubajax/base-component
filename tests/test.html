@@ -21,10 +21,40 @@
 <body>
     <h1>create test</h1>
     <div id="mocha"></div>
-    <div id="widgets"></div>
+
     <template id="test-widget2-template">
         <div ref="testNode">has template</div>
     </template>
+    <script>
+        create({
+            tag: 'test-widget4',
+            set foo (v) {
+                console.log('SET FOO');
+                this.__foo = v;
+            },
+            get foo () {
+                return this.__foo;
+            },
+            set bar (v) {
+                this.__bar = v;
+            },
+            get bar () {
+                return this.__bar;
+            },
+            value:{
+                set: function (value) {
+                    this.__value = value;
+                },
+                get: function () {
+                    return this.__value;
+                }
+            }
+
+        });
+    </script>
+    <div id="widgets">
+        <test-widget4 foo="stuff" bar="100" value="boom"></test-widget4>
+    </div>
     <script>
 
         mocha.setup('tdd');
@@ -53,18 +83,77 @@
                         tag: 'test-widget2',
                         templateId: 'test-widget2-template'
                     });
+                    create({
+                        tag: 'test-widget3',
+                        value:{
+                            set: function (value) {
+                                this.__value = value;
+                            },
+                            get: function () {
+                                return this.__value;
+                            }
+                        },
+                        set disabled (value) {
+                            this.__disabled = value;
+                        },
+                        get disabled () {
+                            return this.__disabled || false;
+                        }
+                    });
+
 
                     xtest('it should create a component', function () {
                         dom('test-widget', {html:'<pre>test widget</pre>'}, widgets);
-                        expect(dom.query('test-widget')).to.not.equal(null);
+                        var node = dom.query('test-widget');
+                        expect(node).to.not.equal(null);
                     });
-                    test('it should create a component with a template', function () {
+                    xtest('it should create a component with a template', function () {
                         dom('test-widget2', {html:'<div>test-widget2</div>'}, widgets);
                         var node = dom.query('test-widget2');
                         expect(node).to.not.equal(null);
                         expect(node.innerHTML.indexOf('has template') > -1).to.equal(true);
                         window.node = node;
                         expect(dom.isNode(node.testNode)).to.equal(true);
+                    });
+                    xtest('it should use getter/setters', function () {
+                        dom('test-widget3', 0, widgets);
+                        var node = dom.query('test-widget3');
+                        node.value = 'foo';
+                        expect(node.value).to.equal('foo');
+                        expect(node.disabled).to.equal(false);
+                        node.disabled = true;
+                        expect(node.disabled).to.equal(true);
+
+                    });
+                    test('it should set properties from attributes if there is a setter (markup)', function () {
+                        var node = dom.query('test-widget4');
+                        expect(node.foo).to.equal('stuff');
+                        expect(node.bar).to.equal(100);
+                        expect(node.value).to.equal('boom');
+                    });
+                    test('it should set properties from attributes if there is a setter', function (done) {
+                        var node = dom('test-widget4', {attr:{foo:true, bar:9, bazz:'none', value:'winning'}}, widgets);
+
+                        create.onDomReady(node, function (node) {
+                            expect(node.foo).to.equal(true);
+                            expect(node.bar).to.equal(9);
+                            expect(node.value).to.equal('winning');
+                            // does not set bazz - there is no setter
+                            expect(node.bazz).to.equal(undefined);
+
+                            node.setAttribute('foo', 'false');
+                            node.setAttribute('bar', '-2');
+                            node.setAttribute('value', 'losing');
+                            node.setAttribute('bazz', 'whatever');
+
+                            expect(node.foo).to.equal(false);
+                            expect(node.bar).to.equal(-2);
+                            expect(node.value).to.equal('losing');
+                            // does not set bazz - there is no setter
+                            expect(node.bazz).to.equal(undefined);
+
+                            done();
+                        });
                     });
                 });
             });
