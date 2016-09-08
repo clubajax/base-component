@@ -141,6 +141,7 @@
                             // does not set bazz - there is no setter
                             expect(node.bazz).to.equal(undefined);
 
+                            // set again
                             node.setAttribute('foo', 'false');
                             node.setAttribute('bar', '-2');
                             node.setAttribute('value', 'losing');
@@ -151,6 +152,13 @@
                             expect(node.value).to.equal('losing');
                             // does not set bazz - there is no setter
                             expect(node.bazz).to.equal(undefined);
+
+
+                            node.setAttribute('foo', '');
+                            expect(node.foo).to.equal('');
+
+                            node.removeAttribute('foo');
+                            expect(node.foo).to.equal(null);
 
                             done();
                         });
