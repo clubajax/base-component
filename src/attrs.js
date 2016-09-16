@@ -16,15 +16,18 @@
         order: 20,
 
         define: function (def, options) {
-            options.reflect = function (name, value) {
-                console.log('REFLECT', name, value);
-                if(value === null){
-                    this.removeAttribute(name);
-                }else{
-                    this.setAttribute(name, value);
+            options.reflect = {
+                value: function (name, value) {
+                    if (value === null) {
+                        this.removeAttribute(name);
+                    }
+                    else {
+                        this.setAttribute(name, value);
+                    }
                 }
-            }
+            };
         },
+        
         preDomReady: function (node) {
             var i, value, name;
             for(i = 0; i < node.attributes.length; i++){

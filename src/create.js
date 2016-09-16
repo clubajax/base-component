@@ -12,17 +12,60 @@
         requestAnimationFrame(cb);
     }
 
+    function isDescriptor (descriptor) {
+        return typeof descriptor.value !== 'function' && typeof descriptor.value === 'object';
+    }
+
+    function isGetSet (descriptor) {
+        return descriptor.get || descriptor.set;
+    }
+
+    function isObject (descriptor) {
+        if(!isDescriptor(descriptor) || isGetSet(descriptor.value) || descriptor.value.value){ return false; }
+        if(Array.isArray(descriptor.value)){ return true; }
+        return true;
+    }
+
     function convertOptionsToDefinition (def, options) {
         // converts standard object to property definition
         // ergo: {foo: function(){}} to {foo:{value: function(){}}}
         //
-        console.log('options', options);
         Object.keys(options).forEach(function (key) {
-            if (key === 'props') {
-                // these options will be processed later
+
+            var
+                tmp = {
+                    writable:     true,
+                    configurable: true,
+                    enumerable:   true,
+                    value:{}
+                },
+                value = options[key],
+                descriptor = Object.getOwnPropertyDescriptor(options, key);
+
+            if(isObject(descriptor)){
+                // plain
+                def._objects = def._objects || {};
+                def._objects[key] = value;
                 return;
             }
-            var value = options[key];
+
+            if(isGetSet(descriptor)) {
+                // convert getter/setter to object
+                tmp.value.get = descriptor.get;
+                tmp.value.set = descriptor.set;
+                Object.defineProperty(def, key, tmp);
+                return;
+            }
+
+            if(isDescriptor(descriptor)) {
+                // already an object
+                console.log('desc', key, descriptor);
+                Object.defineProperty(def, key, descriptor);
+                return;
+            }
+
+
+
             if (typeof value === 'object') {
                 //console.log('OBJECT', key, Object.getOwnPropertyDescriptor(options, key));
                 var keys = Object.keys(value),
@@ -49,6 +92,8 @@
                 enumerable:   true
             };
         });
+
+        return def;
     }
 
     function getChildCustomNodes (node) {
@@ -297,10 +342,9 @@
     function create(options){
 
         var
-            key,
             element,
             constructor,
-            base,
+            objects,
             def = {};
 
         plugins('define', def, options);
@@ -308,20 +352,27 @@
         def._tag = {value: options.tag};
 
         // collect component-specific definitions
-        convertOptionsToDefinition(def, options);
+        def = convertOptionsToDefinition(def, options);
 
-        create.prototypes[options.tag] = def;
+        if(def._objects){
+            objects = def._objects;
+            delete def._objects;
+        }
 
         if(options.extends){
             element = Object.create(create.elements[options.extends], def);
         }
         else{
             element = Object.create(baseElement, def);
+        }
 
+        if(objects){
+            Object.keys(objects).forEach(function (key) {
+                element[key] = objects[key];
+            });
         }
 
         create.elements[options.tag] = element;
-
 
         constructor = document.registerElement(options.tag, {
             prototype: element
@@ -330,7 +381,6 @@
         return constructor;
     }
 
-    create.prototypes = {};
     create.elements = {};
     create.onDomReady = function (node, callback) {
         if(node.DOMSTATE === 'domready'){
