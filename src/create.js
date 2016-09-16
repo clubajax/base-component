@@ -16,6 +16,7 @@
         // converts standard object to property definition
         // ergo: {foo: function(){}} to {foo:{value: function(){}}}
         //
+        console.log('options', options);
         Object.keys(options).forEach(function (key) {
             if (key === 'props') {
                 // these options will be processed later
@@ -23,6 +24,7 @@
             }
             var value = options[key];
             if (typeof value === 'object') {
+                //console.log('OBJECT', key, Object.getOwnPropertyDescriptor(options, key));
                 var keys = Object.keys(value),
                     valid = keys.every(function (name) { return validProperties[name] === true; });
                 if (valid) {
@@ -39,6 +41,7 @@
             if(key === 'destroy'){
                 key = '_destroy';
             }
+            //console.log('CONVERT', key, Object.getOwnPropertyDescriptor(options, key));
             def[key] = {
                 value:    value,
                 writable:     true,
@@ -136,9 +139,21 @@
     }
 
     extOptions = {
+
+        super:{
+            get: function () {
+                var p = Object.getPrototypeOf(this);
+                if(p._tag === this._tag){
+                    return Object.getPrototypeOf(p);
+                }
+                return p;
+            }
+        },
+
         connectedCallback: function () {
             console.log('connectedCallback');
         },
+
         disconnectedCallback: function () {
             console.log('disconnectedCallback');
         },
@@ -161,6 +176,7 @@
                 this.fire('created');
             }
         },
+
         attachedCallback: {
             value: function () {
                 privates[this._uid].DOMSTATE = 'attached';
@@ -174,6 +190,7 @@
                 this.fire('attached');
             }
         },
+
         detachedCallback: {
             value: function () {
                 privates[this._uid].DOMSTATE = 'detached';
@@ -184,6 +201,7 @@
                 this.fire('detached');
             }
         },
+
         attributeChangedCallback: {
             value: function (attrName, oldVal, newVal) {
                 plugins('preAttributeChanged', this, attrName, newVal, oldVal);
@@ -192,6 +210,7 @@
                 }
             }
         },
+
         destroy:{
             value: function () {
                 if(this._destroy){
@@ -278,8 +297,10 @@
     function create(options){
 
         var
+            key,
             element,
             constructor,
+            base,
             def = {};
 
         plugins('define', def, options);
@@ -289,7 +310,18 @@
         // collect component-specific definitions
         convertOptionsToDefinition(def, options);
 
-        element = Object.create(baseElement, def);
+        create.prototypes[options.tag] = def;
+
+        if(options.extends){
+            element = Object.create(create.elements[options.extends], def);
+        }
+        else{
+            element = Object.create(baseElement, def);
+
+        }
+
+        create.elements[options.tag] = element;
+
 
         constructor = document.registerElement(options.tag, {
             prototype: element
@@ -298,6 +330,8 @@
         return constructor;
     }
 
+    create.prototypes = {};
+    create.elements = {};
     create.onDomReady = function (node, callback) {
         if(node.DOMSTATE === 'domready'){
             callback(node);

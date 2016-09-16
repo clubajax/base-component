@@ -28,15 +28,25 @@
     <script>
         create({
             tag: 'test-widget4',
-            set foo (v) {
-                console.log('SET FOO');
-                this.__foo = v;
+            set foo (value) {
+                this.__foo = value;
+                console.log('SET FOO'); // <----------------- overwriting setters?
+                this.reflect('foo', value);
             },
             get foo () {
                 return this.__foo;
             },
-            set bar (v) {
-                this.__bar = v;
+            xfoo:{
+                set: function (value) {
+                    this.__foo = value;
+                    this.reflect('foo', value);
+                },
+                get: function () {
+                    return this.__foo;
+                }
+            },
+            set bar (value) {
+                this.__bar = value;
             },
             get bar () {
                 return this.__bar;
@@ -44,6 +54,7 @@
             value:{
                 set: function (value) {
                     this.__value = value;
+                    this.reflect('value', value);
                 },
                 get: function () {
                     return this.__value;
@@ -76,30 +87,30 @@
 
                     // components can be created in suites, but not in tests
                     // can't call function from within tests either
-                    create({
-                        tag: 'test-widget'
-                    });
-                    create({
-                        tag: 'test-widget2',
-                        templateId: 'test-widget2-template'
-                    });
-                    create({
-                        tag: 'test-widget3',
-                        value:{
-                            set: function (value) {
-                                this.__value = value;
-                            },
-                            get: function () {
-                                return this.__value;
-                            }
-                        },
-                        set disabled (value) {
-                            this.__disabled = value;
-                        },
-                        get disabled () {
-                            return this.__disabled || false;
-                        }
-                    });
+//                    create({
+//                        tag: 'test-widget'
+//                    });
+//                    create({
+//                        tag: 'test-widget2',
+//                        templateId: 'test-widget2-template'
+//                    });
+//                    create({
+//                        tag: 'test-widget3',
+//                        value:{
+//                            set: function (value) {
+//                                this.__value = value;
+//                            },
+//                            get: function () {
+//                                return this.__value;
+//                            }
+//                        },
+//                        set disabled (value) {
+//                            this.__disabled = value;
+//                        },
+//                        get disabled () {
+//                            return this.__disabled || false;
+//                        }
+//                    });
 
 
                     xtest('it should create a component', function () {
@@ -125,13 +136,13 @@
                         expect(node.disabled).to.equal(true);
 
                     });
-                    test('it should set properties from attributes if there is a setter (markup)', function () {
+                    xtest('it should set properties from attributes if there is a setter (markup)', function () {
                         var node = dom.query('test-widget4');
                         expect(node.foo).to.equal('stuff');
                         expect(node.bar).to.equal(100);
                         expect(node.value).to.equal('boom');
                     });
-                    test('it should set properties from attributes if there is a setter', function (done) {
+                    xtest('it should set properties from attributes if there is a setter', function (done) {
                         var node = dom('test-widget4', {attr:{foo:true, bar:9, bazz:'none', value:'winning'}}, widgets);
 
                         create.onDomReady(node, function (node) {
@@ -161,6 +172,18 @@
                             expect(node.foo).to.equal(null);
 
                             done();
+                        });
+                    });
+                    test('it should reflect properties to attributes', function (done) {
+                        var node = dom('test-widget4', {}, widgets);
+
+                        create.onDomReady(node, function (node) {
+                            node.value = 'tying';
+                            node.foo = 'woo';
+                            node.bar = 'pipe';
+                            expect(node.getAttribute('value')).to.equal('tying');
+                            expect(node.getAttribute('foo')).to.equal('woo');
+                            expect(node.getAttribute('bar')).to.equal(null);
                         });
                     });
                 });

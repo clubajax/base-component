@@ -39,7 +39,6 @@
 
             def.getLightNodes = {
                 value: function () {
-                    console.log('getLightNodes:::::', this._uid);
                     return lightNodes[this._uid];
                 }
             };
@@ -54,9 +53,7 @@
         },
 
         preAttach: function (node) {
-            console.log('template.preAttach');
             if(!inserted[node._uid] && node.templateNode){
-                console.log(' ~~~ plugins.template.preAttach');
                 collectLightNodes(node);
                 insertTemplate(node);
             }

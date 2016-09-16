@@ -1,7 +1,6 @@
 (function (create, dom, on) {
 
     function assignRefs (node) {
-        console.log('node', node);
         dom.queryAll(node, '[ref]').forEach(function (child) {
             var name = child.getAttribute('ref');
             node[name] = child;
@@ -20,21 +19,10 @@
         });
     }
 
-    //function ensureTemplatePlugin () {
-    //    for(var i = 0; i < create.plugins.length; i++){
-    //        if(create.plugins[i].name === 'template'){
-    //            return;
-    //        }
-    //    }
-    //    console.error('template plugin is required before refs plugin');
-    //}
-    //
-    //ensureTemplatePlugin();
     create.addPlugin({
         name: 'refs',
         order: 30,
         preAttach: function (node) {
-            console.log('refs.preAttach');
             assignRefs(node);
             assignEvents(node);
         }

@@ -18,16 +18,9 @@
         create({
             tag: 'demo-widget',
             templateId: 'demo-widget-template',
-            attrs:['horizontal', 'value'],
 
             created: function () {
-                if(this.horizontal !== null){
-                    this.classList.add('horizontal');
-                    this.horizontal = true;
-                }
-                this._disabled = false;
-                dom.attr(this, 'tabindex', 0);
-                dom.attr(this, 'role', 'presentation');
+                console.log('created!');
             },
 
             attached: function () {
