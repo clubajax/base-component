@@ -22,9 +22,11 @@
   "homepage": "https://github.com/clubajax/create-element#readme",
   "devDependencies": {
     "grunt": "^1.0.1",
-    "grunt-contrib-uglify": "^2.0.0"
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-metl-tools": "github:clubajax/grunt-metl-tools"
   },
   "dependencies": {
+    "dom": "clubajax/dom#v1.1.2",
     "on": "clubajax/on#v1.5.5"
   }
 }

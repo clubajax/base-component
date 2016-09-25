@@ -117,9 +117,37 @@ state the callback will still fire. Also, the event listener is cleaned up under
    
 ## Event Handling
  
-create-element uses the [clubajax/on](https://github.com/clubajax/on) library to handle events.
+create-element uses the [clubajax/on](https://github.com/clubajax/on) library to handle events. To add even more power
+to custom elements, `on` is included, and its context set to itself. For example:
+
+    myCustomElement.on('click', function (event) {
+        // handle click
+    });
+
+The power happens by functionality that remembers the events, and when `destroy()` is called, they are all removed. So
+all event cleanup is a matter of calling `destroy()`.
+
+While context defaults to the element itself, you can optionally specifiy a different element (or window in this case):
+
+    myCustomElement.on(window, 'resize', function (event) {
+        // handle resize
+    });
+
+You can also use the `once` feature:
+
+    myCustomElement.once(img, 'load', function (event) {
+        // handle image loading
+        // this event will never fire again
+    });
    
+Also mixed into the custom element are `on`'s `emit` and `fire` methods. Typically, `emit` is for standard events, and
+`fire` is for custom events.
+
+    this.emit('change', {value: this.value});
+    this.fire('closed');
    
+See the [clubajax/on](https://github.com/clubajax/on) documentation for a complete list of features.
+
 ## Plugins
 
 `create-element` uses a plugin architecture, which not only helps keep the code clean and maintainable, it allows for
