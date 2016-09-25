@@ -14,7 +14,7 @@ repository or submodule.
 It is recommended that you set the config.path of RequireJS to make `create-element` accessible as an
 absolute path.
 
-create-element has dependencies on clubajax/on and clubajax/dom
+create-element has dependencies on [clubajax/on](https://github.com/clubajax/on) and [clubajax/dom](https://github.com/clubajax/dom)
 
 ## Support
 
@@ -114,6 +114,11 @@ Or the convenience function in `create` can be used:
 The benefit of `create.onDomReady` over `element.addEventListener` is that if the element is already in the `domready` 
 state the callback will still fire. Also, the event listener is cleaned up under the hood, while using 
 `element.addEventListener` leaves that up to you.
+   
+## Event Handling
+ 
+create-element uses the [clubajax/on](https://github.com/clubajax/on) library to handle events.
+   
    
 ## Plugins
 
