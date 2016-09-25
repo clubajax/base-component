@@ -18,7 +18,7 @@
         define: function (def, options) {
             options.reflect = {
                 value: function (name, value) {
-                    if (value === null) {
+                    if (value === null || value === undefined) {
                         this.removeAttribute(name);
                     }
                     else {

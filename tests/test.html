@@ -75,7 +75,7 @@
 
         mocha.setup('tdd');
 
-        suite('keys', function() {
+        suite('create-element', function () {
             this.timeout(3000);
             var suite = window.suite,
                 test = window.test,
@@ -87,141 +87,221 @@
             function xsuite () {}
             function xtest () {}
 
-            suite('create-element', function () {
-                suite('create', function () {
+            // components can be created in suites, but not in tests
+            // can't call function from within tests either
+            create({
+                tag: 'test-widget'
+            });
+            create({
+                tag: 'test-widget2',
+                templateId: 'test-widget2-template'
+            });
+            create({
+                tag: 'test-widget3',
+                value:{
+                    set: function (value) {
+                        this.__value = value;
+                    },
+                    get: function () {
+                        return this.__value;
+                    }
+                },
+                set disabled (value) {
+                    this.__disabled = value;
+                },
+                get disabled () {
+                    return this.__disabled || false;
+                }
+            });
+            create({
+                tag: 'test-widget5',
+                created: function () {
+                    on.fire(window, 'create-called');
+                },
+                domReady: function () {
+                    on.fire(window, 'domReady-called');
+                }
+            });
+            create({
+                tag: 'test-child1',
+                domReady: function () {
+                    on.fire(window, 'domReady-called');
+                }
+            });
+            create({
+                tag: 'test-widget6',
+                templateString: '<div ref="tNode">has string template</div>'
+            });
 
-                    // components can be created in suites, but not in tests
-                    // can't call function from within tests either
-                    create({
-                        tag: 'test-widget'
+            xsuite('create', function () {
+
+                test('it should create a component', function () {
+                    dom('test-widget', {html:'<pre>test widget</pre>'}, widgets);
+                    var node = dom.query('test-widget');
+                    expect(node).to.not.equal(null);
+                });
+                test('it should use getter/setters', function () {
+                    dom('test-widget3', 0, widgets);
+                    var node = dom.query('test-widget3');
+                    node.value = 'foo';
+                    expect(node.value).to.equal('foo');
+                    expect(node.disabled).to.equal(false);
+                    node.disabled = true;
+                    expect(node.disabled).to.equal(true);
+
+                });
+                test('it should set properties from attributes if there is a setter (markup)', function () {
+                    var node = dom.query('test-widget4');
+                    expect(node.foo).to.equal('stuff');
+                    expect(node.bar).to.equal(100);
+                    expect(node.value).to.equal('boom');
+                });
+                test('it should set properties from attributes if there is a setter', function (done) {
+                    var node = dom('test-widget4', {attr:{foo:true, bar:9, bazz:'none', value:'winning'}}, widgets);
+
+                    create.onDomReady(node, function (node) {
+                        expect(node.foo).to.equal(true);
+                        expect(node.bar).to.equal(9);
+                        expect(node.value).to.equal('winning');
+                        // does not set bazz - there is no setter
+                        expect(node.bazz).to.equal(undefined);
+
+                        // set again
+                        node.setAttribute('foo', 'false');
+                        node.setAttribute('bar', '-2');
+                        node.setAttribute('value', 'losing');
+                        node.setAttribute('bazz', 'whatever');
+
+                        expect(node.foo).to.equal(false);
+                        expect(node.bar).to.equal(-2);
+                        expect(node.value).to.equal('losing');
+                        // does not set bazz - there is no setter
+                        expect(node.bazz).to.equal(undefined);
+
+
+                        node.setAttribute('foo', '');
+                        expect(node.foo).to.equal('');
+
+                        node.removeAttribute('foo');
+                        expect(node.foo).to.equal(null);
+
+                        done();
                     });
-                    create({
-                        tag: 'test-widget2',
-                        templateId: 'test-widget2-template'
+                });
+                test('it should copy native types, including getter/setters', function (done) {
+                    var node = dom('test-widget4', {}, widgets);
+
+                    create.onDomReady(node, function (node) {
+                        node.value = 'tying';
+                        node.foo = 'woo';
+                        node.bar = 'pipe';
+                        node.setStuff('stuffing');
+                        expect(node.value).to.equal('tying');
+                        expect(node.foo).to.equal('woo');
+                        expect(node.bar).to.equal('pipe');
+
+                        expect(node.getStuff()).to.equal('stuffing');
+
+                        expect(node._OBJ.a).to.equal(1);
+                        expect(node._OBJ.b).to.equal(true);
+                        expect(node._OBJ.c).to.equal('string');
+
+                        expect(node._ARR.length).to.equal(3);
+                        expect(node._NUM).to.equal(99);
+                        expect(node._STR).to.equal('string');
+                        expect(node._BOOL).to.equal(true);
+
+                        done();
                     });
-                    create({
-                        tag: 'test-widget3',
-                        value:{
-                            set: function (value) {
-                                this.__value = value;
-                            },
-                            get: function () {
-                                return this.__value;
-                            }
-                        },
-                        set disabled (value) {
-                            this.__disabled = value;
-                        },
-                        get disabled () {
-                            return this.__disabled || false;
-                        }
+                });
+                test('it should reflect properties to attributes', function (done) {
+                    var node = dom('test-widget4', {}, widgets);
+
+                    create.onDomReady(node, function (node) {
+                        node.value = 'tying';
+                        node.foo = 'woo';
+                        node.bar = 'pipe';
+                        expect(node.getAttribute('value')).to.equal('tying');
+                        expect(node.getAttribute('foo')).to.equal('woo');
+                        expect(node.getAttribute('bar')).to.equal(null);
+                        done();
                     });
+                });
 
+                // TODO: lifecycle (change to connect/disconnect)
+                // TODO: test on/remove
+                // TODO: test inheritance
+            });
 
-                    test('it should create a component', function () {
-                        dom('test-widget', {html:'<pre>test widget</pre>'}, widgets);
-                        var node = dom.query('test-widget');
-                        expect(node).to.not.equal(null);
+            xsuite('lifecycle methods', function () {
+                test('it should call component\'s `created` method', function () {
+                    var called = false;
+                    on(window, 'create-called', function () {
+                        called = true;
                     });
-                    test('it should create a component with a template', function () {
-                        dom('test-widget2', {html:'<div>test-widget2</div>'}, widgets);
-                        var node = dom.query('test-widget2');
-                        expect(node).to.not.equal(null);
-                        expect(node.innerHTML.indexOf('has template') > -1).to.equal(true);
-                        window.node = node;
-                        expect(dom.isNode(node.testNode)).to.equal(true);
+                    dom('test-widget5');
+                    expect(called).to.equal(true);
+                });
+                test('it should call component\'s `domReady` method', function (done) {
+                    var node, called = false;
+                    on(window, 'domReady-called', function () {
+                        called = true;
                     });
-                    test('it should use getter/setters', function () {
-                        dom('test-widget3', 0, widgets);
-                        var node = dom.query('test-widget3');
-                        node.value = 'foo';
-                        expect(node.value).to.equal('foo');
-                        expect(node.disabled).to.equal(false);
-                        node.disabled = true;
-                        expect(node.disabled).to.equal(true);
-
+                    node = dom('test-widget5', {}, document.body);
+                    node.on('domready', function () {
+                        expect(called).to.equal(true);
+                        done();
                     });
-                    test('it should set properties from attributes if there is a setter (markup)', function () {
-                        var node = dom.query('test-widget4');
-                        expect(node.foo).to.equal('stuff');
-                        expect(node.bar).to.equal(100);
-                        expect(node.value).to.equal('boom');
+                });
+                test('it should call component\'s `domReady` method when children are ready', function (done) {
+                    var node, called = 0;
+                    on(window, 'domReady-called', function () {
+                        called++;
                     });
-                    test('it should set properties from attributes if there is a setter', function (done) {
-                        var node = dom('test-widget4', {attr:{foo:true, bar:9, bazz:'none', value:'winning'}}, widgets);
-
-                        create.onDomReady(node, function (node) {
-                            expect(node.foo).to.equal(true);
-                            expect(node.bar).to.equal(9);
-                            expect(node.value).to.equal('winning');
-                            // does not set bazz - there is no setter
-                            expect(node.bazz).to.equal(undefined);
-
-                            // set again
-                            node.setAttribute('foo', 'false');
-                            node.setAttribute('bar', '-2');
-                            node.setAttribute('value', 'losing');
-                            node.setAttribute('bazz', 'whatever');
-
-                            expect(node.foo).to.equal(false);
-                            expect(node.bar).to.equal(-2);
-                            expect(node.value).to.equal('losing');
-                            // does not set bazz - there is no setter
-                            expect(node.bazz).to.equal(undefined);
-
-
-                            node.setAttribute('foo', '');
-                            expect(node.foo).to.equal('');
-
-                            node.removeAttribute('foo');
-                            expect(node.foo).to.equal(null);
-
-                            done();
-                        });
+                    node = dom('test-widget5', {}, document.body);
+                    dom('test-child1', {}, node);
+                    dom('test-child1', {}, node);
+                    dom('test-child1', {}, node);
+                    node.on('domready', function () {
+                        expect(called).to.equal(4);
+                        done();
                     });
-                    test('it should copy native types, including getter/setters', function (done) {
-                        var node = dom('test-widget4', {}, widgets);
-
-                        create.onDomReady(node, function (node) {
-                            node.value = 'tying';
-                            node.foo = 'woo';
-                            node.bar = 'pipe';
-                            node.setStuff('stuffing');
-                            expect(node.value).to.equal('tying');
-                            expect(node.foo).to.equal('woo');
-                            expect(node.bar).to.equal('pipe');
-
-                            expect(node.getStuff()).to.equal('stuffing');
-
-                            expect(node._OBJ.a).to.equal(1);
-                            expect(node._OBJ.b).to.equal(true);
-                            expect(node._OBJ.c).to.equal('string');
-
-                            expect(node._ARR.length).to.equal(3);
-                            expect(node._NUM).to.equal(99);
-                            expect(node._STR).to.equal('string');
-                            expect(node._BOOL).to.equal(true);
-
-                            done();
-                        });
+                });
+                test('it should call component\'s `domReady` method when descendants are ready', function (done) {
+                    var node, called = 0;
+                    on(window, 'domReady-called', function () {
+                        called++;
                     });
-                    test('it should reflect properties to attributes', function (done) {
-                        var node = dom('test-widget4', {}, widgets);
-
-                        create.onDomReady(node, function (node) {
-                            node.value = 'tying';
-                            node.foo = 'woo';
-                            node.bar = 'pipe';
-                            expect(node.getAttribute('value')).to.equal('tying');
-                            expect(node.getAttribute('foo')).to.equal('woo');
-                            expect(node.getAttribute('bar')).to.equal(null);
-                            done();
-                        });
+                    node = dom('test-widget5', {}, document.body);
+                    dom('test-child1', {
+                        html: dom('test-child1', {
+                            html: dom('test-child1', {
+                                html: dom('test-child1', {})
+                            })
+                        })
+                    }, node);
+                    node.on('domready', function () {
+                        expect(called).to.equal(5);
+                        done();
                     });
+                });
 
-                    // TODO: lifecycle (change to connect/disconnect)
-                    // TODO: test on/remove
-                    // TODO: test inheritance
+                // TODO test destroy
+            });
+
+            xsuite('templates', function () {
+                xtest('it should create a component with a templateId', function () {
+                    var node = dom('test-widget2', {html:'<div>test-widget2</div>'}, widgets);
+                    expect(node).to.not.equal(null);
+                    expect(node.innerHTML.indexOf('has template') > -1).to.equal(true);
+                    expect(dom.isNode(node.testNode)).to.equal(true);
+                });
+                test('it should create a component with a templateString', function () {
+                    var node = dom('test-widget6', {}, widgets);
+                    expect(node).to.not.equal(null);
+                    console.log('TEST');
+                    expect(node.innerHTML.indexOf('has string template') > -1).to.equal(true);
+                    expect(dom.isNode(node.tNode)).to.equal(true);
                 });
             });
         });

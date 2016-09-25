@@ -8,6 +8,7 @@
     }
 
     function assignEvents (node) {
+        // <div on="click:onClick">
         dom.queryAll(node, '[on]').forEach(function (child) {
             var
                 keyValue = child.getAttribute('on'),

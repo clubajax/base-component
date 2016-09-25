@@ -12,7 +12,6 @@
 
     function collectLightNodes(node){
         lightNodes[node._uid] = [];
-        console.log('collectLightNodes', node.childNodes.length);
 
         while(node.childNodes.length){
             lightNodes[node._uid].push(node.removeChild(node.childNodes[0]));
@@ -25,17 +24,12 @@
     }
 
     function insertTemplate (node){
-        console.log('insert..', node.innerHTML);
-
         if(node.super && node.super.templateNode){
             console.log('super.templateNode', node.super.templateNode);
             node.appendChild(create.clone(node.super.templateNode));
             insertChildren(node);
             collectLightNodes(node);
         }
-
-        // does not seem to be removing the super template node
-        //return
 
         if(node.templateNode) {
             node.appendChild(create.clone(node.templateNode));
@@ -52,7 +46,7 @@
         console.log('container', container);
         if(container && children && children.length){
             for(i = 0; i < children.length; i++){
-                console.log('    apend', children[i].textContent);
+                console.log('    append', children[i].textContent);
                 container.appendChild(children[i]);
             }
         }
@@ -74,16 +68,19 @@
 
             def.getLightNodes = {
                 value: function () {
-                    console.log('GET LITE');
                     return lightNodes[this._uid];
                 }
             };
 
-            if (options.templateId) {
+            if(options.templateString){
+                def.templateNode = {value: dom.toDom('<template>' + options.templateString + '</template>')};
+            }
+            else if (options.templateId) {
                 // get the template
                 template = importDoc.getElementById(options.templateId);
                 def.templateNode = {value: template};
-            } else {
+            }
+            else {
                 def.templateNode = {value: null};
             }
         },

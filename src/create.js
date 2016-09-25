@@ -221,13 +221,14 @@
                     this.created();
                 }
                 this.fire('created');
+                plugins('postCreate', this);
             }
         },
 
         attachedCallback: {
             value: function () {
 
-                console.log('attached', this._uid, this.extends);
+                //console.log('attached', this._uid, this.extends);
 
                 if(this.super && this.super.attachedCallback) {
                     //this.super.attachedCallback();
@@ -394,14 +395,16 @@
 
     create.elements = {};
     create.onDomReady = function (node, callback) {
+        function onReady () {
+            callback(node);
+            // domReady should only fire once, but it doesn't - it might fire multiple times.
+            callback = function () {};
+            node.removeEventListener('domready', onReady);
+        }
         if(node.DOMSTATE === 'domready'){
             callback(node);
         }else{
-            node.addEventListener('domready', function () {
-                callback(node);
-                // domReady should only fire once, but it doesn't - it might fire multiple times.
-                callback = function () {};
-            });
+            node.addEventListener('domready', onReady);
         }
     };
 
