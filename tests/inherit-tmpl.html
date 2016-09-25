@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Inherit Template Demo</title>
+    <script src="../bower_components/dom/src/dom.js"></script>
+    <script src="../bower_components/on/dist/on.js"></script>
+    <script src="../src/create.js"></script>
+    <script src="../src/attrs.js"></script>
+    <script src="../src/refs.js"></script>
+    <script src="../src/template.js"></script>
+    <style>
+        body{
+            font-family: sans-serif;
+        }
+        base-widget,
+        extend-widget,
+        deep-widget{
+            display: block;
+            width: 300px;
+            padding: 3px;
+            border: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+        .base-widget-container,
+        .extend-widget-container{
+            border: 1px solid #ccc;
+            padding: 3px;
+            font-family: monospace;
+        }
+
+        .base-container{
+            background-color: #ccffca;
+            border: 1px solid #99e790;
+            padding: 3px;
+        }
+        .extend-container{
+            background-color: #fcffcc;
+            border: 1px solid #ffda3d;
+            padding: 3px;
+        }
+    </style>
+</head>
+<body>
+    <template id="base-widget-template">
+        <div class="base-widget-container">base widget template</div>
+        <div ref="container" class="base-container">base children</div>
+    </template>
+    <template id="extend-widget-template">
+        <div class="extend-widget-container">extend widget template</div>
+        <div ref="container" class="extend-container">extend children</div>
+    </template>
+    <h1>Inherit Template Demo</h1>
+    <script>
+        create({
+            tag: 'base-widget',
+            templateId: 'base-widget-template',
+            BOO: 'BAW',
+            created: function () {
+                console.log(' . base-widget.created');
+            },
+
+            attached: function () {
+                console.log(' . base-widget.attached');
+            },
+
+            domReady: function () {
+                // FIXME: Cannot
+                dom('div', {html:'<strong>base-widget</strong>'}, this);
+            }
+        });
+
+        create({
+            tag: 'extend-widget',
+            templateId: 'extend-widget-template',
+            FOO:'MAW',
+            extends: 'base-widget',
+
+            created: function () {
+                console.log(' - extend-widget.created');
+                this.super.created();
+            },
+
+            attached: function () {
+                console.log(' - extend-widget.attached');
+                this.super.attached();
+            },
+
+            domReady: function () {
+                dom('div', {html:'<strong>extend-widget</strong>'}, this);
+                this.super.domReady();
+            },
+
+            render: function () {
+                // a render function could be considered the only safe place to access the dom
+                // and is not allowed to be extended
+                // but we couldn't do things like getting value from this.inputNode
+                //
+            }
+        });
+        create({
+            tag: 'deep-widget',
+            BAW:'WAH',
+            extends: 'extend-widget',
+
+            created: function () {
+                console.log('[[[deep-widget.created]]]');
+                this.super.created();
+            },
+
+            attached: function () {
+                console.log('deep-widget.attached');
+            },
+
+            domReady: function () {
+                dom('div', {html:'<strong>deep-widget</strong>'}, this);
+                if(this.base){
+                    this.base();
+                }
+                if(this.extend){
+                    this.extend();
+                }
+                console.dir(this);
+            }
+        });
+    </script>
+    <!--<base-widget></base-widget>-->
+    <extend-widget>
+        <div>my inner html</div>
+    </extend-widget>
+    <!--<deep-widget></deep-widget>-->
+</body>
+</html>

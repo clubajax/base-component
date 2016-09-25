@@ -59,7 +59,6 @@
 
             if(isDescriptor(descriptor)) {
                 // already an object
-                console.log('desc', key, descriptor);
                 Object.defineProperty(def, key, descriptor);
                 return;
             }
@@ -206,6 +205,9 @@
         createdCallback: {
             value: function () {
                 //console.log('tag', this._tag);
+                if(this.super && this.super.createdCallback) {
+                    //this.super.createdCallback();
+                }
                 this._uid = dom.uid(this._tag);
                 privates[this._uid] = { DOMSTATE: 'created' };
                 plugins('preCreate', this);
@@ -224,6 +226,13 @@
 
         attachedCallback: {
             value: function () {
+
+                console.log('attached', this._uid, this.extends);
+
+                if(this.super && this.super.attachedCallback) {
+                    //this.super.attachedCallback();
+                }
+
                 privates[this._uid].DOMSTATE = 'attached';
                 plugins('preAttach', this);
 
@@ -233,6 +242,8 @@
                     this.attached();
                 }
                 this.fire('attached');
+
+                plugins('postAttach', this);
             }
         },
 
