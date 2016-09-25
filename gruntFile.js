@@ -4,10 +4,12 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         metl:{
+            serve:{
+                port: 8001
+            },
             watch:{
-                less:['./test/less/*.less'],
-                scripts:['./test/**/*.js'],
-                port: 35730
+                scripts:['./src/**/*.js', './tests/*.html'],
+                port: 35731
             },
             umd:{
                 src:'./src',
@@ -19,6 +21,4 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks('grunt-metl-tools');
-
-    //require(path.join(__dirname, '/tasks/index'))(grunt);
 };

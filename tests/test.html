@@ -11,6 +11,7 @@
     <script src="../src/template.js"></script>
     <script src="../bower_components/mocha/mocha.js"></script>
     <script src="../bower_components/chai/chai.js"></script>
+    <script src="//localhost:35731/livereload.js"></script>
     <style>
         body{
             padding: 20px;
@@ -133,7 +134,7 @@
                 templateString: '<div ref="tNode">has string template</div>'
             });
 
-            xsuite('create', function () {
+            suite('create', function () {
 
                 test('it should create a component', function () {
                     dom('test-widget', {html:'<pre>test widget</pre>'}, widgets);
@@ -233,7 +234,7 @@
                 // TODO: test inheritance
             });
 
-            xsuite('lifecycle methods', function () {
+            suite('lifecycle methods', function () {
                 test('it should call component\'s `created` method', function () {
                     var called = false;
                     on(window, 'create-called', function () {
@@ -289,8 +290,8 @@
                 // TODO test destroy
             });
 
-            xsuite('templates', function () {
-                xtest('it should create a component with a templateId', function () {
+            suite('templates', function () {
+                test('it should create a component with a templateId', function () {
                     var node = dom('test-widget2', {html:'<div>test-widget2</div>'}, widgets);
                     expect(node).to.not.equal(null);
                     expect(node.innerHTML.indexOf('has template') > -1).to.equal(true);
