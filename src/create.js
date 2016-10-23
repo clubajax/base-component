@@ -206,27 +206,24 @@
                 if(recurse()){
                     return;
                 }
-                var p, fn, m, result, caller = this.currentPrototype || this, mc = caller[caller.tag + 'inheritableMethods'] || {};
+                var
+                    fn,
+                    result,
+                    caller = this.currentPrototype || this,
+                    mc = privates[caller.tag + 'inheritableMethods'] || {};
 
                 console.log('caller:', caller.tag);
                 console.log('  -  haz:', caller.tag, funcName, !!mc[funcName]);
 
-
                 this.currentPrototype = this.getProto();
-                p = this.currentPrototype;
 
-
-                // if caller does not have the super-method, that means it was called in the next
-                // prototype
-
+                // if caller does not have the super-method,
+                // that means it was already called in the next
+                // prototype of the chain
                 if(!mc[funcName]){
                     console.log('(skip proto)');
                     return this.currentPrototype.super(funcName);
                 }
-
-                m = p[p.tag + 'inheritableMethods'];
-
-                //console.log('!!haz::', p.tag, funcName, m[funcName]);
 
                 fn = this.currentPrototype[funcName];
                 if(!fn){
@@ -399,10 +396,18 @@
     function create(options){
 
         var
+            inheritableMethods = {},
             element,
             constructor,
             objects,
             def = {};
+
+        Object.keys(options).forEach(function (key) {
+            if(typeof options[key] === 'function'){
+                inheritableMethods[key] = true;
+            }
+        });
+        privates[options.tag + 'inheritableMethods'] = inheritableMethods;
 
         plugins('define', def, options);
 

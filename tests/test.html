@@ -133,7 +133,6 @@
                 props.base.push(this.id);
             }
         });
-
         create({
             tag: 'b-widget',
             extends: 'a-widget',
@@ -203,6 +202,36 @@
         create({
             tag: 'h-widget',
             extends: 'g-widget'
+        });
+
+        create({
+            tag: 'missing-a',
+            attached: function () {
+                props.attached.push('a');
+            },
+            base: function () {
+                props.base.push('a');
+            }
+        });
+        create({
+            tag: 'missing-b',
+            extends: 'missing-a'
+        });
+        create({
+            tag: 'missing-c',
+            extends: 'missing-b',
+            attached: function () {
+                props.attached.push('c');
+                this.super('attached');
+            },
+            base: function () {
+                props.base.push('c');
+                this.super('base');
+            }
+        });
+        create({
+            tag: 'missing-d',
+            extends: 'missing-c'
         });
         // for collecting inheritance properties
         var props = {
@@ -443,7 +472,16 @@
                     expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
                     //node.destroy();
                 });
-                test('it should be able to use a deep base class template', function () {
+                test('it should be not call on prototypes without the method', function () {
+                    var node = dom('missing-d', {}, document.body);
+                    node.base();
+                    console.log('props', props);
+                    expect(props.attached.join(',')).to.equal('c,a');
+                    expect(props.base.join(',')).to.equal('c,a');
+                    node.destroy();
+                    props.restore();
+                });
+                xtest('it should be able to use a deep base class template', function () {
                     var node = dom('g-widget', {}, document.body);
                     expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
                     //node.destroy();

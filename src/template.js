@@ -69,18 +69,8 @@
         define: function (def, options) {
             //console.log('def', options);
             var
-                inheritableMethods = {},
                 template,
                 importDoc = window.globalImportDoc || (document._currentScript || document.currentScript).ownerDocument;
-
-            // TODO: move this to its own plugin, or into create
-            Object.keys(options).forEach(function (key) {
-                if(typeof options[key] === 'function'){
-                    inheritableMethods[key] = true;
-                }
-            });
-            //inheritableMethods.tag = options.tag;
-            options[options.tag + 'inheritableMethods'] = inheritableMethods;
 
             def.importDoc = {
                 get: function() { return importDoc; }
