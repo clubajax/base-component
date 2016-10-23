@@ -182,15 +182,60 @@
         return frag;
     }
 
+    var r = 0;
+    function recurse () {
+        if(r++ > 20){
+            return 1;
+        }
+    }
+
     extOptions = {
 
-        super:{
-            get: function () {
-                var p = Object.getPrototypeOf(this);
+        getProto:{
+            value: function () {
+                var p = Object.getPrototypeOf(this.currentPrototype || this);
                 if(p._tag === this._tag){
                     return Object.getPrototypeOf(p);
                 }
                 return p;
+            }
+        },
+
+        super:{
+            value: function (funcName) {
+                if(recurse()){
+                    return;
+                }
+                var p, fn, m, result, caller = this.currentPrototype || this, mc = caller[caller.tag + 'inheritableMethods'] || {};
+
+                console.log('caller:', caller.tag);
+                console.log('  -  haz:', caller.tag, funcName, !!mc[funcName]);
+
+
+                this.currentPrototype = this.getProto();
+                p = this.currentPrototype;
+
+
+                // if caller does not have the super-method, that means it was called in the next
+                // prototype
+
+                if(!mc[funcName]){
+                    console.log('(skip proto)');
+                    return this.currentPrototype.super(funcName);
+                }
+
+                m = p[p.tag + 'inheritableMethods'];
+
+                //console.log('!!haz::', p.tag, funcName, m[funcName]);
+
+                fn = this.currentPrototype[funcName];
+                if(!fn){
+                    console.warn('not found: super('+ funcName +')');
+                    return null;
+                }
+                result = fn.call(this);
+                this.currentPrototype = null;
+                return result;
             }
         },
 

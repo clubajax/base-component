@@ -292,7 +292,26 @@ the value is `null` or `undefined`, the attribute is removed.
     console.log(element.value); // something else
     console.log(element.getAttribute('value')); // something else
     
+## Inheritance
+
+create-element supports inheritance from other components via the `extend` property. 
     
+    create({
+        tag: 'my-base'
+    });
+    create({
+        tag: 'my-extended',
+        extends: 'my-base'
+    });
+
+Methods can use AOP to call prototypal methods with the `super` method:
+
+    attached: function (){
+        this.super('attached');
+    }
+    
+If a lifecycle method does not exist on the extended component, it will be called on the base component.
+
 ## Shadow DOM (not used!)
 
 create-element purposely does not use the Shadow DOM. There are only a few use cases for Shadow DOM, and due to the 

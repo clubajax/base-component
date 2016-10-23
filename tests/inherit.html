@@ -8,26 +8,27 @@
     <script src="../src/attrs.js"></script>
     <script src="../src/refs.js"></script>
     <script src="../src/template.js"></script>
+    <script src="//localhost:35731/livereload.js"></script>
     <style>
     </style>
 </head>
 <body>
     <h1>Inherit Demo</h1>
     <script>
+
         create({
             tag: 'base-widget',
-            BOO: 'BAW',
             created: function () {
                 console.log(' . base-widget.created');
             },
 
             attached: function () {
-                console.log('base-widget.attached');
+                console.log('3. base-widget.attached');
             },
 
             domReady: function () {
                 dom('div', {html:'<strong>base-widget</strong>'}, this);
-                this.base();
+                //this.base();
             },
 
             base: function () {
@@ -37,23 +38,21 @@
 
         create({
             tag: 'extend-widget',
-            FOO:'MAW',
             extends: 'base-widget',
 
             created: function () {
                 console.log(' - extend-widget.created');
-                this.super.created();
+                //this.super.created();
             },
 
-            attached: function () {
-                console.log('extend-widget.attached');
+            Xattached: function () {
+                console.log('2. extend-widget.attached');
+                this.super('attached');
             },
 
             domReady: function () {
                 dom('div', {html:'<strong>extend-widget</strong>'}, this);
-                if(this.base){
-                    this.base();
-                }
+                //this.base();
             },
             extend: function () {
                 console.log('EXTEND', this._uid);
@@ -61,32 +60,34 @@
         });
         create({
             tag: 'deep-widget',
-            BAW:'WAH',
             extends: 'extend-widget',
 
             created: function () {
                 console.log('[[[deep-widget.created]]]');
-                this.super.created();
+                //this.super.created();
             },
 
             attached: function () {
-                console.log('deep-widget.attached');
+                // FIXME: If using bare-widget, this gets called twice
+                // -- the inheritance code does not know where it is in the proto chain
+                console.log('1. deep-widget.attached');
+                this.super('attached');
             },
 
             domReady: function () {
                 dom('div', {html:'<strong>deep-widget</strong>'}, this);
-                if(this.base){
-                    this.base();
-                }
-                if(this.extend){
-                    this.extend();
-                }
-                console.dir(this);
+                //this.base();
+                //this.extend();
             }
         });
+        create({
+            tag: 'bare-widget',
+            extends: 'deep-widget'
+        });
     </script>
-    <base-widget></base-widget>
-    <extend-widget></extend-widget>
-    <deep-widget></deep-widget>
+    <!--<base-widget></base-widget>-->
+    <!--<extend-widget></extend-widget>-->
+    <!--<deep-widget></deep-widget>-->
+    <bare-widget></bare-widget>
 </body>
 </html>

@@ -27,7 +27,51 @@
         <div ref="testNode">has template</div>
     </template>
     <script>
-
+        // components can be created in suites, but not in tests
+        // can't call function from within tests either
+        create({
+            tag: 'test-widget'
+        });
+        create({
+            tag: 'test-widget2',
+            templateId: 'test-widget2-template'
+        });
+        create({
+            tag: 'test-widget3',
+            value:{
+                set: function (value) {
+                    this.__value = value;
+                },
+                get: function () {
+                    return this.__value;
+                }
+            },
+            set disabled (value) {
+                this.__disabled = value;
+            },
+            get disabled () {
+                return this.__disabled || false;
+            }
+        });
+        create({
+            tag: 'test-widget5',
+            created: function () {
+                on.fire(window, 'create-called');
+            },
+            domReady: function () {
+                on.fire(window, 'domReady-called');
+            }
+        });
+        create({
+            tag: 'test-child1',
+            domReady: function () {
+                on.fire(window, 'domReady-called');
+            }
+        });
+        create({
+            tag: 'test-widget6',
+            templateString: '<div ref="tNode">has string template</div>'
+        });
         create({
             tag: 'test-widget4',
             value:{
@@ -68,6 +112,111 @@
                 return this.__bar;
             }
         });
+        create({
+            tag: 'a-widget',
+            id:'a',
+
+            created: function () {
+                props.created.push('a');
+            },
+
+            attached: function () {
+                props.attached.push('a');
+            },
+
+            domReady: function () {
+                props.domReady.push('a');
+                dom('div', {html:'<label>a-widget</label>'}, this);
+            },
+
+            base: function () {
+                props.base.push(this.id);
+            }
+        });
+
+        create({
+            tag: 'b-widget',
+            extends: 'a-widget',
+            id:'b',
+
+            created: function () {
+                props.created.push('b');
+                this.super('created');
+            },
+
+            attached: function () {
+                props.attached.push('b');
+                this.super('attached');
+                this.base();
+            },
+
+            domReady: function () {
+                console.log('DOMREADY B');
+                props.domReady.push('b');
+                this.super('domReady');
+                this.base();
+            }
+        });
+        create({
+            tag: 'c-widget',
+            extends: 'b-widget',
+            id:'c',
+
+            created: function () {
+                props.created.push('c');
+                this.super('created');
+            },
+
+            attached: function () {
+                props.attached.push('c');
+                this.super('attached');
+                this.base();
+            },
+
+            domReady: function () {
+                console.log('DOMREADY C');
+                props.domReady.push('c');
+                this.super('domReady');
+            }
+        });
+        create({
+            tag: 'd-widget',
+            extends: 'a-widget',
+            id: 'd'
+        });
+        create({
+            tag: 'e-widget',
+            templateString: '<div ref="tNode">has string template</div>'
+        });
+        create({
+            tag: 'f-widget',
+            extends: 'e-widget',
+            attached: function () {
+                console.log('e.attached');
+                this.tNode.innerHTML = 'this is extended';
+            }
+        });
+        create({
+            tag: 'g-widget',
+            extends: 'f-widget'
+        });
+        create({
+            tag: 'h-widget',
+            extends: 'g-widget'
+        });
+        // for collecting inheritance properties
+        var props = {
+            created:[],
+            attached:[],
+            base: [],
+            domReady: [],
+            restore: function () {
+                this.created.length = 0;
+                this.attached.length = 0;
+                this.base.length = 0;
+                this.domReady.length = 0;
+            }
+        };
     </script>
     <div id="widgets">
         <test-widget4 foo="stuff" bar="100" value="boom"></test-widget4>
@@ -88,53 +237,7 @@
             function xsuite () {}
             function xtest () {}
 
-            // components can be created in suites, but not in tests
-            // can't call function from within tests either
-            create({
-                tag: 'test-widget'
-            });
-            create({
-                tag: 'test-widget2',
-                templateId: 'test-widget2-template'
-            });
-            create({
-                tag: 'test-widget3',
-                value:{
-                    set: function (value) {
-                        this.__value = value;
-                    },
-                    get: function () {
-                        return this.__value;
-                    }
-                },
-                set disabled (value) {
-                    this.__disabled = value;
-                },
-                get disabled () {
-                    return this.__disabled || false;
-                }
-            });
-            create({
-                tag: 'test-widget5',
-                created: function () {
-                    on.fire(window, 'create-called');
-                },
-                domReady: function () {
-                    on.fire(window, 'domReady-called');
-                }
-            });
-            create({
-                tag: 'test-child1',
-                domReady: function () {
-                    on.fire(window, 'domReady-called');
-                }
-            });
-            create({
-                tag: 'test-widget6',
-                templateString: '<div ref="tNode">has string template</div>'
-            });
-
-            suite('create', function () {
+            xsuite('create', function () {
 
                 test('it should create a component', function () {
                     dom('test-widget', {html:'<pre>test widget</pre>'}, widgets);
@@ -234,7 +337,7 @@
                 // TODO: test inheritance
             });
 
-            suite('lifecycle methods', function () {
+            xsuite('lifecycle methods', function () {
                 test('it should call component\'s `created` method', function () {
                     var called = false;
                     on(window, 'create-called', function () {
@@ -290,7 +393,7 @@
                 // TODO test destroy
             });
 
-            suite('templates', function () {
+            xsuite('templates', function () {
                 test('it should create a component with a templateId', function () {
                     var node = dom('test-widget2', {html:'<div>test-widget2</div>'}, widgets);
                     expect(node).to.not.equal(null);
@@ -303,6 +406,57 @@
                     console.log('TEST');
                     expect(node.innerHTML.indexOf('has string template') > -1).to.equal(true);
                     expect(dom.isNode(node.tNode)).to.equal(true);
+                });
+            });
+
+            suite('inheritance', function () {
+                xtest('it should inherit', function () {
+                    var node = dom('b-widget', {}, document.body);
+                    console.log('props', props);
+                    expect(props.created.join(',')).to.equal('b,a');
+                    expect(props.attached.join(',')).to.equal('b,a');
+                    expect(props.base.join(',')).to.equal('b');
+                    node.destroy();
+                    props.restore();
+                });
+                xtest('it should inherit 3 deep', function () {
+                    var node = dom('c-widget', {}, document.body);
+                    console.log('props', props);
+                    expect(props.created.join(',')).to.equal('c,b,a');
+                    expect(props.attached.join(',')).to.equal('c,b,a');
+                    expect(props.base.join(',')).to.equal('c,c');
+                    props.restore();
+                    node.destroy();
+                });
+                xtest('it should call lifecycle methods on subclassed if not on extended', function () {
+                    var node = dom('d-widget', {}, document.body);
+                    node.base();
+                    console.log('props', props);
+                    expect(props.created.join(',')).to.equal('a');
+                    expect(props.attached.join(',')).to.equal('a');
+                    expect(props.base.join(',')).to.equal('d');
+                    props.restore();
+                    node.destroy();
+                });
+                xtest('it should be able to use the base class template', function () {
+                    var node = dom('f-widget', {}, document.body);
+                    expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
+                    //node.destroy();
+                });
+                test('it should be able to use a deep base class template', function () {
+                    var node = dom('g-widget', {}, document.body);
+                    expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
+                    //node.destroy();
+                });
+                xtest('it should inherit the domReady method', function (done) {
+                    var node = dom('c-widget', {}, document.body);
+                    create.onDomReady(node, function () {
+                        console.log('props', props);
+                        expect(props.domReady.join(',')).to.equal('c,b,a');
+                        props.restore();
+                        done();
+                    });
+
                 });
             });
         });

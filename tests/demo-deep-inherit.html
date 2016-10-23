@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Inherit Template Demo</title>
+    <script src="../bower_components/dom/src/dom.js"></script>
+    <script src="../bower_components/on/dist/on.js"></script>
+    <script src="../src/create.js"></script>
+    <script src="../src/attrs.js"></script>
+    <script src="../src/refs.js"></script>
+    <script src="../src/template.js"></script>
+    <script src="//localhost:35731/livereload.js"></script>
+    <style>
+        body{
+            font-family: sans-serif;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Deep Inherit Template Demo</h1>
+    <script>
+        create({
+            tag: 'e-widget',
+            templateString: '<div ref="tNode">has string template</div>',
+            created: function () {
+                console.log('e.created');
+            }
+        });
+        create({
+            tag: 'f-widget',
+            extends: 'e-widget',
+            created: function () {
+                console.log('f.created');
+                this.super('created');
+            },
+            attached: function () {
+                console.log('e.attached');
+                this.tNode.innerHTML = 'this is extended';
+            }
+        });
+        create({
+            tag: 'g-widget',
+            extends: 'f-widget',
+            created: function () {
+                console.log('g.created');
+                this.super('created');
+            }
+        });
+        var node = dom('g-widget', {}, document.body);
+    </script>
+
+</body>
+</html>

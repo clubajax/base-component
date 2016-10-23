@@ -5,6 +5,9 @@
         inserted = {};
 
     function insert (node) {
+        if(inserted[node._uid] || !hasTemplate(node)){
+            return;
+        }
         collectLightNodes(node);
         insertTemplate(node);
         inserted[node._uid] = true;
@@ -23,10 +26,18 @@
         //}
     }
 
+    function hasTemplate (node) {
+
+        return !!node.templateNode;
+        //console.log('chain:', node.templateChain());
+        //return !!node.templateNode || node.getProto().templateNode;
+    }
+
     function insertTemplate (node){
-        if(node.super && node.super.templateNode){
-            console.log('super.templateNode', node.super.templateNode);
-            node.appendChild(create.clone(node.super.templateNode));
+        var superTemplate = node.getProto().templateNode;
+
+        if(superTemplate){
+            node.appendChild(create.clone(superTemplate));
             insertChildren(node);
             collectLightNodes(node);
         }
@@ -38,15 +49,13 @@
     }
 
     function insertChildren (node) {
-        console.log('\ninsertChildren');
         var i,
             container = node.querySelector('[ref="container"]') || node,
-            children = lightNodes[node._uid]; //node.getLightNodes();
+            children = lightNodes[node._uid];
 
         console.log('container', container);
         if(container && children && children.length){
             for(i = 0; i < children.length; i++){
-                console.log('    append', children[i].textContent);
                 container.appendChild(children[i]);
             }
         }
@@ -58,9 +67,20 @@
         name: 'template',
         order: 10,
         define: function (def, options) {
+            //console.log('def', options);
             var
+                inheritableMethods = {},
                 template,
                 importDoc = window.globalImportDoc || (document._currentScript || document.currentScript).ownerDocument;
+
+            // TODO: move this to its own plugin, or into create
+            Object.keys(options).forEach(function (key) {
+                if(typeof options[key] === 'function'){
+                    inheritableMethods[key] = true;
+                }
+            });
+            //inheritableMethods.tag = options.tag;
+            options[options.tag + 'inheritableMethods'] = inheritableMethods;
 
             def.importDoc = {
                 get: function() { return importDoc; }
@@ -81,14 +101,33 @@
                 def.templateNode = {value: template};
             }
             else {
-                def.templateNode = {value: null};
+
+                // FIXME - commenting this out gets things moving, but domReady is called multiple times on the same prototype
+                //def.templateNode = {value: null};
+            }
+
+            def.templateChain = {
+
+                // FIXME - does not seem to be walking the proto chain
+
+
+                value: function () {
+                    console.log('templateChain...', this.getProto());
+                    var tmpls = this.super('templateChain') || [];
+                    console.log(this._uid, 'tmpls', tmpls);
+                    if(this.templateNode){
+                        console.log('TEMPLATE');
+                        tmpls.push(this.templateNode);
+                    }
+                    return tmpls;
+                }
             }
         },
 
         preAttach: function (node) {
-            if(!inserted[node._uid] && node.templateNode){
-                insert(node);
-            }
+            console.log('insert...');
+            insert(node);
+
         }
     });
 

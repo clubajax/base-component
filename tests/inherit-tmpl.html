@@ -8,6 +8,7 @@
     <script src="../src/attrs.js"></script>
     <script src="../src/refs.js"></script>
     <script src="../src/template.js"></script>
+    <script src="//localhost:35731/livereload.js"></script>
     <style>
         body{
             font-family: sans-serif;
@@ -20,6 +21,11 @@
             padding: 3px;
             border: 1px solid #eee;
             margin-bottom: 10px;
+        }
+        d-b{
+            display: block;
+            padding: 3px;
+            border: 1px solid #eee;
         }
         .base-widget-container,
         .extend-widget-container{
@@ -77,34 +83,26 @@
 
             created: function () {
                 console.log(' - extend-widget.created');
-                this.super.created();
+                this.super('created');
             },
 
             attached: function () {
                 console.log(' - extend-widget.attached');
-                this.super.attached();
+                this.super('attached');
             },
 
             domReady: function () {
                 dom('div', {html:'<strong>extend-widget</strong>'}, this);
-                this.super.domReady();
-            },
-
-            render: function () {
-                // a render function could be considered the only safe place to access the dom
-                // and is not allowed to be extended
-                // but we couldn't do things like getting value from this.inputNode
-                //
+                this.super('domReady');
             }
         });
         create({
             tag: 'deep-widget',
-            BAW:'WAH',
             extends: 'extend-widget',
 
             created: function () {
                 console.log('[[[deep-widget.created]]]');
-                this.super.created();
+                this.super('created');
             },
 
             attached: function () {
@@ -119,14 +117,28 @@
                 if(this.extend){
                     this.extend();
                 }
-                console.dir(this);
+                console.log('deep.domReady');
+                this.super('domReady');
             }
+        });
+        create({
+            tag: 'd-a',
+            extends: 'deep-widget'
+        });
+        create({
+            tag: 'd-b',
+            extends: 'd-a'
         });
     </script>
     <!--<base-widget></base-widget>-->
-    <extend-widget>
-        <div>my inner html</div>
-    </extend-widget>
+    <!--<extend-widget>-->
+        <!--<div>my inner html</div>-->
+    <!--</extend-widget>-->
     <!--<deep-widget></deep-widget>-->
+
+    <d-b></d-b>
+    <script>
+        window.node = dom.query('extend-widget');
+    </script>
 </body>
 </html>
