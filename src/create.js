@@ -26,7 +26,7 @@
         return true;
     }
 
-    function convertOptionsToDefinition (def, options) {
+    function convertToPropertyDefinition (def, options) {
         // converts standard object to property definition
         // ergo: {foo: function(){}} to {foo:{value: function(){}}}
         //
@@ -182,7 +182,9 @@
         return frag;
     }
 
-    var r = 0;
+    var
+        root,
+        r = 0;
     function recurse () {
         if(r++ > 20){
             return 1;
@@ -193,9 +195,12 @@
 
         getProto:{
             value: function () {
+                if(!root){
+                    root = this;
+                }
                 var p = Object.getPrototypeOf(this.currentPrototype || this);
                 if(p._tag === this._tag){
-                    return Object.getPrototypeOf(p);
+                    p = Object.getPrototypeOf(p);
                 }
                 return p;
             }
@@ -203,17 +208,17 @@
 
         super:{
             value: function (funcName) {
-                if(recurse()){
-                    return;
-                }
+                //if(recurse()){
+                //    return;
+                //}
                 var
                     fn,
                     result,
                     caller = this.currentPrototype || this,
                     mc = privates[caller.tag + 'inheritableMethods'] || {};
 
-                console.log('caller:', caller.tag);
-                console.log('  -  haz:', caller.tag, funcName, !!mc[funcName]);
+                //console.log('caller:', caller.tag);
+                //console.log('  -  haz:', caller.tag, funcName, !!mc[funcName]);
 
                 this.currentPrototype = this.getProto();
 
@@ -221,17 +226,22 @@
                 // that means it was already called in the next
                 // prototype of the chain
                 if(!mc[funcName]){
-                    console.log('(skip proto)');
+                    //console.log('(skip proto)');
+                    if(!this.currentPrototype.super){
+                        // end of proto chain
+                        return null;
+                    }
                     return this.currentPrototype.super(funcName);
                 }
 
                 fn = this.currentPrototype[funcName];
                 if(!fn){
-                    console.warn('not found: super('+ funcName +')');
+                    //console.warn('not found: super('+ funcName +')');
                     return null;
                 }
-                result = fn.call(this);
+                result = fn.call(root);
                 this.currentPrototype = null;
+                root = null;
                 return result;
             }
         },
@@ -400,8 +410,13 @@
             element,
             constructor,
             objects,
+            tmpDef = {},
             def = {};
 
+        plugins('define', tmpDef, options);
+        def = convertToPropertyDefinition(def, tmpDef);
+
+        // store reference to option methods for inheritance
         Object.keys(options).forEach(function (key) {
             if(typeof options[key] === 'function'){
                 inheritableMethods[key] = true;
@@ -409,12 +424,12 @@
         });
         privates[options.tag + 'inheritableMethods'] = inheritableMethods;
 
-        plugins('define', def, options);
+
 
         def._tag = {value: options.tag};
 
         // collect component-specific definitions
-        def = convertOptionsToDefinition(def, options);
+        def = convertToPropertyDefinition(def, options);
 
         if(def._objects){
             objects = def._objects;

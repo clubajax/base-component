@@ -150,7 +150,6 @@
             },
 
             domReady: function () {
-                console.log('DOMREADY B');
                 props.domReady.push('b');
                 this.super('domReady');
                 this.base();
@@ -173,7 +172,6 @@
             },
 
             domReady: function () {
-                console.log('DOMREADY C');
                 props.domReady.push('c');
                 this.super('domReady');
             }
@@ -191,7 +189,6 @@
             tag: 'f-widget',
             extends: 'e-widget',
             attached: function () {
-                console.log('e.attached');
                 this.tNode.innerHTML = 'this is extended';
             }
         });
@@ -266,7 +263,7 @@
             function xsuite () {}
             function xtest () {}
 
-            xsuite('create', function () {
+            suite('create', function () {
 
                 test('it should create a component', function () {
                     dom('test-widget', {html:'<pre>test widget</pre>'}, widgets);
@@ -366,7 +363,7 @@
                 // TODO: test inheritance
             });
 
-            xsuite('lifecycle methods', function () {
+            suite('lifecycle methods', function () {
                 test('it should call component\'s `created` method', function () {
                     var called = false;
                     on(window, 'create-called', function () {
@@ -422,7 +419,7 @@
                 // TODO test destroy
             });
 
-            xsuite('templates', function () {
+            suite('templates', function () {
                 test('it should create a component with a templateId', function () {
                     var node = dom('test-widget2', {html:'<div>test-widget2</div>'}, widgets);
                     expect(node).to.not.equal(null);
@@ -432,71 +429,72 @@
                 test('it should create a component with a templateString', function () {
                     var node = dom('test-widget6', {}, widgets);
                     expect(node).to.not.equal(null);
-                    console.log('TEST');
                     expect(node.innerHTML.indexOf('has string template') > -1).to.equal(true);
                     expect(dom.isNode(node.tNode)).to.equal(true);
                 });
             });
 
             suite('inheritance', function () {
-                xtest('it should inherit', function () {
+                test('it should inherit', function () {
                     var node = dom('b-widget', {}, document.body);
-                    console.log('props', props);
                     expect(props.created.join(',')).to.equal('b,a');
                     expect(props.attached.join(',')).to.equal('b,a');
                     expect(props.base.join(',')).to.equal('b');
                     node.destroy();
                     props.restore();
                 });
-                xtest('it should inherit 3 deep', function () {
+                test('it should inherit 3 deep', function () {
                     var node = dom('c-widget', {}, document.body);
-                    console.log('props', props);
                     expect(props.created.join(',')).to.equal('c,b,a');
                     expect(props.attached.join(',')).to.equal('c,b,a');
                     expect(props.base.join(',')).to.equal('c,c');
                     props.restore();
                     node.destroy();
                 });
-                xtest('it should call lifecycle methods on subclassed if not on extended', function () {
+                test('it should call lifecycle methods on subclassed if not on extended', function () {
                     var node = dom('d-widget', {}, document.body);
                     node.base();
-                    console.log('props', props);
                     expect(props.created.join(',')).to.equal('a');
                     expect(props.attached.join(',')).to.equal('a');
                     expect(props.base.join(',')).to.equal('d');
                     props.restore();
                     node.destroy();
                 });
-                xtest('it should be able to use the base class template', function () {
+                test('it should be able to use the base class template', function () {
                     var node = dom('f-widget', {}, document.body);
                     expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
-                    //node.destroy();
+                    node.destroy();
+                    props.restore();
                 });
-                test('it should be not call on prototypes without the method', function () {
+                test('it should be not call prototypes without the method', function () {
                     var node = dom('missing-d', {}, document.body);
                     node.base();
-                    console.log('props', props);
                     expect(props.attached.join(',')).to.equal('c,a');
                     expect(props.base.join(',')).to.equal('c,a');
                     node.destroy();
                     props.restore();
                 });
-                xtest('it should be able to use a deep base class template', function () {
+                test('it should be able to use a deep base class template', function () {
                     var node = dom('g-widget', {}, document.body);
                     expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
-                    //node.destroy();
+                    node.destroy();
+                    props.restore();
                 });
-                xtest('it should inherit the domReady method', function (done) {
+                test('it should inherit the domReady method', function (done) {
                     var node = dom('c-widget', {}, document.body);
                     create.onDomReady(node, function () {
-                        console.log('props', props);
                         expect(props.domReady.join(',')).to.equal('c,b,a');
                         props.restore();
+                        node.destroy();
                         done();
                     });
 
                 });
             });
+
+            suite('temp', function () {
+
+            })
         });
 
         mocha.run();

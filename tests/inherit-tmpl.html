@@ -13,22 +13,22 @@
         body{
             font-family: sans-serif;
         }
-        base-widget,
-        extend-widget,
-        deep-widget{
+        deep-a,
+        deep-b,
+        deep-c{
             display: block;
             width: 300px;
             padding: 3px;
             border: 1px solid #eee;
             margin-bottom: 10px;
         }
-        d-b{
+        deep-e{
             display: block;
             padding: 3px;
             border: 1px solid #eee;
         }
-        .base-widget-container,
-        .extend-widget-container{
+        .deep-a-container,
+        .deep-b-container{
             border: 1px solid #ccc;
             padding: 3px;
             font-family: monospace;
@@ -39,7 +39,7 @@
             border: 1px solid #99e790;
             padding: 3px;
         }
-        .extend-container{
+        .b-container{
             background-color: #fcffcc;
             border: 1px solid #ffda3d;
             padding: 3px;
@@ -47,70 +47,70 @@
     </style>
 </head>
 <body>
-    <template id="base-widget-template">
-        <div class="base-widget-container">base widget template</div>
-        <div ref="container" class="base-container">base children</div>
+    <template id="deep-a-template">
+        <div class="deep-a-container">deep-a template</div>
+        <div ref="container" class="base-container">deep-a children</div>
     </template>
-    <template id="extend-widget-template">
-        <div class="extend-widget-container">extend widget template</div>
-        <div ref="container" class="extend-container">extend children</div>
+    <template id="deep-b-template">
+        <div class="deep-b-container">deep-b template</div>
+        <div ref="container" class="b-container">deep-b children</div>
     </template>
     <h1>Inherit Template Demo</h1>
     <script>
         create({
-            tag: 'base-widget',
-            templateId: 'base-widget-template',
+            tag: 'deep-a',
+            templateId: 'deep-a-template',
             BOO: 'BAW',
             created: function () {
-                console.log(' . base-widget.created');
+                console.log(' . deep-a.created');
             },
 
             attached: function () {
-                console.log(' . base-widget.attached');
+                console.log(' . deep-a.attached');
             },
 
             domReady: function () {
                 // FIXME: Cannot
-                dom('div', {html:'<strong>base-widget</strong>'}, this);
+                dom('div', {html:'<strong>deep-a</strong>'}, this);
             }
         });
 
         create({
-            tag: 'extend-widget',
-            templateId: 'extend-widget-template',
+            tag: 'deep-b',
+            templateId: 'deep-b-template',
             FOO:'MAW',
-            extends: 'base-widget',
+            extends: 'deep-a',
 
             created: function () {
-                console.log(' - extend-widget.created');
+                console.log(' - deep-b.created');
                 this.super('created');
             },
 
             attached: function () {
-                console.log(' - extend-widget.attached');
+                console.log(' - deep-b.attached');
                 this.super('attached');
             },
 
             domReady: function () {
-                dom('div', {html:'<strong>extend-widget</strong>'}, this);
+                dom('div', {html:'<strong>deep-b</strong>'}, this);
                 this.super('domReady');
             }
         });
         create({
-            tag: 'deep-widget',
-            extends: 'extend-widget',
+            tag: 'deep-c',
+            extends: 'deep-b',
 
             created: function () {
-                console.log('[[[deep-widget.created]]]');
-                this.super('created');
+                console.log('[[[deep-c.created]]]');
+                //this.super('created');
             },
 
             attached: function () {
-                console.log('deep-widget.attached');
+                console.log('deep-c.attached');
             },
 
             domReady: function () {
-                dom('div', {html:'<strong>deep-widget</strong>'}, this);
+                dom('div', {html:'<strong>deep-c</strong>'}, this);
                 if(this.base){
                     this.base();
                 }
@@ -122,23 +122,26 @@
             }
         });
         create({
-            tag: 'd-a',
-            extends: 'deep-widget'
+            tag: 'deep-d',
+            extends: 'deep-c'
         });
         create({
-            tag: 'd-b',
-            extends: 'd-a'
+            tag: 'deep-e',
+            extends: 'deep-d'
         });
     </script>
-    <!--<base-widget></base-widget>-->
-    <!--<extend-widget>-->
+    <!--<deep-a></deep-a>-->
+    <!--<deep-b>-->
         <!--<div>my inner html</div>-->
-    <!--</extend-widget>-->
-    <!--<deep-widget></deep-widget>-->
+    <!--</deep-b>-->
+    <!--<deep-c></deep-c>-->
 
-    <d-b></d-b>
+    <deep-e></deep-e>
+
     <script>
-        window.node = dom.query('extend-widget');
+        window.node = dom.query('deep-e');
+        console.dir(window.node);
     </script>
+
 </body>
 </html>
