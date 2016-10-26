@@ -34,7 +34,7 @@
             font-family: monospace;
         }
 
-        .base-container{
+        .a-container{
             background-color: #ccffca;
             border: 1px solid #99e790;
             padding: 3px;
@@ -49,18 +49,17 @@
 <body>
     <template id="deep-a-template">
         <div class="deep-a-container">deep-a template</div>
-        <div ref="container" class="base-container">deep-a children</div>
+        <div ref="container" class="a-container">a-container children</div>
     </template>
     <template id="deep-b-template">
         <div class="deep-b-container">deep-b template</div>
-        <div ref="container" class="b-container">deep-b children</div>
+        <div ref="container" class="b-container">b-container children</div>
     </template>
     <h1>Inherit Template Demo</h1>
     <script>
         create({
             tag: 'deep-a',
             templateId: 'deep-a-template',
-            BOO: 'BAW',
             created: function () {
                 console.log(' . deep-a.created');
             },
@@ -70,7 +69,7 @@
             },
 
             domReady: function () {
-                // FIXME: Cannot
+                console.log('DOM A');
                 dom('div', {html:'<strong>deep-a</strong>'}, this);
             }
         });
@@ -78,9 +77,8 @@
         create({
             tag: 'deep-b',
             templateId: 'deep-b-template',
-            FOO:'MAW',
             extends: 'deep-a',
-
+            nestedTemplate: true,
             created: function () {
                 console.log(' - deep-b.created');
                 this.super('created');
@@ -136,7 +134,10 @@
     <!--</deep-b>-->
     <!--<deep-c></deep-c>-->
 
-    <deep-e></deep-e>
+    <deep-e>
+        <div>Light Node</div>
+        Light Text
+    </deep-e>
 
     <script>
         window.node = dom.query('deep-e');

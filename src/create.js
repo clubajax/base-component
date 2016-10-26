@@ -335,6 +335,7 @@
                         handle.next.prev = handle.prev;
                     }
                 }
+                console.log('destr:', this.localName);
                 dom.destroy(this);
             }
         },

@@ -14,31 +14,30 @@
     }
 
     function collectLightNodes(node){
-        lightNodes[node._uid] = [];
-
+        lightNodes[node._uid] = lightNodes[node._uid] || [];
         while(node.childNodes.length){
             lightNodes[node._uid].push(node.removeChild(node.childNodes[0]));
         }
-
-        //for(var i = 0; i < node.childNodes.length; i++){
-        //    console.log('    chillen', node.childNodes[0].textContent);
-        //    lightNodes[node._uid].push(node.childNodes[0]);
-        //}
     }
 
     function hasTemplate (node) {
-        node.getTemplateChain();
-        //console.log('HAZ:', node.getTemplateNode());
         return !!node.getTemplateNode();
-
-
-        //node.simple();
-        //node.complex();
-
-        return !!node.templateNode;// || node.getProto().templateNode;
     }
 
-    function insertTemplate (node){
+    function insertTemplateChain (node) {
+        //collectLightNodes(node);
+        var templates = node.getTemplateChain();
+        templates.forEach(function (template) {
+            getContainer(node).appendChild(create.clone(template));
+        });
+        insertChildren(node);
+    }
+
+    function insertTemplate (node) {
+        if(node.nestedTemplate){
+            insertTemplateChain(node);
+            return;
+        }
         var
             templateNode = node.getTemplateNode(),
             superTemplate = node.getProto().templateNode;
@@ -55,12 +54,24 @@
         insertChildren(node);
     }
 
+    function getContainer (node) {
+        var containers = node.querySelectorAll('[ref="container"]');
+        if(containers.length) {
+            //debugger
+            console.log('', containers);
+        }
+        if(!containers || !containers.length){
+            return node;
+        }
+        return containers[containers.length - 1];
+    }
+
     function insertChildren (node) {
         var i,
-            container = node.querySelector('[ref="container"]') || node,
+            container = getContainer(node),
             children = lightNodes[node._uid];
 
-        //console.log('container', container);
+
         if(container && children && children.length){
             for(i = 0; i < children.length; i++){
                 container.appendChild(children[i]);
@@ -75,6 +86,8 @@
         order: 10,
         define: function (def, options) {
 
+
+            // FIXME: options getting mixed between instances!!!!!
 
             // TODO mechanism for adding methods that is not confusing
             // diff between def and options:
@@ -134,12 +147,15 @@
             //console.log('CREATE TMPL CHAIN', def);
             options.getTemplateChain =  function () {
                 var
-                    tmpls = this.super('getTemplateChain') || [],
-                    node = getTemplateNode();
-                if(node){
-                    tmpls.push(node);
+                    templates = this.super('getTemplateChain') || [],
+                    template = getTemplateNode();
+
+                if(template){
+                    console.log('template', template.id);
+                    if(!template.id){debugger}
+                    templates.push(template);
                 }
-                return tmpls;
+                return templates;
             }
         },
 
