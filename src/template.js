@@ -143,8 +143,10 @@
                 }
             }
 
-            
-            //console.log('CREATE TMPL CHAIN', def);
+
+            if(options.uid) {
+                console.log('create.chain.uid', options.uid);
+            }
             options.getTemplateChain =  function () {
                 var
                     templates = this.super('getTemplateChain') || [],
@@ -152,7 +154,7 @@
 
                 if(template){
                     console.log('template', template.id);
-                    if(!template.id){debugger}
+                    //if(!template.id){debugger}
                     templates.push(template);
                 }
                 return templates;

@@ -193,6 +193,7 @@
         });
         create({
             tag: 'e-widget',
+            uid:'haz-string',
             templateString: '<div ref="tNode">has string template</div>'
         });
         create({
@@ -238,12 +239,14 @@
 
         create({
             tag: 'nested-a',
+            uid:'nest-b',
             templateId: 'nested-template-a'
         });
         create({
             tag: 'nested-b',
             templateId: 'nested-template-b',
             extends: 'nested-a',
+            uid:'nest-a',
             nestedTemplate: true
         });
         // for collecting inheritance properties
@@ -280,7 +283,7 @@
             function xsuite () {}
             function xtest () {}
 
-            suite('create', function () {
+            xsuite('create', function () {
 
                 test('it should create a component', function () {
                     dom('test-widget', {html:'<pre>test widget</pre>'}, widgets);
@@ -380,7 +383,7 @@
                 // TODO: test inheritance
             });
 
-            suite('lifecycle methods', function () {
+            xsuite('lifecycle methods', function () {
                 test('it should call component\'s `created` method', function () {
                     var called = false;
                     on(window, 'create-called', function () {
@@ -436,7 +439,7 @@
                 // TODO test destroy
             });
 
-            suite('templates', function () {
+            xsuite('templates', function () {
                 test('it should create a component with a templateId', function () {
                     var node = dom('test-widget2', {html:'<div>test-widget2</div>'}, widgets);
                     expect(node).to.not.equal(null);

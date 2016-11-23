@@ -15,29 +15,32 @@
                 super(); // always call super() first in the ctor. This also calls the extended class' ctor.
 
                 //this.id = 8;
-                console.log('AppDrawer.super', this.id);
+                //console.log('AppDrawer.super', this.id);
                 //this.id = 'app';
             }
 
             connectedCallback () {
                 console.log('AppDrawer.connected!', this.id);
+                console.log('AppDrawer.anotherMethod', AppDrawer.anotherMethod());
             }
 
-            toggleDrawer() {
+            toggleDrawer () {
                 // Possibly different toggle implementation?
                 // Use ES2015 if you need to call the parent method.
                 // super.toggleDrawer()
             }
 
-            anotherMethod() {
-
+            static anotherMethod () {
+                return 'static';
             }
         }
 
         class FancyDrawer extends AppDrawer {
             constructor() {
+                // In a derived class, you must call super() before you can use this:
                 super();
-                this.id = 'fancy';
+                // throws:
+                    //this.id = 'fancy';
                 console.log('FancyDrawer.super');
             }
 
@@ -46,7 +49,7 @@
                 console.log('FancyDrawer.connected!', this.id);
             }
 
-            toggleDrawer() {
+            toggleDrawer () {
                 // Possibly different toggle implementation?
                 // Use ES2015 if you need to call the parent method.
                 // super.toggleDrawer()
