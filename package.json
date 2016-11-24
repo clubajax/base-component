@@ -21,9 +21,12 @@
   },
   "homepage": "https://github.com/clubajax/create-element#readme",
   "devDependencies": {
+    "babel-preset-latest": "^6.16.0",
     "grunt": "^1.0.1",
+    "grunt-babel": "^6.0.0",
     "grunt-contrib-uglify": "^2.0.0",
-    "grunt-metl-tools": "github:clubajax/grunt-metl-tools"
+    "grunt-metl-tools": "github:clubajax/grunt-metl-tools",
+    "load-grunt-tasks": "^3.5.2"
   },
   "dependencies": {
     "dom": "clubajax/dom#v1.1.2",
