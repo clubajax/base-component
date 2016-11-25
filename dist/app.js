@@ -107,4 +107,4 @@ var FancyDrawer = function (_AppDrawer) {
 
 customElements.define('app-drawer', AppDrawer);
 customElements.define('fancy-app-drawer', FancyDrawer);
-//# sourceMappingURL=app.js.map
+//# sourceMappingURL=app.js.mapx

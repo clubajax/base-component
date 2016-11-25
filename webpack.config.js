@@ -9,10 +9,6 @@ module.exports = {
     entry: {
         app: "./app.js"
     },
-    output: {
-        path: __dirname + "/dist",
-        filename: "[name].bundle.js"
-    },
     module: {
         rules: [
             {
@@ -27,6 +23,10 @@ module.exports = {
         ]
     },
     devServer: {
-        contentBase: __dirname + "/src",  // New
+        contentBase: __dirname + "/"  // New
+    },
+    output: {
+        path: __dirname + "/dist",
+        filename: "[name].bundle.js"
     }
 };

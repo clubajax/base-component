@@ -125,8 +125,20 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+console.log('LOADING APP @!@ ');
+
 var App = function (_Base) {
     _inherits(App, _Base);
+
+    _createClass(App, [{
+        key: 'id',
+        get: function get() {
+            return 'UID';
+        },
+        set: function set(value) {
+            this._id = value;
+        }
+    }]);
 
     function App() {
         _classCallCheck(this, App);
@@ -134,7 +146,7 @@ var App = function (_Base) {
         // always call super() first in the ctor. This also calls the extended class' ctor.
         var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
 
-        console.log('App.constructor');
+        console.log('App.constructor', _this.id);
         return _this;
     }
 
@@ -197,7 +209,7 @@ var FancyDrawer = function (_AppDrawer) {
         key: 'connectedCallback',
         value: function connectedCallback() {
             _get(FancyDrawer.prototype.__proto__ || Object.getPrototypeOf(FancyDrawer.prototype), 'connectedCallback', this).call(this);
-            console.log('FancyDrawer.connected!', this.id);
+            console.log('HOT FancyDrawer.connected!', this.id);
         }
     }, {
         key: 'toggleDrawer',
@@ -221,6 +233,7 @@ window.lib = {
     App: App,
     Base: _Base3.default
 };
+console.log('APP/LIB LOADED');
 
 /***/ }
 /******/ ]);

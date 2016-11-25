@@ -1,9 +1,20 @@
+console.log('LOADING APP @!@ ');
+
 import Base from './Base';
 
 class App extends Base{
+
+    get id () {
+        return 'UID';
+    }
+
+    set id (value) {
+        this._id = value;
+    }
+
     constructor() {
         super(); // always call super() first in the ctor. This also calls the extended class' ctor.
-        console.log('App.constructor');
+        console.log('App.constructor', this.id);
     }
 }
 
@@ -44,7 +55,7 @@ class FancyDrawer extends AppDrawer {
 
     connectedCallback () {
         super.connectedCallback();
-        console.log('FancyDrawer.connected!', this.id);
+        console.log('HOT FancyDrawer.connected!', this.id);
     }
 
     toggleDrawer () {
@@ -64,3 +75,4 @@ window.lib = {
     App: App,
     Base: Base
 };
+console.log('APP/LIB LOADED');
