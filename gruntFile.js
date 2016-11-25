@@ -2,6 +2,7 @@ var path = require('path');
 
 module.exports = function (grunt) {
 
+    // is this only needed by concurrent?
     require("load-grunt-tasks")(grunt);
 
     grunt.initConfig({
@@ -33,9 +34,11 @@ module.exports = function (grunt) {
         }
     });
 
+    console.time('task');
     grunt.loadNpmTasks('grunt-metl-tools');
     grunt.registerTask('default', ['babel']);
 
+    console.timeEnd('task');
 };
 
 

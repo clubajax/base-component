@@ -4,67 +4,29 @@
     <title>ES6 create</title>
     <script src="../bower_components/dom/src/dom.js"></script>
     <script src="../bower_components/on/dist/on.js"></script>
-    <script src="../bower_components/webcomponents/src/custom-elements.js"></script>
+
+    <script>
+        const supportsCustomElementsV1 = 'customElements' in window;
+        function loadScript(src, callback) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = callback;
+            document.head.appendChild(script);
+        }
+        if (!supportsCustomElementsV1) {
+            loadScript('/bower_components/webcomponents/custom-elements.min.js', function () {
+                // Polyfill loaded.
+                loadScript('../src/app.js');
+            });
+        } else {
+            // Native support. Good to go.
+            loadScript('../src/app.js');
+        }
+    </script>
 </head>
 <body>
     <h1>ES6 demo</h1>
-    <script>
-
-        class AppDrawer extends HTMLElement{
-
-            constructor() {
-                super(); // always call super() first in the ctor. This also calls the extended class' ctor.
-
-                //this.id = 8;
-                //console.log('AppDrawer.super', this.id);
-                //this.id = 'app';
-            }
-
-            connectedCallback () {
-                console.log('AppDrawer.connected!', this.id);
-                console.log('AppDrawer.anotherMethod', AppDrawer.anotherMethod());
-            }
-
-            toggleDrawer () {
-                // Possibly different toggle implementation?
-                // Use ES2015 if you need to call the parent method.
-                // super.toggleDrawer()
-            }
-
-            static anotherMethod () {
-                return 'static';
-            }
-        }
-
-        class FancyDrawer extends AppDrawer {
-            constructor() {
-                // In a derived class, you must call super() before you can use this:
-                super();
-                // throws:
-                    //this.id = 'fancy';
-                console.log('FancyDrawer.super');
-            }
-
-            connectedCallback () {
-                super.connectedCallback();
-                console.log('FancyDrawer.connected!', this.id);
-            }
-
-            toggleDrawer () {
-                // Possibly different toggle implementation?
-                // Use ES2015 if you need to call the parent method.
-                // super.toggleDrawer()
-            }
-
-            anotherMethod() {
-
-            }
-        }
-        customElements.define('app-drawer', AppDrawer);
-        customElements.define('fancy-app-drawer', FancyDrawer);
-
-    </script>
-    <!--<app-drawer></app-drawer>-->
+    <script></script>
     <fancy-app-drawer></fancy-app-drawer>
 </body>
 </html>
