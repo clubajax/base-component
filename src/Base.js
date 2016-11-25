@@ -1,7 +1,7 @@
 export default class Base {
     constructor() {
         // In a derived class, you must call super() before you can use this:
-        super();
+        //super();
         // throws:
         //this.id = 'fancy';
         console.log('Base.constructor');

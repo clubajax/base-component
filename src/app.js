@@ -59,3 +59,8 @@ class FancyDrawer extends AppDrawer {
 }
 customElements.define('app-drawer', AppDrawer);
 customElements.define('fancy-app-drawer', FancyDrawer);
+
+window.lib = {
+    App: App,
+    Base: Base
+};
