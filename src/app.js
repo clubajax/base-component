@@ -1,9 +1,9 @@
 console.log('LOADING APP >!< ');
 
-import BaseElement from './BaseComponent';
+import BaseComponent from './BaseComponent';
 import test from './test';
 
-class AppThinger extends BaseElement {
+class AppThinger extends BaseComponent {
 
     get id () {
         return 'UID';
@@ -18,7 +18,7 @@ class AppThinger extends BaseElement {
     }
 }
 
-class AppDrawer extends BaseElement {
+class AppDrawer extends BaseComponent {
 
     constructor(...args) {
         super();
@@ -69,5 +69,6 @@ customElements.define('app-drawer', AppDrawer);
 customElements.define('fancy-app-drawer', FancyDrawer);
 customElements.define('app-thinger', AppThinger);
 
+console.log('customElements.defined');
 //new AppThinger();
 //new FancyDrawer();
