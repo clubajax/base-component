@@ -1,8 +1,8 @@
 console.log('LOADING APP >!< ');
 
 import BaseElement from './BaseElement';
+import test from './test';
 
-// cannot call NEW on a Component!
 //class BaseElement extends HTMLElement {
 //    constructor() {
 //        super();
@@ -17,7 +17,7 @@ import BaseElement from './BaseElement';
 //    }
 //}
 
-class App extends BaseElement {
+class AppThinger extends BaseElement {
 
     get id () {
         return 'UID';
@@ -39,15 +39,11 @@ class App extends BaseElement {
 class AppDrawer extends BaseElement {
 
     constructor(...args) {
-        //debugger
-        super(); // always call super() first in the ctor. This also calls the extended class' ctor.
-        console.log(' AppDrawer -> arguments:', args);
-        //this.id = 8;
-        //console.log('AppDrawer.super', this.id);
-        //this.id = 'app';
+        super();
+        console.log('AppDrawer.super', this.id);
     }
 
-    connectedCallback () {
+    connected () {
         console.log('AppDrawer.connected!', this.id);
         console.log('AppDrawer.anotherMethod', AppDrawer.anotherMethod());
     }
@@ -89,10 +85,6 @@ class FancyDrawer extends AppDrawer {
 }
 customElements.define('app-drawer', AppDrawer);
 customElements.define('fancy-app-drawer', FancyDrawer);
+customElements.define('app-thinger', AppThinger);
 
-window.lib = {
-    App: App,
-    BaseElement: BaseElement,
-    AppDrawer: AppDrawer
-};
 console.log('APP/LIB BAR');
