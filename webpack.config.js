@@ -11,22 +11,14 @@ console.log('isServer:', isServer);
 
 module.exports = {
     context: __dirname + "/",
-    //entry: {
-    //    pageA: "./pageA",
-    //    pageB: "./pageB"
-    //},
-    //output: {
-    //    path: path.join(__dirname, "js"),
-    //    filename: "[name].bundle.js",
-    //    chunkFilename: "[id].chunk.js"
-    //},
 
     entry: {
-        app: "./src/app.js",
+        app: './src/app.js',
         lifecycle: './tests/assets/lifecycle.js'
     },
     output: {
-        path: __dirname + '/dist',
+        //path: __dirname + '/dist',
+        publicPath: '/dist',
         filename: '[name].bundle.js'
     },
 

@@ -3,6 +3,8 @@
 <head>
     <title>Test BaseComponent</title>
     <link rel="stylesheet" href="../bower_components/mocha/mocha.css">
+    <script src="../bower_components/mocha/mocha.js"></script>
+    <script src="../bower_components/chai/chai.js"></script>
     <script src="../bower_components/on/dist/on.js"></script>
     <script src="../bower_components/dom/src/dom.js"></script>
 
@@ -47,15 +49,16 @@
                 dom = window.dom,
                 on = window.on,
                 expect = chai.expect,
-                widgets = dom.byId('widgets');
+                body = document.body;
 
             function xsuite () {}
             function xtest () {}
 
-            xsuite('create', function () {
+            suite('create', function () {
 
                 test('it should create a component', function () {
-
+                    var node = dom('app-thinger', {}, body);
+                    expect(dom.isNode(node)).to.equal(true);
                 });
 
 
