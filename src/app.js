@@ -1,8 +1,23 @@
-console.log('LOADING APP @!@ ');
+console.log('LOADING APP >!< ');
 
-import Base from './Base';
+import BaseElement from './BaseElement';
 
-class App extends Base{
+// cannot call NEW on a Component!
+//class BaseElement extends HTMLElement {
+//    constructor() {
+//        super();
+//        this._uid = dom.uid(this.localName);
+//        privates[this._uid] = { DOMSTATE: 'created' };
+//        console.log('this._uid', this._uid);
+//        console.log('Base.constructor');
+//    }
+//
+//    connectedCallback () {
+//        console.log('Base.connected!', this.id);
+//    }
+//}
+
+class App extends BaseElement {
 
     get id () {
         return 'UID';
@@ -12,17 +27,21 @@ class App extends Base{
         this._id = value;
     }
 
-    constructor() {
+    constructor(...args) {
         super(); // always call super() first in the ctor. This also calls the extended class' ctor.
-        console.log('App.constructor', this.id);
+        //console.log(' --------- UID!', this._uid);
+        //console.log('App.constructor', this.id);
+        console.log('arguments:', args);
+
     }
 }
 
-class AppDrawer extends HTMLElement{
+class AppDrawer extends BaseElement {
 
-    constructor() {
+    constructor(...args) {
+        //debugger
         super(); // always call super() first in the ctor. This also calls the extended class' ctor.
-
+        console.log(' AppDrawer -> arguments:', args);
         //this.id = 8;
         //console.log('AppDrawer.super', this.id);
         //this.id = 'app';
@@ -73,6 +92,7 @@ customElements.define('fancy-app-drawer', FancyDrawer);
 
 window.lib = {
     App: App,
-    Base: Base
+    BaseElement: BaseElement,
+    AppDrawer: AppDrawer
 };
-console.log('APP/LIB LOADED');
+console.log('APP/LIB BAR');

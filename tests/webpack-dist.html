@@ -3,28 +3,33 @@
 <head>
     <title>ES5/6 dist test</title>
 
+    <script src="../bower_components/dom/src/dom.js"></script>
+    <script src="../bower_components/on/dist/on.js"></script>
     <script src="../bower_components/webcomponents/src/native-shim.js"></script>
     <script>
-        function onPageLoad () {
-            var a = new window.lib.App();
-        }
-
-        const supportsCustomElementsV1 = 'customElements' in window;
-        console.log('supportsCustomElementsV1:', supportsCustomElementsV1);
         function loadScript(src, callback) {
             const script = document.createElement('script');
             script.src = src;
             script.onload = callback;
             document.head.appendChild(script);
         }
+
+        function onPageLoad () {
+            //var a = new window.lib.App();
+        }
+
+        function onShimReady () {
+            loadScript('../dist/app.bundle.js', onPageLoad);
+        }
+
+        const supportsCustomElementsV1 = 'customElements' in window;
+        console.log('supportsCustomElementsV1:', supportsCustomElementsV1);
+
         if (!supportsCustomElementsV1) {
-            loadScript('/bower_components/webcomponents/custom-elements.min.js', function () {
-                // Polyfill loaded.
-                loadScript('../dist/app.js', onPageLoad);
-            });
+            loadScript('/bower_components/webcomponents/custom-elements.min.js', onShimReady);
         } else {
             // Native support. Good to go.
-            loadScript('../dist/app.bundle.js', onPageLoad);
+            onShimReady();
         }
     </script>
     <script src="//localhost:35731/livereload.js"></script>

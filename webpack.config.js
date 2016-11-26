@@ -4,6 +4,11 @@
 
 const webpack = require("webpack");
 
+let cmd = process.argv[1],
+    isServer = /webpack-dev-server/.test(cmd);
+
+console.log('isServer:', isServer);
+
 module.exports = {
     context: __dirname + "/src",
     entry: {
@@ -25,8 +30,11 @@ module.exports = {
     devServer: {
         contentBase: __dirname + "/"  // New
     },
+    devtool: 'inline-source-map', // eval does not work
     output: {
-        path: __dirname + "/dist",
-        filename: "[name].bundle.js"
+        path: __dirname + '/dist',
+        filename: '[name].bundle.js',
+        publicPath: isServer ? '/dist' : '/dist'
+        //sourceMapFilename: 'app.bundle.js.map'
     }
 };
