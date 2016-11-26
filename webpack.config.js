@@ -10,10 +10,26 @@ let cmd = process.argv[1],
 console.log('isServer:', isServer);
 
 module.exports = {
-    context: __dirname + "/src",
+    context: __dirname + "/",
+    //entry: {
+    //    pageA: "./pageA",
+    //    pageB: "./pageB"
+    //},
+    //output: {
+    //    path: path.join(__dirname, "js"),
+    //    filename: "[name].bundle.js",
+    //    chunkFilename: "[id].chunk.js"
+    //},
+
     entry: {
-        app: "./app.js"
+        app: "./src/app.js",
+        lifecycle: './tests/assets/lifecycle.js'
     },
+    output: {
+        path: __dirname + '/dist',
+        filename: '[name].bundle.js'
+    },
+
     module: {
         rules: [
             {
@@ -30,11 +46,6 @@ module.exports = {
     devServer: {
         contentBase: __dirname + "/"  // New
     },
-    devtool: 'inline-source-map', // eval does not work
-    output: {
-        path: __dirname + '/dist',
-        filename: '[name].bundle.js',
-        publicPath: isServer ? '/dist' : '/dist'
-        //sourceMapFilename: 'app.bundle.js.map'
-    }
+    devtool: 'inline-source-map' // eval does not work
+
 };

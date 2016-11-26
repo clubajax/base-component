@@ -1,4 +1,4 @@
-import BaseElement from './BaseElement';
+import BaseElement from './BaseComponent';
 
 BaseElement.addPlugin({
     init: function (node, a, b, c) {

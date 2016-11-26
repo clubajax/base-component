@@ -2,6 +2,9 @@
 // always call super() first in the ctor. This also calls the extended class' ctor.
 // cannot call NEW on a Component class
 //
+
+let on = require('../bower_components/on/dist/on');
+
 export default class BaseElement extends HTMLElement {
     constructor() {
         super();
@@ -90,7 +93,7 @@ export default class BaseElement extends HTMLElement {
     get DOMSTATE (){
         return privates[this._uid].DOMSTATE;
     }
-    
+
     static addPlugin (plug) {
         console.log(' * addPlugin', plug);
         var i, order = plug.order || 100;

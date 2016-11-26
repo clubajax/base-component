@@ -1,21 +1,7 @@
 console.log('LOADING APP >!< ');
 
-import BaseElement from './BaseElement';
+import BaseElement from './BaseComponent';
 import test from './test';
-
-//class BaseElement extends HTMLElement {
-//    constructor() {
-//        super();
-//        this._uid = dom.uid(this.localName);
-//        privates[this._uid] = { DOMSTATE: 'created' };
-//        console.log('this._uid', this._uid);
-//        console.log('Base.constructor');
-//    }
-//
-//    connectedCallback () {
-//        console.log('Base.connected!', this.id);
-//    }
-//}
 
 class AppThinger extends BaseElement {
 
@@ -28,11 +14,7 @@ class AppThinger extends BaseElement {
     }
 
     constructor(...args) {
-        super(); // always call super() first in the ctor. This also calls the extended class' ctor.
-        //console.log(' --------- UID!', this._uid);
-        //console.log('App.constructor', this.id);
-        console.log('arguments:', args);
-
+        super();
     }
 }
 
@@ -87,4 +69,5 @@ customElements.define('app-drawer', AppDrawer);
 customElements.define('fancy-app-drawer', FancyDrawer);
 customElements.define('app-thinger', AppThinger);
 
-console.log('APP/LIB BAR');
+//new AppThinger();
+//new FancyDrawer();
