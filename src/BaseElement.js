@@ -32,6 +32,34 @@ export default class BaseElement extends HTMLElement {
         plugin('postConnected', this);
     }
 
+    disconnectedCallback () {
+        privates[this._uid].DOMSTATE = 'disconnected';
+        plugin('preDisconnected', this);
+        if(this.disconnected){
+            this.disconnected();
+        }
+        this.fire('disconnected');
+    }
+
+    attributeChangedCallback (attrName, oldVal, newVal) {
+        plugin('preAttributeChanged', this, attrName, newVal, oldVal);
+        if(this.attributeChanged){
+            this.attributeChanged(attrName, newVal, oldVal);
+        }
+    }
+
+    destroy () {
+        if (this._destroy) {
+            this._destroy();
+        }
+        this.fire('destroy');
+        privates[this._uid + '-handle-list'].forEach(function (handle) {
+            handle.remove();
+        });
+        console.log('destr:', this.localName);
+        dom.destroy(this);
+    }
+
     fire (eventName, eventDetail, bubbles) {
         return on.fire(this, eventName, eventDetail, bubbles);
     }
@@ -54,27 +82,15 @@ export default class BaseElement extends HTMLElement {
                 on.once(this, node, eventName, selector, callback));
     }
 
-    get DOMSTATE (){
-        return privates[this._uid].DOMSTATE;
-    }
-
     registerHandle (handle) {
         privates[this._uid + '-handle-list'].push(handle);
         return handle;
     }
 
-    destroy () {
-        if (this._destroy) {
-            this._destroy();
-        }
-        this.fire('destroy');
-        privates[this._uid + '-handle-list'].forEach(function (handle) {
-            handle.remove();
-        });
-        console.log('destr:', this.localName);
-        dom.destroy(this);
+    get DOMSTATE (){
+        return privates[this._uid].DOMSTATE;
     }
-
+    
     static addPlugin (plug) {
         console.log(' * addPlugin', plug);
         var i, order = plug.order || 100;
