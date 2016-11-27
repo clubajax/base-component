@@ -1,0 +1,286 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Test BaseComponent</title>
+    <link rel="stylesheet" href="../bower_components/mocha/mocha.css">
+    <script src="../bower_components/mocha/mocha.js"></script>
+    <script src="../bower_components/chai/chai.js"></script>
+    <script src="../bower_components/on/dist/on.js"></script>
+    <script src="../bower_components/dom/src/dom.js"></script>
+
+    <script src="../src/loader.js" files="../dist/lifecycle.bundle"></script>
+
+    <style>
+        body{
+            padding: 20px;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test BaseComponent</h1>
+    <div id="mocha"></div>
+
+    <script>
+
+        // for collecting inheritance properties
+        var props = {
+            created:[],
+            attached:[],
+            base: [],
+            domReady: [],
+            restore: function () {
+                this.created.length = 0;
+                this.attached.length = 0;
+                this.base.length = 0;
+                this.domReady.length = 0;
+            }
+        };
+    </script>
+
+    <script>
+        document.addEventListener('onComponentsReady', function () {
+            mocha.setup('tdd');
+
+            suite('BaseComponent', function () {
+                this.timeout(3000);
+                var suite = window.suite,
+                    test = window.test,
+                    dom = window.dom,
+                    on = window.on,
+                    expect = chai.expect,
+                    body = document.body;
+
+                function xsuite() {
+                }
+
+                function xtest() {
+                }
+
+                xsuite('create / destroy', function () {
+
+                    test('it should create a component', function () {
+                        var node = dom('test-lifecycle', {css:'foo'}, body);
+                        expect(dom.isNode(node)).to.equal(true);
+                        expect(typeof node.on).to.equal('function');
+                        expect(node.DOMSTATE).to.equal('connected');
+                    });
+
+                    test('it should be destroyable', function () {
+                        // uses node created in test above
+                        var node = dom.query('test-lifecycle');
+                        expect(dom.isNode(node)).to.equal(true);
+                        node.destroy();
+                        node = null;
+                        node = dom.query('test-lifecycle');
+                        expect(dom.isNode(node)).to.equal(false);
+                    });
+
+                    test('it should destroy event listeners', function () {
+                        var
+                            called = 0,
+                            node = dom('test-lifecycle', {css:'foo'}, body);
+                        node.on(document, 'test', function () {
+                            called++;
+                        });
+                        on.emit(document, 'test');
+                        node.destroy();
+                        on.emit(document, 'test');
+                        expect(called).to.equal(1);
+                    });
+
+                    // TODO: test inheritance
+                });
+
+                xsuite('attributes', function () {
+                    test('it should reflect properties to attributes', function (done) {
+
+                    });
+                });
+
+                suite('lifecycle methods', function () {
+                    test('it should call component\'s `connected` method', function () {
+                        var
+                            called = false,
+                            h = on(document, 'connected-called', function () {
+                            called = true;
+                        });
+                        dom('test-lifecycle', {}, body);
+                        expect(called).to.equal(true);
+                        h.remove();
+                    });
+                    test('it should call component\'s `disconnected` method', function () {
+                        var
+                            node,
+                            called = 0,
+                            h1 = on(document, 'connected-called', function () {
+                                called++;
+                            }),
+                            h2 = on(document, 'disconnected-called', function () {
+                                called++;
+                            });
+                        node = dom('test-lifecycle', {}, body);
+                        body.removeChild(node);
+                        body.appendChild(node);
+                        expect(called).to.equal(3);
+                        h1.remove();
+                        h2.remove();
+                    });
+                    test('it should call component\'s `domReady` method', function (done) {
+                        var
+                            node,
+                            called = false,
+                            h = on(document, 'domready-called', function () {
+                                called = true;
+                            });
+                        node = dom('test-lifecycle', {}, body);
+                        node.on('domready', function () {
+                            expect(called).to.equal(true);
+                            h.remove();
+                            done();
+                        });
+                    });
+                    test('it should call component\'s `domReady` method when children are ready', function (done) {
+                        var
+                            node,
+                            called = 0,
+                            h = on(document, 'domready-called', function () {
+                                called++;
+                            });
+                        node = dom('test-lifecycle', {}, body);
+                        dom('test-lifecycle', {}, node);
+                        dom('test-lifecycle', {}, node);
+                        dom('test-lifecycle', {}, node);
+                        node.on('domready', function () {
+                            expect(called).to.equal(4);
+                            h.remove();
+                            done();
+                        });
+                    });
+                    test('it should call component\'s `domReady` method when descendants are ready', function (done) {
+                        var
+                            node,
+                            called = 0,
+                            h = on(document, 'domready-called', function () {
+                                called++;
+                            });
+
+                        node = dom('test-lifecycle', {}, document.body);
+                        dom('test-lifecycle', {
+                            html: dom('test-lifecycle', {
+                                html: dom('test-lifecycle', {
+                                    html: dom('test-lifecycle', {})
+                                })
+                            })
+                        }, node);
+                        node.on('domready', function () {
+                            expect(called).to.equal(5);
+                            h.remove();
+                            done();
+                        });
+                    });
+
+                    // TODO test destroy
+                });
+
+                xsuite('templates', function () {
+                    test('it should create a component with a templateId', function () {
+                        var node = dom('test-widget2', {html: '<div>test-widget2</div>'}, widgets);
+                        expect(node).to.not.equal(null);
+                        expect(node.innerHTML.indexOf('has template') > -1).to.equal(true);
+                        expect(dom.isNode(node.testNode)).to.equal(true);
+                        node.destroy();
+                    });
+                    test('it should create a component with a templateString', function () {
+                        var node = dom('test-widget6', {}, widgets);
+                        expect(node).to.not.equal(null);
+                        expect(node.innerHTML.indexOf('has string template') > -1).to.equal(true);
+                        expect(dom.isNode(node.tNode)).to.equal(true);
+                        node.destroy();
+                    });
+                });
+
+                xsuite('inheritance', function () {
+                    test('it should inherit', function () {
+                        var node = dom('b-widget', {}, document.body);
+                        expect(props.created.join(',')).to.equal('b,a');
+                        expect(props.attached.join(',')).to.equal('b,a');
+                        expect(props.base.join(',')).to.equal('b');
+                        node.destroy();
+                        props.restore();
+                    });
+                    xtest('it should inherit 3 deep', function () {
+                        var node = dom('c-widget', {}, document.body);
+                        expect(props.created.join(',')).to.equal('c,b,a');
+                        expect(props.attached.join(',')).to.equal('c,b,a');
+                        expect(props.base.join(',')).to.equal('c,c');
+                        props.restore();
+                        node.destroy();
+                    });
+                    xtest('it should call lifecycle methods on subclassed if not on extended', function () {
+                        var node = dom('d-widget', {}, document.body);
+                        node.base();
+                        expect(props.created.join(',')).to.equal('a');
+                        expect(props.attached.join(',')).to.equal('a');
+                        expect(props.base.join(',')).to.equal('d');
+                        props.restore();
+                        node.destroy();
+                    });
+                    test('it should be able to use the base class template', function () {
+                        var node = dom('f-widget', {}, document.body);
+                        expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
+                        node.destroy();
+                        props.restore();
+                    });
+                    xtest('it should handle a prototype chain with sparse methods', function () {
+                        var node = dom('missing-d', {}, document.body);
+                        node.base();
+                        expect(props.attached.join(',')).to.equal('c,a');
+                        expect(props.base.join(',')).to.equal('c,a');
+                        node.destroy();
+                        props.restore();
+                    });
+                    xtest('it should be able to use a deep base class template', function () {
+                        var node = dom('g-widget', {}, document.body);
+                        expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
+                        node.destroy();
+                        props.restore();
+                    });
+
+                    xtest('it should inherit the domReady method', function (done) {
+                        var node = dom('c-widget', {}, document.body);
+                        create.onDomReady(node, function () {
+                            expect(props.domReady.join(',')).to.equal('c,b,a');
+                            props.restore();
+                            node.destroy();
+                            done();
+                        });
+
+                    });
+                });
+
+                xsuite('nested templates', function () {
+                    test('it should nest templates', function () {
+                        var
+                            str,
+                            parent = dom.byId('widgets2');
+                        parent.innerHTML = '';
+                        parent.innerHTML = '<nested-b>light text</nested-b>';
+                        str = parent.textContent;
+                        str = str.replace(/\n/g, '').replace(/\t+/g, '').replace(/\s+/g, ' ').trim();
+                        expect(str).to.equal('before nested a before nested b light text after nested b after nested a');
+                        parent.innerHTML = '';
+                    });
+                });
+
+                xsuite('temp', function () {
+
+                });
+            });
+
+            mocha.run();
+        });
+
+    </script>
+</body>
+</html>

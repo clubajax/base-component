@@ -1,6 +1,6 @@
-import BaseElement from '../../src/BaseComponent';
+import BaseComponent from '../../src/BaseComponent';
 
-class AppThinger extends BaseElement {
+class TestLifecycle extends BaseComponent {
 
     get id () {
         return 'UID';
@@ -13,4 +13,21 @@ class AppThinger extends BaseElement {
     constructor(...args) {
         super();
     }
+
+    connected () {
+        on.fire(document, 'connected-called');
+    }
+
+    domReady () {
+        on.fire(document, 'domready-called');
+    }
+
+    disconnected () {
+        on.fire(document, 'disconnected-called');
+    }
+
 }
+
+customElements.define('test-lifecycle', TestLifecycle);
+
+console.log('Lifecycle Loaded');

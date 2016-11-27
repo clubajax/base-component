@@ -330,6 +330,10 @@ A. Super-Rules:
  * Do not call `super()` if not extending a class
  * When extending a class and using a constructor, `super()` must be called.
  * `super()` must be called first - or at least before using the `this` keyword.
+ 
+Q. Why are my component methods undefined?
+
+A. Did you remember to do: `customElements.define('my-component', MyComponent)`?
 
 ## webpack FAQ
 
@@ -338,6 +342,9 @@ Q. The HMS detects changes, but I do not see them in the document.
 A. Webpack uses a virtual directory (`output.publicPath`) to serve files. You are probably pointing to the wrong source 
 code in your HTML.
 
+Q. There is an error saying my files are not there - but they are!
+
+A. This can happen if webpack is running while you switch branches.
 
 ## License
 

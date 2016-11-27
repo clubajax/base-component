@@ -11,21 +11,17 @@ export default class BaseElement extends HTMLElement {
         this._uid = dom.uid(this.localName);
         privates[this._uid] = {DOMSTATE: 'created'};
         let hList = privates[this._uid + '-handle-list'] = [];
-        
-        console.log('this._uid', this._uid);
-        console.log('Base.constructor');
 
         plugin('init', this);
 
     }
     
     connectedCallback () {
-        console.log('Base.connectedCallback!', this._uid);
 
         privates[this._uid].DOMSTATE = 'connected';
         plugin('preConnected', this);
 
-        //nextTick(onCheckDomReady.bind(this));
+        nextTick(onCheckDomReady.bind(this));
 
         if(this.connected){
             this.connected();
@@ -59,7 +55,6 @@ export default class BaseElement extends HTMLElement {
         privates[this._uid + '-handle-list'].forEach(function (handle) {
             handle.remove();
         });
-        console.log('destr:', this.localName);
         dom.destroy(this);
     }
 
@@ -95,7 +90,7 @@ export default class BaseElement extends HTMLElement {
     }
 
     static addPlugin (plug) {
-        console.log(' * addPlugin', plug);
+        //console.log(' * addPlugin', plug);
         var i, order = plug.order || 100;
         if(!plugins.length) {
             plugins.push(plug);
@@ -136,6 +131,72 @@ function plugin (method, node, a, b, c) {
         }
     });
 }
+
+function onCheckDomReady () {
+    if (this.DOMSTATE != 'connected') return;
+
+    var
+        count = 0,
+        children = getChildCustomNodes(this),
+        ourDomReady = onDomReady.bind(this);
+
+    function addReady () {
+        count++;
+        if (count == children.length) {
+            ourDomReady();
+        }
+    }
+
+    // If no children, we're good - leaf node. Commence with onDomReady
+    //
+    if (!children.length) {
+        ourDomReady();
+    } else {
+        // else, wait for all children to fire their `ready` events
+        //
+        children.forEach(function (child) {
+            // check if child is already ready
+            if (child.DOMSTATE == 'domready') {
+                addReady();
+            }
+            // if not, wait for event
+            child.on('domready', addReady);
+        });
+    }
+}
+
+function onDomReady() {
+    privates[this._uid].DOMSTATE = 'domready';
+    plugin('preDomReady', this);
+    // call this.domReady first, so that the component
+    // can finish initializing before firing any
+    // subsequent events
+    if (this.domReady) {
+        this.domReady();
+        // domReady should only ever fire once
+        this.domReady = function () {};
+
+    }
+
+    this.fire('domready');
+
+    plugin('postDomReady', this);
+}
+
+function getChildCustomNodes (node) {
+    // collect any children that are custom nodes
+    // used to check if their dom is ready before
+    // determining if this is ready
+    var i, nodes = [];
+    for(i = 0; i < node.children.length; i++){
+        if(node.children[i].nodeName.indexOf('-') > -1){
+            nodes.push(node.children[i]);
+        }
+    }
+    return nodes;
+}
+
+
 
 function nextTick(cb) {
     requestAnimationFrame(cb);
