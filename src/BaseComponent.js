@@ -48,9 +48,6 @@ export default class BaseElement extends HTMLElement {
     }
 
     destroy () {
-        if (this._destroy) {
-            this._destroy();
-        }
         this.fire('destroy');
         privates[this._uid + '-handle-list'].forEach(function (handle) {
             handle.remove();

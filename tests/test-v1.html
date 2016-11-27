@@ -92,7 +92,7 @@
                     // TODO: test inheritance
                 });
 
-                suite('plugins', function () {
+                xsuite('plugins', function () {
                     test('it should connect to a plugin\'s events', function (done) {
                         var
                             called = 0,
@@ -118,10 +118,8 @@
                     });
                 });
 
-                xsuite('attributes', function () {
-                    test('it should reflect properties to attributes', function (done) {
+                suite('attributes', function () {
 
-                    });
                 });
 
                 xsuite('lifecycle methods', function () {
@@ -212,7 +210,65 @@
                         });
                     });
 
-                    // TODO test destroy
+                    test('it should fire `connected` multiple time but `domready` once', function (done) {
+                        var
+                            called = 0,
+                            onCalled = function () { called++; },
+                            h = on.makeMultiHandle([
+                                on(document, 'init-called', onCalled),
+                                on(document, 'connected-called', onCalled),
+                                on(document, 'domready-called', onCalled),
+                                on(document, 'disconnected-called', onCalled)
+                            ]),
+                            node = dom('test-lifecycle', {}, body);
+
+                        setTimeout(function () {
+                            body.removeChild(node);
+                            body.appendChild(node);
+                            setTimeout(function () {
+                                body.removeChild(node);
+                                body.appendChild(node);
+                                setTimeout(function () {
+                                    expect(called).to.equal(7);
+                                    node.destroy();
+                                    h.remove();
+                                    done();
+                                }, 10);
+                            }, 10);
+                        }, 10);
+                    });
+
+                    test('it should fire `connected` in creation order, and `domready` in instantiation order', function (done) {
+                        var
+                            node,
+                            connected = [],
+                            domready = [],
+                            h = on.makeMultiHandle([
+                                on(document, 'connected-called', function (e) {
+                                    connected.push(e.detail.className);
+                                }),
+                                on(document, 'domready-called', function (e) {
+                                    domready.push(e.detail.className);
+                                })
+                            ]);
+
+                        node = dom('test-lifecycle', {css:'1'}, document.body); // 1
+                        dom('test-lifecycle', { css:'2',
+                            html: dom('test-lifecycle', { css:'3',
+                                html: dom('test-lifecycle', { css:'4',
+                                    html: dom('test-lifecycle', {css:'5'})
+                                })
+                            })
+                        }, node);
+
+                        node.on('domready', function () {
+                            h.remove();
+                            node.destroy();
+                            expect(connected.join(',')).to.equal('1,2,3,4,5');
+                            expect(domready.join(',')).to.equal('5,4,3,2,1');
+                            done();
+                        });
+                    });
                 });
 
                 xsuite('templates', function () {

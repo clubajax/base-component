@@ -7,15 +7,15 @@ class TestLifecycle extends BaseComponent {
     }
 
     connected () {
-        on.fire(document, 'connected-called');
+        on.fire(document, 'connected-called', this);
     }
 
     domReady () {
-        on.fire(document, 'domready-called');
+        on.fire(document, 'domready-called', this);
     }
 
     disconnected () {
-        on.fire(document, 'disconnected-called');
+        on.fire(document, 'disconnected-called', this);
     }
 
 }
