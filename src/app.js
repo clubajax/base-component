@@ -1,5 +1,5 @@
 import BaseComponent from './BaseComponent';
-import test from './test';
+
 
 class AppThinger extends BaseComponent {
 

@@ -92,21 +92,49 @@
                     // TODO: test inheritance
                 });
 
+                suite('plugins', function () {
+                    test('it should connect to a plugin\'s events', function (done) {
+                        var
+                            called = 0,
+                            onCalled = function () { called++; },
+                            h = on.makeMultiHandle([
+                                on(document, 'init-called', onCalled),
+                                on(document, 'preConnected-called', onCalled),
+                                on(document, 'postConnected-called', onCalled),
+                                on(document, 'preDomReady-called', onCalled),
+                                on(document, 'postDomReady-called', onCalled)
+                            ]),
+                            node = dom('test-lifecycle', {}, body);
+
+                        node.on('domready', function () {
+                            // timeout is due to postDomReady
+                            setTimeout(function () {
+                                expect(called).to.equal(5);
+                                node.destroy();
+                                h.remove();
+                                done();
+                            }, 1);
+                        });
+                    });
+                });
+
                 xsuite('attributes', function () {
                     test('it should reflect properties to attributes', function (done) {
 
                     });
                 });
 
-                suite('lifecycle methods', function () {
+                xsuite('lifecycle methods', function () {
                     test('it should call component\'s `connected` method', function () {
                         var
+                            node,
                             called = false,
                             h = on(document, 'connected-called', function () {
-                            called = true;
-                        });
-                        dom('test-lifecycle', {}, body);
+                                called = true;
+                            });
+                        node = dom('test-lifecycle', {}, body);
                         expect(called).to.equal(true);
+                        node.destroy();
                         h.remove();
                     });
                     test('it should call component\'s `disconnected` method', function () {
@@ -123,6 +151,7 @@
                         body.removeChild(node);
                         body.appendChild(node);
                         expect(called).to.equal(3);
+                        node.destroy();
                         h1.remove();
                         h2.remove();
                     });
@@ -137,6 +166,7 @@
                         node.on('domready', function () {
                             expect(called).to.equal(true);
                             h.remove();
+                            node.destroy();
                             done();
                         });
                     });
@@ -154,6 +184,7 @@
                         node.on('domready', function () {
                             expect(called).to.equal(4);
                             h.remove();
+                            node.destroy();
                             done();
                         });
                     });
@@ -176,6 +207,7 @@
                         node.on('domready', function () {
                             expect(called).to.equal(5);
                             h.remove();
+                            node.destroy();
                             done();
                         });
                     });
