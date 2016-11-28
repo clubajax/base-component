@@ -1,4 +1,5 @@
 import BaseComponent from '../../src/BaseComponent';
+import template from '../../src/template';
 
 class TestLifecycle extends BaseComponent {
 
@@ -58,4 +59,30 @@ BaseComponent.addPlugin({
     }
 });
 
+
+class TestTemplated extends BaseComponent {
+
+    get templateString () {
+        return `<div>This is a simple template</div>`;
+    }
+
+    constructor(...args) {
+        super();
+    }
+
+    connected () {
+        on.fire(document, 'connected-called', this);
+    }
+
+    domReady () {
+        on.fire(document, 'domready-called', this);
+    }
+
+    disconnected () {
+        on.fire(document, 'disconnected-called', this);
+    }
+
+}
+
+customElements.define('test-tmpl', TestTemplated);
 console.log('Lifecycle Loaded');

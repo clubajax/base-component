@@ -2,6 +2,7 @@
 // always call super() first in the ctor. This also calls the extended class' ctor.
 // cannot call NEW on a Component class
 //
+// Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
 
 let on = require('../bower_components/on/dist/on');
 
@@ -19,6 +20,7 @@ export default class BaseComponent extends HTMLElement {
     connectedCallback () {
 
         privates[this._uid].DOMSTATE = 'connected';
+        console.log('PRECONNECT');
         plugin('preConnected', this);
 
         nextTick(onCheckDomReady.bind(this));
@@ -85,6 +87,21 @@ export default class BaseComponent extends HTMLElement {
 
     get DOMSTATE (){
         return privates[this._uid].DOMSTATE;
+    }
+
+    static clone (template){
+        if (template.content && template.content.children) {
+            return document.importNode(template.content, true);
+        }
+        var
+            frag = document.createDocumentFragment(),
+            cloneNode = document.createElement('div');
+        cloneNode.innerHTML = template.innerHTML;
+
+        while (cloneNode.children.length) {
+            frag.appendChild(cloneNode.children[0]);
+        }
+        return frag;
     }
 
     static addPlugin (plug) {
@@ -199,6 +216,3 @@ function nextTick(cb) {
 }
 
 function noop() {}
-
-console.log('SET DEFINE');
-plugin('define', BaseComponent);

@@ -271,15 +271,21 @@
                     });
                 });
 
-                xsuite('templates', function () {
-                    test('it should create a component with a templateId', function () {
-                        var node = dom('test-widget2', {html: '<div>test-widget2</div>'}, widgets);
+                suite('templates', function () {
+                    test('it should create a component with a templateString', function () {
+                        var node = dom('test-tmpl', {}, body);
+                        expect(dom.isNode(node)).to.equal(true);
+                        expect(node.innerHTML.indexOf('simple template') > -1).to.equal(true);
+                        //node.destroy();
+                    });
+                    xtest('it should create a component with a templateId', function () {
+                        var node = dom('test-tmpl', {html: '<div>test-widget2</div>'}, widgets);
                         expect(node).to.not.equal(null);
                         expect(node.innerHTML.indexOf('has template') > -1).to.equal(true);
                         expect(dom.isNode(node.testNode)).to.equal(true);
                         node.destroy();
                     });
-                    test('it should create a component with a templateString', function () {
+                    xtest('it should create a component with a templateString', function () {
                         var node = dom('test-widget6', {}, widgets);
                         expect(node).to.not.equal(null);
                         expect(node.innerHTML.indexOf('has string template') > -1).to.equal(true);
