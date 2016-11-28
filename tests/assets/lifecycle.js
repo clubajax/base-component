@@ -2,6 +2,24 @@ import BaseComponent from '../../src/BaseComponent';
 
 class TestLifecycle extends BaseComponent {
 
+    static get observedAttributes() {return ['foo', 'bar']; }
+
+    set foo (value) {
+        this.__foo = value;
+    }
+
+    get foo () {
+        return this.__foo;
+    }
+
+    set bar (value) {
+        this.__bar = value;
+    }
+
+    get bar () {
+        return this.__bar || 'NOTSET';
+    }
+
     constructor(...args) {
         super();
     }

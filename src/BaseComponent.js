@@ -5,7 +5,7 @@
 
 let on = require('../bower_components/on/dist/on');
 
-export default class BaseElement extends HTMLElement {
+export default class BaseComponent extends HTMLElement {
     constructor() {
         super();
         this._uid = dom.uid(this.localName);
@@ -41,6 +41,7 @@ export default class BaseElement extends HTMLElement {
     }
 
     attributeChangedCallback (attrName, oldVal, newVal) {
+        console.log(' *** attributeChangedCallback', attrName);
         plugin('preAttributeChanged', this, attrName, newVal, oldVal);
         if(this.attributeChanged){
             this.attributeChanged(attrName, newVal, oldVal);
@@ -122,7 +123,6 @@ let
 
 function plugin (method, node, a, b, c) {
     plugins.forEach(function (plug) {
-        //console.log(' * method?', method, plug[method]);
         if(plug[method]){
             plug[method](node, a, b, c);
         }
@@ -172,7 +172,6 @@ function onDomReady() {
         this.domReady();
         // domReady should only ever fire once
         this.domReady = function () {};
-
     }
 
     this.fire('domready');
@@ -200,3 +199,6 @@ function nextTick(cb) {
 }
 
 function noop() {}
+
+console.log('SET DEFINE');
+plugin('define', BaseComponent);
