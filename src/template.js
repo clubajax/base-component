@@ -25,10 +25,9 @@ function hasTemplate (node) {
 }
 
 function insertTemplateChain (node) {
-    //collectLightNodes(node);
     var templates = node.getTemplateChain();
-    templates.forEach(function (template) {
-        getContainer(node).appendChild(create.clone(template));
+    templates.reverse().forEach(function (template) {
+        getContainer(node).appendChild(BaseComponent.clone(template));
     });
     insertChildren(node);
 }
@@ -49,10 +48,6 @@ function insertTemplate (node) {
 
 function getContainer (node) {
     var containers = node.querySelectorAll('[ref="container"]');
-    if(containers.length) {
-        //debugger
-        console.log('', containers);
-    }
     if(!containers || !containers.length){
         return node;
     }
@@ -76,24 +71,38 @@ BaseComponent.prototype.getLightNodes = function () {
 };
 
 BaseComponent.prototype.getTemplateNode = function () {
-    if(!this.templateNode) {
+    // caching causes different classes to pull the same template - wat?
+    //if(!this.templateNode) {
         if (this.templateId) {
-            this.templateNode = dom.byId(this.templateId);
+            this.templateNode = dom.byId(this.templateId.replace('#',''));
         }
         else if (this.templateString) {
             this.templateNode = dom.toDom('<template>' + this.templateString + '</template>');
         }
-    }
+    //}
     return this.templateNode;
 };
 
 BaseComponent.prototype.getTemplateChain = function () {
-    var
-        templates = this.super.getTemplateChain() || [],
-        template = this.getTemplateNode();
 
-    if(template){
-        templates.push(template);
+    let
+        context = this,
+        templates = [],
+        template;
+
+    // walk the prototype chain; Babel doesn't allow using
+    // `super` since we are outside of the Class
+    while(context){
+        context = Object.getPrototypeOf(context);
+        if(!context){ break; }
+        // skip prototypes without a template
+        // (else it will pull an inherited template and cause duplicates)
+        if(context.hasOwnProperty('templateString') || context.hasOwnProperty('templateId')) {
+            template = context.getTemplateNode();
+            if (template) {
+                templates.push(template);
+            }
+        }
     }
     return templates;
 };
@@ -101,83 +110,8 @@ BaseComponent.prototype.getTemplateChain = function () {
 BaseComponent.addPlugin({
     name: 'template',
     order: 10,
-    define: function (def, options) {
-
-
-        // FIXME: options getting mixed between instances!!!!!
-
-        // TODO mechanism for adding methods that is not confusing
-        // diff between def and options:
-        //      options will get mixed into every node in the hierarchy
-        //      def will only work in the top level node (lower hierarchy methods will get skipped)
-        // options DO get registered in mc/inheritableMethods
-        // def functions do NOT get registered in mc/inheritableMethods
-
-        //console.log('def', options);
-        var
-            template,
-            importDoc = window.globalImportDoc || (document._currentScript || document.currentScript).ownerDocument;
-
-        def.importDoc = {
-            get: function() { return importDoc; }
-        };
-
-        def.getLightNodes = function () {
-            return lightNodes[this._uid];
-        };
-
-        if(options.templateString){
-            def.templateNode = dom.toDom('<template>' + options.templateString + '</template>');
-        }
-        else if (options.templateId) {
-            // get the template
-            template = importDoc.getElementById(options.templateId);
-            def.templateNode = template;
-        }
-
-        // accesses templateNode from above block
-        // will return the top-most template in the chain
-        def.getTemplateNode =  function () {
-            return this.templateNode;
-        };
-
-        // FIXME: redundant with above, but in a totally different scope
-        // Used in getTemplateChain block below.
-        // Uses functional scope with options
-        function getTemplateNode () {
-            if(options.templateNode) {
-                return options.templateNode;
-            }
-            else if(options.templateString){
-                options.templateNode = dom.toDom('<template>' + options.templateString + '</template>');
-                return options.templateNode;
-            }
-            else if (options.templateId) {
-                // get the template
-                template = importDoc.getElementById(options.templateId);
-                options.templateNode = template;
-                return options.templateNode;
-            }
-        }
-
-        options.getTemplateChain =  function () {
-            var
-                templates = this.super('getTemplateChain') || [],
-                template = getTemplateNode();
-
-            if(template){
-                console.log('template', template.id);
-                //if(!template.id){debugger}
-                templates.push(template);
-            }
-            return templates;
-        }
-    },
-
     preConnected: function (node) {
-        console.log('preConnect');
         insert(node);
-
     }
 });
 

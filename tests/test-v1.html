@@ -15,10 +15,26 @@
             padding: 20px;
             font-family: sans-serif;
         }
+        section{
+            border: 1px solid #ccc;
+            padding: 3px;
+            margin: 5px;
+        }
+        section section{
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
     <h1>Test BaseComponent</h1>
+
+    <template id="test-tmpl-id-template">
+        <div>This is a template byId</div>
+    </template>
+
+
     <div id="mocha"></div>
 
     <script>
@@ -271,25 +287,89 @@
                     });
                 });
 
-                suite('templates', function () {
+                xsuite('templates', function () {
                     test('it should create a component with a templateString', function () {
-                        var node = dom('test-tmpl', {}, body);
+                        var node = dom('test-tmpl-string', {}, body);
                         expect(dom.isNode(node)).to.equal(true);
                         expect(node.innerHTML.indexOf('simple template') > -1).to.equal(true);
-                        //node.destroy();
-                    });
-                    xtest('it should create a component with a templateId', function () {
-                        var node = dom('test-tmpl', {html: '<div>test-widget2</div>'}, widgets);
-                        expect(node).to.not.equal(null);
-                        expect(node.innerHTML.indexOf('has template') > -1).to.equal(true);
-                        expect(dom.isNode(node.testNode)).to.equal(true);
                         node.destroy();
                     });
-                    xtest('it should create a component with a templateString', function () {
-                        var node = dom('test-widget6', {}, widgets);
+
+                    test('it should create a component with a templateId', function () {
+                        var node = dom('test-tmpl-id', {}, body);
                         expect(node).to.not.equal(null);
-                        expect(node.innerHTML.indexOf('has string template') > -1).to.equal(true);
-                        expect(dom.isNode(node.tNode)).to.equal(true);
+                        expect(node.innerHTML.indexOf('template byId') > -1).to.equal(true);
+                        expect(dom.isNode(node)).to.equal(true);
+                        node.destroy();
+                    });
+                });
+
+                xsuite('template refs', function () {
+                    test('it should reference nodes with the `ref` attribute', function () {
+                        var node = dom('test-tmpl-refs', {}, body);
+                        expect(dom.isNode(node.labelNode)).to.equal(true);
+                        expect(dom.isNode(node.valueNode)).to.equal(true);
+                        node.destroy();
+                    });
+
+                    test('it should attach events using the `ref` attribute', function () {
+                        var
+                            called = false,
+                            node = dom('test-tmpl-refs', {}, body),
+                            h = on(document, 'ref-click-called', function () {
+                                called = true;
+                            });
+
+                        on.emit(node.clickNode, 'click');
+
+                        expect(called).to.equal(true);
+                        h.remove();
+                        node.destroy();
+                    });
+
+                    test('it should insert light nodes into the container', function () {
+                        var
+                            content = 'I should be in the container',
+                            node = dom('test-tmpl-container', {html:content}, body);
+                        expect(dom.isNode(node.container)).to.equal(true);
+                        expect(node.container.innerHTML).to.equal(content);
+                        node.destroy();
+                    });
+                });
+
+                suite('nested templates', function () {
+                    test('it should nest templates', function () {
+                        var
+                            node = dom('test-tmpl-nested-b', {}, body),
+                            content = dom.queryAll(node, 'div').map(function (n) {
+                                return n.innerHTML;
+                            }).join(',');
+
+                        expect(dom.isNode(node)).to.equal(true);
+                        expect(content).to.equal('content A before,content B,content A after');
+                        node.destroy();
+                    });
+
+                    test('it should deeply nest sparse templates', function () {
+                        var
+                            node = dom('test-e', {}, body),
+                            content = dom.queryAll(node, 'div').map(function (n) {
+                                return n.innerHTML;
+                            }).join(',');
+                        expect(dom.isNode(node)).to.equal(true);
+                        expect(content).to.equal('content B before,content D,content B after');
+                        node.destroy();
+                    });
+
+                    test('it should nest templates and insert light dom', function () {
+                        var
+                            node = dom('test-tmpl-nested-c', {html:'Light DOM'}, body),
+                            content = dom.queryAll(node, 'div').map(function (n) {
+                                return n.innerHTML;
+                            }).join(',');
+                        console.log('content', content);
+                        expect(dom.isNode(node)).to.equal(true);
+                        expect(content).to.equal('content A before,content C before,Light DOM,content C after,content A after');
                         node.destroy();
                     });
                 });
@@ -353,19 +433,7 @@
                     });
                 });
 
-                xsuite('nested templates', function () {
-                    test('it should nest templates', function () {
-                        var
-                            str,
-                            parent = dom.byId('widgets2');
-                        parent.innerHTML = '';
-                        parent.innerHTML = '<nested-b>light text</nested-b>';
-                        str = parent.textContent;
-                        str = str.replace(/\n/g, '').replace(/\t+/g, '').replace(/\s+/g, ' ').trim();
-                        expect(str).to.equal('before nested a before nested b light text after nested b after nested a');
-                        parent.innerHTML = '';
-                    });
-                });
+
 
                 xsuite('temp', function () {
 

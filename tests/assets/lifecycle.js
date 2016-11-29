@@ -1,5 +1,6 @@
 import BaseComponent from '../../src/BaseComponent';
 import template from '../../src/template';
+import refs from '../../src/refs';
 
 class TestLifecycle extends BaseComponent {
 
@@ -60,29 +61,122 @@ BaseComponent.addPlugin({
 });
 
 
-class TestTemplated extends BaseComponent {
-
+class TestTmplString extends BaseComponent {
     get templateString () {
         return `<div>This is a simple template</div>`;
     }
+}
+customElements.define('test-tmpl-string', TestTmplString);
 
-    constructor(...args) {
+class TestTmplId extends BaseComponent {
+    get templateId () {
+        return 'test-tmpl-id-template';
+    }
+}
+customElements.define('test-tmpl-id', TestTmplId);
+
+
+class TestTmplRefs extends BaseComponent {
+    get templateString () {
+        return `<div on="click:onClick" ref="clickNode">
+            <label ref="labelNode">label:</label>
+            <span ref="valueNode">value</span>
+        </div>`;
+    }
+
+    onClick () {
+        on.fire(document, 'ref-click-called');
+    }
+}
+customElements.define('test-tmpl-refs', TestTmplRefs);
+
+class TestTmplContainer extends BaseComponent {
+    get templateString () {
+        return `<div>
+            <label ref="labelNode">label:</label>
+            <span ref="valueNode">value</span>
+            <div ref="container"></div>
+        </div>`;
+    }
+}
+customElements.define('test-tmpl-container', TestTmplContainer);
+
+
+// simple nested templates
+class TestTmplNestedA extends BaseComponent {
+    constructor () {
+        super();
+        this.nestedTemplate = true;
+    }
+
+    get templateString () {
+        return `<section>
+            <div>content A before</div>
+            <section ref="container"></section>
+            <div>content A after</div>
+        </section>`;
+    }
+}
+customElements.define('test-tmpl-nested-a', TestTmplNestedA);
+
+class TestTmplNestedB extends TestTmplNestedA {
+    constructor () {
         super();
     }
-
-    connected () {
-        on.fire(document, 'connected-called', this);
+    get templateString () {
+        return `<div>content B</div>`;
     }
-
-    domReady () {
-        on.fire(document, 'domready-called', this);
-    }
-
-    disconnected () {
-        on.fire(document, 'disconnected-called', this);
-    }
-
 }
+customElements.define('test-tmpl-nested-b', TestTmplNestedB);
 
-customElements.define('test-tmpl', TestTemplated);
-console.log('Lifecycle Loaded');
+
+// nested plus light dom
+class TestTmplNestedC extends TestTmplNestedA {
+    constructor () {
+        super();
+    }
+    get templateString () {
+        return `<section>
+            <div>content C before</div>
+            <div ref="container"></div>
+            <div>content C after</div>
+        </section>`;
+    }
+}
+customElements.define('test-tmpl-nested-c', TestTmplNestedC);
+
+
+// 5-deep nested templates
+class TestA extends BaseComponent {}
+class TestB extends TestA {
+    constructor () {
+        super();
+    }
+    get templateString () {
+        return `<section>
+            <div>content B before</div>
+            <section ref="container"></section>
+            <div>content B after</div>
+        </section>`;
+    }
+}
+class TestC extends TestB {}
+class TestD extends TestC {
+    constructor () {
+        super();
+    }
+    get templateString () {
+        return `<div>content D</div>`;
+    }
+}
+class TestE extends TestD {
+    constructor () {
+        super();
+        this.nestedTemplate = true;
+    }
+}
+customElements.define('test-a', TestA);
+customElements.define('test-b', TestB);
+customElements.define('test-c', TestC);
+customElements.define('test-d', TestD);
+customElements.define('test-e', TestE);

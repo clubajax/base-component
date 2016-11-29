@@ -4,7 +4,8 @@
   "description": "Utility for easily creating and managing web components",
   "main": "dist/keys.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --hot"
   },
   "repository": {
     "type": "git",
