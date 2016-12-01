@@ -1,4 +1,5 @@
 import BaseComponent from './BaseComponent';
+const dom = require('../bower_components/dom/src/dom');
 
 var
     lightNodes = {},

@@ -3,41 +3,13 @@
 'use strict';
 
 const webpack = require("webpack");
+var argv = require('minimist')(process.argv.slice(2));
 
-let cmd = process.argv[1],
-    isServer = /webpack-dev-server/.test(cmd);
-
-console.log('isServer:', isServer);
-
-module.exports = {
-    context: __dirname + "/",
-
-    entry: {
-        app: './src/app.js',
-        lifecycle: './tests/assets/lifecycle.js'
-    },
-    output: {
-        //path: __dirname + '/dist',
-        publicPath: '/dist',
-        filename: '[name].bundle.js'
-    },
-
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                use: [{
-                    loader: "babel-loader",
-                    options: { presets: ["es2015"] }
-                }]
-            }
-
-            // Loaders for other file types can go here
-        ]
-    },
-    devServer: {
-        contentBase: __dirname + "/"  // New
-    },
-    devtool: 'inline-source-map' // eval does not work
-
-};
+if(argv.d){
+    //deploy
+    module.exports = require('./deploy.webpack.config');
+}
+else{
+    // serve
+    module.exports = require('./dev.webpack.config');
+}

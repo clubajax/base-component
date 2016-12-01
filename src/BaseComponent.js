@@ -4,7 +4,8 @@
 //
 // Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
 
-let root, on = require('../bower_components/on/dist/on');
+const on = require('on');
+const dom = require('dom');
 
 export default class BaseComponent extends HTMLElement {
     constructor() {
