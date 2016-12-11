@@ -31,5 +31,6 @@ module.exports = {
         contentBase: __dirname + "/"  // New
     },
     devtool: 'inline-source-map' // eval does not work
-
 };
+
+console.log('webpack dev server');

@@ -20,6 +20,8 @@ module.exports = {
         libraryTarget: 'umd',
         // name of the global var:
         library: 'BaseComponent',
+
+        sourceMapFilename: 'base-component.js.map'
         //umdNamedDefine: true //'BaseComponent',
         //libraryTarget: 'umd',
 
@@ -57,11 +59,15 @@ module.exports = {
         ]
     },
     plugins:[
-        //new webpack.optimize.OccurrenceOrderPlugin()
+        new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.UglifyJsPlugin({
-            //compress:{ warnings: true }
-             compress: false
+            compress:{ warnings: true }
+            // compress: false
         })
     ],
-    devtool: 'inline-source-map' // eval does not work
+    // http://survivejs.com/webpack/developing-with-webpack/enabling-sourcemaps/#-sourcemapdevtoolplugin-
+    devtool: 'source-map'
+    //devtool: 'inline-source-map'
+    //devtool: 'eval'
 };
+console.log('running webpack deploy');
