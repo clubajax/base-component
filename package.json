@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --hot",
-    "deploy": "webpack -d --display-error-details"
+    "deploy": "$NODE_DEBUG_OPTION webpack -d --display-error-details --verbose"
   },
   "repository": {
     "type": "git",

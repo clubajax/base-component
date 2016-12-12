@@ -1,9 +1,17 @@
 // https://blog.madewithenvy.com/getting-started-with-webpack-2-ed2b86c68783#.62vgdvbki
-
+// https://github.com/sapientglobalmarkets/react-redux-seed/tree/master/config
 'use strict';
 const webpack = require("webpack");
 
 module.exports = {
+
+    // http://survivejs.com/webpack/developing-with-webpack/enabling-sourcemaps/#-sourcemapdevtoolplugin-
+    //devtool: 'none',
+    devtool: 'source-map',
+    //devtool: 'source-map-hidden-eval-cheap',
+    //devtool: 'inline-source-map',
+    //devtool: 'eval',
+
     context: __dirname + "/",
 
     entry: {
@@ -21,9 +29,10 @@ module.exports = {
         // name of the global var:
         library: 'BaseComponent',
 
-        sourceMapFilename: 'base-component.js.map'
+        sourceMapFilename: 'base-component.js.map',
         //umdNamedDefine: true //'BaseComponent',
         //libraryTarget: 'umd',
+        devtoolLineToLine: true
 
     },
     externals: {
@@ -54,8 +63,11 @@ module.exports = {
                 test: /.json$/,
                 use: 'json-loader'
             }
-
             // Loaders for other file types can go here
+        ],
+
+        preLoaders: [
+            {test: /\.js$/, loader: 'source-map'}
         ]
     },
     plugins:[
@@ -64,10 +76,6 @@ module.exports = {
             compress:{ warnings: true }
             // compress: false
         })
-    ],
-    // http://survivejs.com/webpack/developing-with-webpack/enabling-sourcemaps/#-sourcemapdevtoolplugin-
-    devtool: 'source-map'
-    //devtool: 'inline-source-map'
-    //devtool: 'eval'
+    ]
 };
 console.log('running webpack deploy');
