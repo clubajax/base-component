@@ -7,7 +7,7 @@
 const on = require('on');
 const dom = require('dom');
 
-export default class BaseComponent extends HTMLElement {
+class BaseComponent extends HTMLElement {
     constructor() {
         super();
         this._uid = dom.uid(this.localName);
@@ -31,6 +31,7 @@ export default class BaseComponent extends HTMLElement {
         this.fire('connected');
 
         plugin('postConnected', this);
+        console.log('connected!');
     }
 
     disconnectedCallback() {
@@ -216,3 +217,5 @@ function getChildCustomNodes(node) {
 function nextTick(cb) {
     requestAnimationFrame(cb);
 }
+
+export default BaseComponent;
