@@ -4,9 +4,9 @@
   "description": "Utility for easily creating and managing web components",
   "main": "dist/keys.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --hot",
-    "deploy": "$NODE_DEBUG_OPTION webpack -d --display-error-details --verbose"
+    "test": "webpack-dev-server --hot",
+    "deploy": "node ./scripts/deploy",
+    "globalize": "node ./scripts/globalES6"
   },
   "repository": {
     "type": "git",

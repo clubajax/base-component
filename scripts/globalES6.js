@@ -2,8 +2,8 @@
 
 const
     fs = require('fs'),
-    input = '../src/',
-    output = '../global/',
+    input = './src/',
+    output = './global/',
     ignores = 'create.js,loader.js';
 
 function fromRequire (line) {
@@ -64,8 +64,6 @@ function convert (fileName) {
             lines.push(line);
         }
     });
-    console.log('imports', imports);
-    console.log('exports', exports);
 
     lines.unshift(firstLine(imports));
     lines.push(lastLines(exports, imports));
@@ -75,11 +73,7 @@ function convert (fileName) {
 
 fs.readdirSync(input).forEach(function (fileName) {
     if(ignores.indexOf(fileName) === -1) {
-        console.log('fileName', fileName);
+        console.log('convert', fileName);
         convert(fileName);
     }
 });
-
-//(function (on, dom) {
-//
-//}(window.on, window.dom));

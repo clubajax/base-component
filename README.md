@@ -16,7 +16,30 @@ absolute path.
 
 create-element has dependencies on [clubajax/on](https://github.com/clubajax/on) and [clubajax/dom](https://github.com/clubajax/dom)
 
+## To run the code
+
+To run the tests in `tests/test-v1.html`, start the webpack build and webpack-dev-server:
+
+    npm test
+    
+To run the webpack build for distribution to be accessed by `tests/test-dist.html`:
+
+    npm run deploy
+    
+A "globalized" version can be built and accessed with `tests/globalES6.html`. This converts the ES6 `import` and `export` into window globals, but otherwise leaves
+the remaining code as ES6. This way the code can be run in Chrome natively, and in Firefox and Edge with the webcomponents
+shim. `import` and `export` and not yet a specification standard and are not yet supported in any browers (although it is
+closest in Edge).
+
+    npm run globalize
+
 ## Support
+
+### ES5
+
+        // https://www.webreflection.co.uk/blog/2016/08/21/custom-elements-v1
+        // https://lists.w3.org/Archives/Public/public-webapps-github/2016Mar/1932.html
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct
 
 create-element works out of the box with Chrome.
 

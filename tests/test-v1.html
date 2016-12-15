@@ -73,7 +73,7 @@
                 function xtest() {
                 }
 
-                xsuite('create / destroy', function () {
+                suite('create / destroy', function () {
 
                     test('it should create a component', function () {
                         var node = dom('test-lifecycle', {css:'foo'}, body);
@@ -108,7 +108,7 @@
                     // TODO: test inheritance
                 });
 
-                xsuite('plugins', function () {
+                suite('plugins', function () {
                     test('it should connect to a plugin\'s events', function (done) {
                         var
                             called = 0,
@@ -134,11 +134,7 @@
                     });
                 });
 
-                suite('attributes', function () {
-
-                });
-
-                xsuite('lifecycle methods', function () {
+                suite('lifecycle methods', function () {
                     test('it should call component\'s `connected` method', function () {
                         var
                             node,
@@ -287,7 +283,7 @@
                     });
                 });
 
-                xsuite('templates', function () {
+                suite('templates', function () {
                     test('it should create a component with a templateString', function () {
                         var node = dom('test-tmpl-string', {}, body);
                         expect(dom.isNode(node)).to.equal(true);
@@ -304,7 +300,7 @@
                     });
                 });
 
-                xsuite('template refs', function () {
+                suite('template refs', function () {
                     test('it should reference nodes with the `ref` attribute', function () {
                         var node = dom('test-tmpl-refs', {}, body);
                         expect(dom.isNode(node.labelNode)).to.equal(true);
@@ -373,67 +369,6 @@
                         node.destroy();
                     });
                 });
-
-                xsuite('inheritance', function () {
-                    test('it should inherit', function () {
-                        var node = dom('b-widget', {}, document.body);
-                        expect(props.created.join(',')).to.equal('b,a');
-                        expect(props.attached.join(',')).to.equal('b,a');
-                        expect(props.base.join(',')).to.equal('b');
-                        node.destroy();
-                        props.restore();
-                    });
-                    xtest('it should inherit 3 deep', function () {
-                        var node = dom('c-widget', {}, document.body);
-                        expect(props.created.join(',')).to.equal('c,b,a');
-                        expect(props.attached.join(',')).to.equal('c,b,a');
-                        expect(props.base.join(',')).to.equal('c,c');
-                        props.restore();
-                        node.destroy();
-                    });
-                    xtest('it should call lifecycle methods on subclassed if not on extended', function () {
-                        var node = dom('d-widget', {}, document.body);
-                        node.base();
-                        expect(props.created.join(',')).to.equal('a');
-                        expect(props.attached.join(',')).to.equal('a');
-                        expect(props.base.join(',')).to.equal('d');
-                        props.restore();
-                        node.destroy();
-                    });
-                    test('it should be able to use the base class template', function () {
-                        var node = dom('f-widget', {}, document.body);
-                        expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
-                        node.destroy();
-                        props.restore();
-                    });
-                    xtest('it should handle a prototype chain with sparse methods', function () {
-                        var node = dom('missing-d', {}, document.body);
-                        node.base();
-                        expect(props.attached.join(',')).to.equal('c,a');
-                        expect(props.base.join(',')).to.equal('c,a');
-                        node.destroy();
-                        props.restore();
-                    });
-                    xtest('it should be able to use a deep base class template', function () {
-                        var node = dom('g-widget', {}, document.body);
-                        expect(node.innerHTML.indexOf('this is extended') > -1).to.equal(true);
-                        node.destroy();
-                        props.restore();
-                    });
-
-                    xtest('it should inherit the domReady method', function (done) {
-                        var node = dom('c-widget', {}, document.body);
-                        create.onDomReady(node, function () {
-                            expect(props.domReady.join(',')).to.equal('c,b,a');
-                            props.restore();
-                            node.destroy();
-                            done();
-                        });
-
-                    });
-                });
-
-
 
                 xsuite('temp', function () {
 

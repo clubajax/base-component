@@ -31,7 +31,6 @@ class BaseComponent extends HTMLElement {
         this.fire('connected');
 
         plugin('postConnected', this);
-        console.log('connected!');
     }
 
     disconnectedCallback() {

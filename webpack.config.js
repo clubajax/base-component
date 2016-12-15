@@ -7,9 +7,9 @@ var argv = require('minimist')(process.argv.slice(2));
 
 if(argv.d){
     //deploy
-    module.exports = require('./deploy.webpack.config');
+    module.exports = require('./scripts/deploy.webpack.config.js');
 }
 else{
     // serve
-    module.exports = require('./dev.webpack.config');
+    module.exports = require('./scripts/dev.webpack.config.js');
 }

@@ -3,7 +3,8 @@
 // http://survivejs.com/webpack/developing-with-webpack/enabling-sourcemaps/#-sourcemapdevtoolplugin-
 
 'use strict';
-const webpack = require("webpack");
+const webpack = require('webpack');
+const root = __dirname + '/../';
 
 module.exports = {
 
@@ -15,7 +16,7 @@ module.exports = {
     // this one allows for external maps:
     devtool: 'cheap-module-source-map',
 
-    context: __dirname + "/",
+    context: root,
 
     entry: {
         //app: './src/app.js',
@@ -23,23 +24,23 @@ module.exports = {
         basecomponent: './src/BaseComponent'
     },
     output: {
-        path: __dirname + '/dist',
+        path: root + '/dist',
         publicPath: '/dist',
-        filename: 'base-component.js',
+        filename: 'BaseComponent.js',
 
         // export itself to a global var
         libraryTarget: 'umd',
         // name of the global var:
         library: 'BaseComponent',
 
-        sourceMapFilename: 'base-component.js.map',
+        sourceMapFilename: 'BaseComponent.js.map',
         //umdNamedDefine: true //'BaseComponent',
         //libraryTarget: 'umd',
         devtoolLineToLine: true
 
     },
     externals: {
-        // require("jquery") is external and available
+        // require("dom") is external and available
         on: {
             commonjs: 'on',
             commonjs2: 'on',
@@ -68,11 +69,7 @@ module.exports = {
             }
             // Loaders for other file types can go here
         ]
-
-        //preLoaders: [
-        //    {test: /\.js$/, loader: 'source-map'}
-        //]
-    },
+    }
     //plugins:[
     //    new webpack.optimize.OccurrenceOrderPlugin(),
     //    new webpack.optimize.UglifyJsPlugin({

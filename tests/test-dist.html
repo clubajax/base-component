@@ -6,17 +6,14 @@
     <script src="../bower_components/dom/src/dom.js"></script>
     <script src="../bower_components/on/dist/on.js"></script>
     <script src="../bower_components/webcomponents/src/native-shim.js"></script>
-    <script src="../src/loader.js" files="../dist/base-component"></script>
+    <script src="../src/loader.js" files="../dist/BaseComponent"></script>
 </head>
 <body>
     <h1>ES5/6 test</h1>
 
     <script>
 
-        // v1 es5
-        // https://www.webreflection.co.uk/blog/2016/08/21/custom-elements-v1
-        // https://lists.w3.org/Archives/Public/public-webapps-github/2016Mar/1932.html
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct
+
         document.addEventListener('onComponentsReady', function () {
             customElements.define('base-component', BaseComponent.default);
             console.log('ready');
@@ -31,18 +28,6 @@
                 console.log('base-component.connected.2!!');
             });
             document.body.appendChild(node2);
-
-            return;
-
-            function MyElement(_) {
-                _ = BaseElement.call(_ || this);
-                _.init();
-                return _;
-            }
-            MyElement.prototype = Object.create(
-                BaseElement.prototype,
-                {constructor: {value: MyElement}}
-            );
         })
     </script>
 </body>

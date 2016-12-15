@@ -1,13 +1,17 @@
 'use strict';
 
+// This file is used for tests
+
+const root = __dirname + '/../';
+
 module.exports = {
-    context: __dirname + "/",
+    context: root,
 
     entry: {
         lifecycle: './tests/assets/lifecycle.js'
     },
     output: {
-        path: __dirname + '/dist',
+        path: root + 'dist',
         publicPath: '/dist',
         filename: 'lifecycle.js'
     },
@@ -28,7 +32,7 @@ module.exports = {
 
     ],
     devServer: {
-        contentBase: __dirname + "/"  // New
+        contentBase: root  // New
     },
     devtool: 'inline-source-map' // eval does not work
 };
