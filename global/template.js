@@ -1,5 +1,4 @@
-import BaseComponent from './BaseComponent';
-const dom = require('dom');
+(function (BaseComponent, dom) {
 
 var
     lightNodes = {},
@@ -72,15 +71,12 @@ BaseComponent.prototype.getLightNodes = function () {
 };
 
 BaseComponent.prototype.getTemplateNode = function () {
-    // caching causes different classes to pull the same template - wat?
-    //if(!this.templateNode) {
         if (this.templateId) {
             this.templateNode = dom.byId(this.templateId.replace('#',''));
         }
         else if (this.templateString) {
             this.templateNode = dom.toDom('<template>' + this.templateString + '</template>');
         }
-    //}
     return this.templateNode;
 };
 
@@ -91,13 +87,9 @@ BaseComponent.prototype.getTemplateChain = function () {
         templates = [],
         template;
 
-    // walk the prototype chain; Babel doesn't allow using
-    // `super` since we are outside of the Class
     while(context){
         context = Object.getPrototypeOf(context);
         if(!context){ break; }
-        // skip prototypes without a template
-        // (else it will pull an inherited template and cause duplicates)
         if(context.hasOwnProperty('templateString') || context.hasOwnProperty('templateId')) {
             template = context.getTemplateNode();
             if (template) {
@@ -116,4 +108,4 @@ BaseComponent.addPlugin({
     }
 });
 
-export default {};
+}(window.BaseComponent, window.dom));
