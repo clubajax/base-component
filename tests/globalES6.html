@@ -1,49 +1,44 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <title>ES5/6 dist test</title>
+    <title>ES56 Global Test</title>
 
     <script src="../bower_components/dom/src/dom.js"></script>
     <script src="../bower_components/on/dist/on.js"></script>
-    <script src="../bower_components/webcomponents/src/native-shim.js"></script>
-    <script src="../src/loader.js" files="../dist/base-component"></script>
+    <!--<script src="../src/loader.js" files="../dist/base-component"></script>-->
+    <script src="../global/BaseComponent.js"></script>
+    <script src="../global/template.js"></script>
+    <script src="../global/refs.js"></script>
+
+    <style>
+        base-component, extended-component{
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <h1>ES5/6 test</h1>
+    <h1>ES56 Global Test</h1>
 
     <script>
+        "use strict";
 
-        // v1 es5
-        // https://www.webreflection.co.uk/blog/2016/08/21/custom-elements-v1
-        // https://lists.w3.org/Archives/Public/public-webapps-github/2016Mar/1932.html
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct
-        document.addEventListener('onComponentsReady', function () {
-            customElements.define('base-component', BaseComponent.default);
-            console.log('ready');
-            var node = dom('base-component', {html:'i am base'}, document.body);
-            window.node = node;
-            node.on('connected', function () {
-                console.log('base-component.connected');
-            });
+        customElements.define('base-component', BaseComponent);
+        let node = dom('base-component', {html:'i am base'}, document.body);
+        node.on('connected', function () {
+            console.log('base-component.connected');
+        });
 
-            var node2 = new BaseComponent.default();
-            node2.on('connected', function () {
-                console.log('base-component.connected.2!!');
-            });
-            document.body.appendChild(node2);
-
-            return;
-
-            function MyElement(_) {
-                _ = BaseElement.call(_ || this);
-                _.init();
-                return _;
+        class ExtendedComponent extends BaseComponent {
+            constructor () {
+                super();
             }
-            MyElement.prototype = Object.create(
-                BaseElement.prototype,
-                {constructor: {value: MyElement}}
-            );
-        })
+        }
+        customElements.define('extended-component', ExtendedComponent);
+        let node2 = dom('extended-component', {html:'this is the extended node'}, document.body);
+        node2.on('connected', function () {
+            console.log('extended-component.connected');
+        });
+
     </script>
 </body>
 </html>
