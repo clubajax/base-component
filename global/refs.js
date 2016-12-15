@@ -1,4 +1,4 @@
-import BaseComponent from './BaseComponent';
+(function (BaseComponent) {
 
 function assignRefs (node) {
     dom.queryAll(node, '[ref]').forEach(function (child) {
@@ -8,7 +8,6 @@ function assignRefs (node) {
 }
 
 function assignEvents (node) {
-    // <div on="click:onClick">
     dom.queryAll(node, '[on]').forEach(function (child) {
         var
             keyValue = child.getAttribute('on'),
@@ -29,4 +28,4 @@ BaseComponent.addPlugin({
     }
 });
 
-export default {};
+}(window.BaseComponent));

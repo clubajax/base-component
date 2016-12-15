@@ -317,6 +317,35 @@ If a lifecycle method does not exist on the extended component, it will be calle
 create-element purposely does not use the Shadow DOM. There are only a few use cases for Shadow DOM, and due to the 
 difficulty in styling, the cons outweigh the pros. This also keeps the library simple.
 
+## ES6 FAQ
+
+Q. Uncaught TypeError: Failed to construct 'HTMLElement': Please use the 'new' operator, this DOM object constructor cannot be called as a function.
+
+A. The webcomponents native-shim.js is missing.
+
+Q. What are the `constructor super()` rules?
+
+A. Super-Rules:
+ 
+ * Do not call `super()` if not extending a class
+ * When extending a class and using a constructor, `super()` must be called.
+ * `super()` must be called first - or at least before using the `this` keyword.
+ 
+Q. Why are my component methods undefined?
+
+A. Did you remember to do: `customElements.define('my-component', MyComponent)`?
+
+## webpack FAQ
+
+Q. The HMS detects changes, but I do not see them in the document.
+
+A. Webpack uses a virtual directory (`output.publicPath`) to serve files. You are probably pointing to the wrong source 
+code in your HTML.
+
+Q. There is an error saying my files are not there - but they are!
+
+A. This can happen if webpack is running while you switch branches.
+
 ## License
 
 This uses the [MIT license](./LICENSE). Feel free to use, and redistribute at will.

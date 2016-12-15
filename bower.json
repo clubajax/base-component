@@ -13,7 +13,8 @@
   "homepage": "https://github.com/clubajax/create-element",
   "dependencies": {
     "on": "clubajax/on#v1.5.5",
-    "dom": "clubajax/dom#v1.1.2"
+    "dom": "clubajax/dom#v1.1.2",
+    "webcomponents": "webcomponents/custom-elements#1.0.0-alpha.3"
   },
   "devDependencies": {
     "mocha": "^3.0.2",
