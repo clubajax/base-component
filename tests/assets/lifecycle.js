@@ -1,6 +1,19 @@
 import BaseComponent from '../../src/BaseComponent';
+import properties from '../../src/properties';
 import template from '../../src/template';
 import refs from '../../src/refs';
+
+class TestProps extends BaseComponent {
+
+    static get observedAttributes() { return ['foo', 'bar']; }
+    get props () { return ['foo', 'bar']; }
+
+    attributeChanged (name, value) {
+        this[name + '-changed'] = dom.normalize(value);
+    }
+}
+
+customElements.define('test-props', TestProps);
 
 class TestLifecycle extends BaseComponent {
 

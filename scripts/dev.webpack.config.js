@@ -7,6 +7,10 @@ const root = __dirname + '/../';
 module.exports = {
     context: root,
 
+    performance: {
+        hints: false
+    },
+
     entry: {
         lifecycle: './tests/assets/lifecycle.js'
     },
@@ -34,7 +38,7 @@ module.exports = {
     devServer: {
         contentBase: root  // New
     },
-    devtool: 'inline-source-map' // eval does not work
+    devtool: 'none-source-map' // eval does not work
 };
 
 console.log('webpack dev server');

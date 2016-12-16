@@ -15,23 +15,17 @@ class BaseComponent extends HTMLElement {
         this._uid = dom.uid(this.localName);
         privates[this._uid] = {DOMSTATE: 'created'};
         privates[this._uid].handleList = [];
-
         plugin('init', this);
-
     }
     
     connectedCallback() {
-
         privates[this._uid].DOMSTATE = 'connected';
         plugin('preConnected', this);
-
         nextTick(onCheckDomReady.bind(this));
-
         if (this.connected) {
             this.connected();
         }
         this.fire('connected');
-
         plugin('postConnected', this);
     }
 
@@ -45,7 +39,6 @@ class BaseComponent extends HTMLElement {
     }
 
     attributeChangedCallback(attrName, oldVal, newVal) {
-        console.log(' *** attributeChangedCallback', attrName);
         plugin('preAttributeChanged', this, attrName, newVal, oldVal);
         if (this.attributeChanged) {
             this.attributeChanged(attrName, newVal, oldVal);
@@ -149,7 +142,7 @@ function plugin(method, node, a, b, c) {
 }
 
 function onCheckDomReady() {
-    if (this.DOMSTATE != 'connected') {
+    if (this.DOMSTATE != 'connected' || privates[this._uid].domReadyFired) {
         return;
     }
 
@@ -186,15 +179,15 @@ function onCheckDomReady() {
 
 function onDomReady() {
     privates[this._uid].DOMSTATE = 'domready';
+    // domReady should only ever fire once
+    privates[this._uid].domReadyFired = true;
     plugin('preDomReady', this);
     // call this.domReady first, so that the component
     // can finish initializing before firing any
     // subsequent events
     if (this.domReady) {
         this.domReady();
-        // domReady should only ever fire once
-        this.domReady = function () {
-        };
+        this.domReady = function () {};
     }
 
     this.fire('domready');

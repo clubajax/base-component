@@ -110,7 +110,7 @@ BaseComponent.prototype.getTemplateChain = function () {
 
 BaseComponent.addPlugin({
     name: 'template',
-    order: 10,
+    order: 20,
     preConnected: function (node) {
         insert(node);
     }
