@@ -1,7 +1,7 @@
 {
-  "name": "create-element",
+  "name": "BaseComponent",
   "description": "Utility for easily creating and managing web components",
-  "main": "dist/create.js",
+  "main": "src/BaseComponent.js",
   "authors": [
     "anm9tr@gmail.com"
   ],
@@ -10,7 +10,7 @@
     "JavaScript",
     "UI"
   ],
-  "homepage": "https://github.com/clubajax/create-element",
+  "homepage": "https://github.com/clubajax/BaseComponent",
   "dependencies": {
     "on": "clubajax/on#v1.5.5",
     "dom": "clubajax/dom#v1.1.2",

@@ -16,7 +16,6 @@
 
         document.addEventListener('onComponentsReady', function () {
             customElements.define('base-component', BaseComponent.default);
-            console.log('ready');
             var node = dom('base-component', {html:'i am base'}, document.body);
             window.node = node;
             node.on('connected', function () {

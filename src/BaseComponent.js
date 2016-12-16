@@ -1,7 +1,9 @@
+"use strict";
+
 // class/component rules
 // always call super() first in the ctor. This also calls the extended class' ctor.
 // cannot call NEW on a Component class
-//
+
 // Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
 
 const on = require('on');

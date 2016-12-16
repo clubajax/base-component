@@ -1,8 +1,8 @@
 {
-  "name": "create-element",
+  "name": "BaseComponent",
   "version": "0.0.1",
-  "description": "Utility for easily creating and managing web components",
-  "main": "dist/keys.js",
+  "description": "A base for more powerful web components",
+  "main": "src/BaseComponent",
   "scripts": {
     "test": "webpack-dev-server --hot",
     "deploy": "node ./scripts/deploy",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/clubajax/create-element.git"
+    "url": "git+https://github.com/clubajax/BaseComponent.git"
   },
   "keywords": [
     "JavaScript",
@@ -19,9 +19,9 @@
   "author": "anm9tr@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/clubajax/create-element/issues"
+    "url": "https://github.com/clubajax/BaseComponent/issues"
   },
-  "homepage": "https://github.com/clubajax/create-element#readme",
+  "homepage": "https://github.com/clubajax/BaseComponent#readme",
   "devDependencies": {
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
