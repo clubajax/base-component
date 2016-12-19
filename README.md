@@ -1,20 +1,19 @@
 #BaseComponent
 
-Utility for easily creating web components
+A base for more powerful web components
 
 ## To Install
 
-    bower install clubajax/create-element --save
+    npm install clubajax/BaseComponent --save
     
-You may also use `npm` if you prefer. Or, you can clone the repository with your generic clone commands as a standalone 
-repository or submodule.
+You may also use `bower` if you prefer, although build tools like webpack prefer node_modules. 
+
+Or, you can clone the repository with your generic clone commands as a standalone repository or submodule.
 
 	git clone git://github.com/clubajax/create-element.git
 
-It is recommended that you set the config.path of RequireJS to make `create-element` accessible as an
-absolute path.
 
-create-element has dependencies on [clubajax/on](https://github.com/clubajax/on) and [clubajax/dom](https://github.com/clubajax/dom)
+BaseComponent has dependencies on [clubajax/on](https://github.com/clubajax/on) and [clubajax/dom](https://github.com/clubajax/dom)
 
 ## To run the code
 
