@@ -212,4 +212,18 @@ function nextTick(cb) {
     requestAnimationFrame(cb);
 }
 
+BaseComponent.onDomReady = function (node, callback) {
+    function onReady () {
+        callback(node);
+        // domReady should only fire once, but it doesn't - it might fire multiple times.
+        callback = function () {};
+        node.removeEventListener('domready', onReady);
+    }
+    if(node.DOMSTATE === 'domready'){
+        callback(node);
+    }else{
+        node.addEventListener('domready', onReady);
+    }
+};
+
 export default BaseComponent;

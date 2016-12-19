@@ -2,11 +2,12 @@ import BaseComponent from './BaseComponent';
 const dom = require('dom');
 
 function setProperties (node) {
-    if(!node.props) {
+    let props = node.props || node.properties;
+    if(!props) {
         return;
     }
 
-    node.props.forEach(function (prop) {
+    props.forEach(function (prop) {
         if(prop === 'disabled'){
             Object.defineProperty(node, prop, {
                 enumerable: true,
