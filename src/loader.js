@@ -68,16 +68,4 @@
         onShimReady();
     }
 
-    window.onDomReady = function (node, callback) {
-        function onReady () {
-            callback(node);
-            node.removeEventListener('domready', onReady);
-        }
-        if(node.DOMSTATE === 'domready'){
-            callback(node);
-        }else{
-            node.addEventListener('domready', onReady);
-        }
-    };
-
 }());

@@ -137,7 +137,7 @@ and helper methods like `element.on` were not been added immediately. This could
         // can continue work here
     });
     
-Or the convenience function in `src/loader` can be used:
+Or the convenience function (inserted globally from BaseComponent) can be used:
 
     var element = dom('my-custom', {}, document.body);
     onDomReady(element, function (element) {

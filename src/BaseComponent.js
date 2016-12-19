@@ -212,4 +212,16 @@ function nextTick(cb) {
     requestAnimationFrame(cb);
 }
 
+window.onDomReady = function (node, callback) {
+    function onReady () {
+        callback(node);
+        node.removeEventListener('domready', onReady);
+    }
+    if(node.DOMSTATE === 'domready'){
+        callback(node);
+    }else{
+        node.addEventListener('domready', onReady);
+    }
+};
+
 export default BaseComponent;
