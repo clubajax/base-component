@@ -10,7 +10,7 @@ You may also use `bower` if you prefer, although build tools like webpack prefer
 
 Or, you can clone the repository with your generic clone commands as a standalone repository or submodule.
 
-	git clone git://github.com/clubajax/create-element.git
+	git clone git://github.com/clubajax/BaseComponent.git
 
 
 BaseComponent has dependencies on [clubajax/on](https://github.com/clubajax/on) and [clubajax/dom](https://github.com/clubajax/dom)
@@ -35,6 +35,10 @@ closest in Edge).
 ## Browser and ES Version Support
 
 Custom elements use ES6 classes, so, consequently, that is how this library is written and how your code should be written.
+
+## src/loader
+
+TODO: DOC THIS
 
 ### ES5
 
@@ -133,14 +137,14 @@ and helper methods like `element.on` were not been added immediately. This could
         // can continue work here
     });
     
-Or the convenience function in `BaseComponent` can be used:
+Or the convenience function in `src/loader` can be used:
 
     var element = dom('my-custom', {}, document.body);
-    BaseComponent.onDomReady(element, function (element) {
+    onDomReady(element, function (element) {
         // can continue work here
     });
     
-The benefit of `BaseComponent.onDomReady` over `element.addEventListener` is that if the element is already in the `domready` 
+The benefit of `onDomReady` over `element.addEventListener` is that if the element is already in the `domready` 
 state the callback will still fire. Also, the event listener is cleaned up under the hood, while using 
 `element.addEventListener` leaves that up to you.
    
