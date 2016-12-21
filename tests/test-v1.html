@@ -394,6 +394,23 @@
 
                         expect(node['bar-changed']).to.equal(true);
                     });
+
+                    test('it should sync booleans and attributes', function (done) {
+                        var node = dom('test-props', {attr:{nbc:true, disabled:true}}, body);
+                        onDomReady(node, function () {
+                            console.log('node', node);
+                            expect(node.hasAttribute('nbc')).to.equal(true);
+                            expect(node.nbc).to.equal(true);
+                            expect(node.cbs).to.equal(false);
+
+                            node.setAttribute('nbc', false);
+                            node.setAttribute('cbs', true);
+
+                            expect(node.nbc).to.equal(false);
+                            expect(node.cbs).to.equal(true);
+                            done();
+                        });
+                    });
                 });
 
                 xsuite('temp', function () {

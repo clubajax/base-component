@@ -5,10 +5,13 @@ import refs from '../../src/refs';
 
 class TestProps extends BaseComponent {
 
-    static get observedAttributes() { return ['foo', 'bar']; }
+    static get observedAttributes() { return ['foo', 'bar', 'nbc', 'cbs', 'disabled']; }
     get props () { return ['foo', 'bar']; }
+    get bools () { return ['nbc', 'cbs']; }
 
     attributeChanged (name, value) {
+        //console.log('CHG', name, value);
+        this[name] = dom.normalize(value);
         this[name + '-changed'] = dom.normalize(value);
     }
 }

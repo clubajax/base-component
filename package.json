@@ -5,6 +5,7 @@
   "main": "src/BaseComponent",
   "scripts": {
     "test": "webpack-dev-server --hot",
+    "dev": "webpack-dev-server --hot",
     "deploy": "node ./scripts/deploy",
     "globalize": "node ./scripts/globalES6"
   },
