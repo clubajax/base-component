@@ -12,8 +12,8 @@
   ],
   "homepage": "https://github.com/clubajax/BaseComponent",
   "dependencies": {
-    "on": "clubajax/on#v1.7.5",
-    "dom": "clubajax/dom#v1.3.3",
+    "on": "clubajax/on#master",
+    "dom": "clubajax/dom#master",
     "webcomponents": "webcomponents/custom-elements#1.0.0-alpha.3"
   },
   "devDependencies": {

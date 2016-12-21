@@ -38,7 +38,7 @@
     "webpack-dev-server": "^2.1.0-beta.10"
   },
   "dependencies": {
-    "dom": "clubajax/dom#v1.3.3",
+    "dom": "clubajax/dom#master",
     "on": "clubajax/on#master"
   }
 }
