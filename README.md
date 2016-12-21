@@ -42,7 +42,10 @@ TODO: DOC THIS
 
 ### ES5
 
-It is possible to use custom elements with ES5, although at the moment, BaseComponent does not have examples or docs.
+The built code in */dist* is transpiled into ES5 and will work out of the box. This will allow you to add the UI elements.
+
+However, while it is possible to develop custom elements or extend existing components with ES5, at the moment, 
+BaseComponent does not have examples or docs.
 
         https://www.webreflection.co.uk/blog/2016/08/21/custom-elements-v1
         https://lists.w3.org/Archives/Public/public-webapps-github/2016Mar/1932.html

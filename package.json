@@ -39,6 +39,6 @@
   },
   "dependencies": {
     "dom": "clubajax/dom#v1.3.3",
-    "on": "clubajax/on#v1.7.5"
+    "on": "clubajax/on#master"
   }
 }
