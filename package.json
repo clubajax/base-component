@@ -2,7 +2,7 @@
   "name": "BaseComponent",
   "version": "0.0.1",
   "description": "A base for more powerful web components",
-  "main": "index",
+  "main": "src/BaseComponent",
   "scripts": {
     "test": "webpack-dev-server --hot",
     "dev": "webpack-dev-server --hot",
