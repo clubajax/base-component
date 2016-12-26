@@ -2,6 +2,7 @@ import BaseComponent from '../../src/BaseComponent';
 import properties from '../../src/properties';
 import template from '../../src/template';
 import refs from '../../src/refs';
+import itemTemplate from '../../src/item-template';
 
 class TestProps extends BaseComponent {
 
@@ -196,3 +197,37 @@ customElements.define('test-b', TestB);
 customElements.define('test-c', TestC);
 customElements.define('test-d', TestD);
 customElements.define('test-e', TestE);
+
+
+window.itemTemplateString = `<template>
+    <div id="{{id}}">
+        <span>{{first}}</span>
+        <span>{{last}}</span>
+        <span>{{role}}</span>
+    </div>
+</template>`;
+
+class TestList extends BaseComponent {
+
+    static get observedAttributes() { return ['list-title']; }
+    get props () { return ['list-title']; }
+
+    constructor () {
+        super();
+    }
+
+    get templateString () {
+        return `
+            <div class="title" ref="titleNode"></div>
+            <div ref="container"></div>`;
+    }
+    
+    set data (items) {
+        this.renderList(items, this.container);
+    }
+
+    domReady () {
+        this.titleNode.innerHTML = this['list-title'];
+    }
+}
+customElements.define('test-list', TestList);
