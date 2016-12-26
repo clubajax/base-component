@@ -11,7 +11,7 @@ class TestProps extends BaseComponent {
 
     attributeChanged (name, value) {
         //console.log('CHG', name, value);
-        this[name] = dom.normalize(value);
+        //this[name] = dom.normalize(value);
         this[name + '-changed'] = dom.normalize(value);
     }
 }

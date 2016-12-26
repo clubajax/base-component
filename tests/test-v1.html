@@ -398,7 +398,6 @@
                     test('it should sync booleans and attributes', function (done) {
                         var node = dom('test-props', {attr:{nbc:true, disabled:true}}, body);
                         onDomReady(node, function () {
-                            console.log('node', node);
                             expect(node.hasAttribute('nbc')).to.equal(true);
                             expect(node.nbc).to.equal(true);
                             expect(node.cbs).to.equal(false);
@@ -406,8 +405,15 @@
                             node.setAttribute('nbc', false);
                             node.setAttribute('cbs', true);
 
-                            expect(node.nbc).to.equal(false);
                             expect(node.cbs).to.equal(true);
+                            expect(node.nbc).to.equal(false);
+
+                            node.cbs = false;
+                            node.nbc = true;
+                            expect(node.hasAttribute('cbs')).to.equal(false);
+                            expect(node.hasAttribute('nbc')).to.equal(true);
+
+                            console.log('GETATT', node.getAttribute('cbs'));
                             done();
                         });
                     });

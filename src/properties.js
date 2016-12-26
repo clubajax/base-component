@@ -5,14 +5,14 @@ function setBoolean (node, prop) {
     Object.defineProperty(node, prop, {
         enumerable: true,
         get () {
-            return node.hasAttribute(prop);
+            if(node.hasAttribute(prop)){
+                return dom.normalize(node.getAttribute(prop));
+            }
+            return false;
         },
         set (value) {
-            console.log('set', prop, value);
             if(value){
-                // need to use 'true' and not '', because attributeChanged would
-                // have to do extra work
-                this.setAttribute(prop, 'true');
+                this.setAttribute(prop, '');
             }else{
                 this.removeAttribute(prop);
             }
@@ -61,6 +61,12 @@ BaseComponent.addPlugin({
     init: function (node) {
         setProperties(node);
         setBooleans(node);
+    },
+    preAttributeChanged: function (node, name, value) {
+        this[name] = dom.normalize(value);
+        if(!value && (node.bools || node.booleans || []).indexOf(name)){
+            node.removeAttribute(name);
+        }
     }
 });
 
