@@ -5,6 +5,8 @@
 'use strict';
 const webpack = require('webpack');
 const root = __dirname + '/../';
+//const src = { basecomponent: './src/BaseComponent' };
+const src = { lifecycle: './tests/assets/lifecycle.js' };
 
 module.exports = {
 
@@ -18,25 +20,21 @@ module.exports = {
 
     context: root,
 
-    entry: {
-        //app: './src/app.js',
-        //lifecycle: './tests/assets/lifecycle.js'
-        basecomponent: './src/BaseComponent'
-    },
+    entry: src,
     output: {
         path: root + '/dist',
         publicPath: '/dist',
-        filename: 'BaseComponent.js',
+        //filename: 'BaseComponent.js',
 
         // export itself to a global var
-        libraryTarget: 'umd',
+        //libraryTarget: 'umd'
         // name of the global var:
-        library: 'BaseComponent',
+        //library: 'BaseComponent',
 
-        sourceMapFilename: 'BaseComponent.js.map',
+        //sourceMapFilename: 'BaseComponent.js.map',
         //umdNamedDefine: true //'BaseComponent',
         //libraryTarget: 'umd',
-        devtoolLineToLine: true
+        //devtoolLineToLine: true
 
     },
     externals: {

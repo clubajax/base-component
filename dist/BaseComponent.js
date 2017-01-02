@@ -1,14 +1,4 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("dom"), require("on"));
-	else if(typeof define === 'function' && define.amd)
-		define(["dom", "on"], factory);
-	else if(typeof exports === 'object')
-		exports["BaseComponent"] = factory(require("dom"), require("on"));
-	else
-		root["BaseComponent"] = factory(root["dom"], root["on"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_1__) {
-return /******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -80,20 +70,26 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
+module.exports = undefined;
 
 /***/ },
 /* 1 */
 /***/ function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+module.exports = undefined;
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-'use strict';
+"use strict";
+
+// class/component rules
+// always call super() first in the ctor. This also calls the extended class' ctor.
+// cannot call NEW on a Component class
+
+// Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -106,12 +102,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// class/component rules
-// always call super() first in the ctor. This also calls the extended class' ctor.
-// cannot call NEW on a Component class
-//
-// Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
 
 var _on = __webpack_require__(1);
 var dom = __webpack_require__(0);
@@ -127,26 +117,20 @@ var BaseComponent = function (_HTMLElement) {
         _this._uid = dom.uid(_this.localName);
         privates[_this._uid] = { DOMSTATE: 'created' };
         privates[_this._uid].handleList = [];
-
         plugin('init', _this);
-
         return _this;
     }
 
     _createClass(BaseComponent, [{
         key: 'connectedCallback',
         value: function connectedCallback() {
-
             privates[this._uid].DOMSTATE = 'connected';
             plugin('preConnected', this);
-
             nextTick(onCheckDomReady.bind(this));
-
             if (this.connected) {
                 this.connected();
             }
             this.fire('connected');
-
             plugin('postConnected', this);
         }
     }, {
@@ -162,7 +146,6 @@ var BaseComponent = function (_HTMLElement) {
     }, {
         key: 'attributeChangedCallback',
         value: function attributeChangedCallback(attrName, oldVal, newVal) {
-            console.log(' *** attributeChangedCallback', attrName);
             plugin('preAttributeChanged', this, attrName, newVal, oldVal);
             if (this.attributeChanged) {
                 this.attributeChanged(attrName, newVal, oldVal);
@@ -269,7 +252,7 @@ function plugin(method, node, a, b, c) {
 }
 
 function onCheckDomReady() {
-    if (this.DOMSTATE != 'connected') {
+    if (this.DOMSTATE != 'connected' || privates[this._uid].domReadyFired) {
         return;
     }
 
@@ -304,13 +287,14 @@ function onCheckDomReady() {
 
 function onDomReady() {
     privates[this._uid].DOMSTATE = 'domready';
+    // domReady should only ever fire once
+    privates[this._uid].domReadyFired = true;
     plugin('preDomReady', this);
     // call this.domReady first, so that the component
     // can finish initializing before firing any
     // subsequent events
     if (this.domReady) {
         this.domReady();
-        // domReady should only ever fire once
         this.domReady = function () {};
     }
 
@@ -337,9 +321,20 @@ function nextTick(cb) {
     requestAnimationFrame(cb);
 }
 
+window.onDomReady = function (node, callback) {
+    function onReady() {
+        callback(node);
+        node.removeEventListener('domready', onReady);
+    }
+    if (node.DOMSTATE === 'domready') {
+        callback(node);
+    } else {
+        node.addEventListener('domready', onReady);
+    }
+};
+
 exports.default = BaseComponent;
 
 /***/ }
 /******/ ]);
-});
-//# sourceMappingURL=BaseComponent.js.map
+//# sourceMappingURL=basecomponent.js.map
