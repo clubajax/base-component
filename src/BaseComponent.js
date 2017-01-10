@@ -224,4 +224,4 @@ window.onDomReady = function (node, callback) {
     }
 };
 
-export default BaseComponent;
+module.exports = BaseComponent;
