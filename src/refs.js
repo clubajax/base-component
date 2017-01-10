@@ -1,4 +1,4 @@
-import BaseComponent from './BaseComponent';
+const BaseComponent  = require('./BaseComponent');
 
 function assignRefs (node) {
     dom.queryAll(node, '[ref]').forEach(function (child) {
@@ -29,4 +29,4 @@ BaseComponent.addPlugin({
     }
 });
 
-export default {};
+module.exports = {};

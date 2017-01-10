@@ -1,8 +1,8 @@
-import BaseComponent from '../../src/BaseComponent';
-import properties from '../../src/properties';
-import template from '../../src/template';
-import refs from '../../src/refs';
-import itemTemplate from '../../src/item-template';
+const BaseComponent  = require('../../src/BaseComponent');
+const properties = require('../../src/properties');
+const template = require('../../src/template');
+const refs = require('../../src/refs');
+const itemTemplate = require('../../src/item-template');
 
 class TestProps extends BaseComponent {
 

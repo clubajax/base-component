@@ -1,4 +1,4 @@
-import BaseComponent from './BaseComponent';
+const BaseComponent  = require('./BaseComponent');
 const dom = require('dom');
 
 var
@@ -116,4 +116,4 @@ BaseComponent.addPlugin({
     }
 });
 
-export default {};
+module.exports = {};

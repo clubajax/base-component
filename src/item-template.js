@@ -1,4 +1,4 @@
-import BaseComponent from './BaseComponent';
+const BaseComponent = require('./BaseComponent');
 const dom = require('dom');
 
 function walkDom (node, refs) {
@@ -72,4 +72,4 @@ BaseComponent.addPlugin({
     }
 });
 
-export default {};
+module.exports = {};

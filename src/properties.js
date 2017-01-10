@@ -1,4 +1,4 @@
-import BaseComponent from './BaseComponent';
+const BaseComponent  = require('./BaseComponent');
 const dom = require('dom');
 
 function setBoolean (node, prop) {
@@ -70,4 +70,4 @@ BaseComponent.addPlugin({
     }
 });
 
-export default {};
+module.exports = {};
