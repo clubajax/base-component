@@ -36,15 +36,30 @@
         });
     }
 
-    function loadFiles(callback) {
+    function loadFilesAsync(callback) {
         var count = 0, files = getScriptFileNames();
         files.forEach(function (file) {
             loadScript(file, function () {
+                console.log('   loaded', file);
                 if (++count >= files.length) {
                     callback();
                 }
             });
         });
+    }
+
+    function loadFiles(callback) {
+        var files = getScriptFileNames();
+
+        function load () {
+            if(!files.length){
+                callback();
+                return;
+            }
+            var file = files.shift();
+            loadScript(file, load);
+        }
+        load();
     }
 
     function onComponentsReady() {
