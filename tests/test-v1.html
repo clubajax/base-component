@@ -107,14 +107,14 @@
                     type: 'insane',
                     amount: 1
                 }
-//                ,{
-//                    id:'b',
-//                    first: 'Morty',
-//                    last: 'Smith',
-//                    role: 'sidekick',
-//                    type: 'insane',
-//                    amount: 2
-//                }
+                ,{
+                    id:'b',
+                    first: 'Morty',
+                    last: 'Smith',
+                    role: 'sidekick',
+                    type: 'insane',
+                    amount: 2
+                }
                 ,{
                     id:'c',
                     first: 'Summer',
@@ -123,21 +123,21 @@
                     type: 'sane',
                     amount: 3
                 }
-// ,{
-//                    id:'d',
-//                    first: 'Jerry',
-//                    last: 'Smith',
-//                    role: 'Father',
-//                    type: 'sane',
-//                    amount: 4
-//                },{
-//                    id:'e',
-//                    first: 'Beth',
-//                    last: 'Smith',
-//                    role: 'Mother',
-//                    type: 'sane',
-//                    amount: 5
-//                }
+ ,{
+                    id:'d',
+                    first: 'Jerry',
+                    last: 'Smith',
+                    role: 'Father',
+                    type: 'sane',
+                    amount: 4
+                },{
+                    id:'e',
+                    first: 'Beth',
+                    last: 'Smith',
+                    role: 'Mother',
+                    type: 'sane',
+                    amount: 5
+                }
             ];
         }
     </script>
@@ -421,7 +421,7 @@
                     });
                 });
 
-                xsuite('nested templates', function () {
+                suite('nested templates', function () {
                     test('it should nest templates', function () {
                         var
                             node = dom('test-tmpl-nested-b', {}, body),
@@ -458,7 +458,7 @@
                     });
                 });
 
-                xsuite('properties', function () {
+                suite('properties', function () {
                     test('it should sync properties and attributes', function () {
                         var node = dom('test-props', {attr:{foo:true}}, body);
                         expect(node.getAttribute('foo')).to.equal('true');
@@ -506,7 +506,7 @@
                 });
 
                 suite('item-template', function () {
-                    xtest('it should recognize a template in the innerHTML', function (done) {
+                    test('it should recognize a template in the innerHTML', function (done) {
                         var node = dom('test-list', {html: window.itemTemplateString, attr:{'list-title':'This is my title'}}, body);
                         onDomReady(node, function () {
                             node.data = data();

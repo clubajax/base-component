@@ -104,12 +104,12 @@ BaseComponent.prototype.renderList = function (items, container, itemTemplate) {
                 node = ref.node,
                 hasNode = true;
             if (ref.conditional) {
-                console.log('test condition');
                 if (!ref.conditional(item)) {
-                    // can't actually delete, because this is the original template
-                    console.log('DELETE NODE', ref.node);
                     hasNode = false;
                     ifCount++;
+                    // can't actually delete, because this is the original template
+                    // instead, adding attribute to track node, to be deleted in clone
+                    // then after, remove temporary attribute from template
                     ref.node.setAttribute('ifs', ifCount+'');
                     deletions.push('[ifs="'+ifCount+'"]');
                 }
@@ -134,12 +134,13 @@ BaseComponent.prototype.renderList = function (items, container, itemTemplate) {
 
         clone = tmpl.cloneNode(true);
 
-        console.log('deletions', deletions);
-
         deletions.forEach(function (del) {
             let node = clone.querySelector(del);
-            console.log('DEL::', node);
-            dom.destroy(node);
+            if(node) {
+                dom.destroy(node);
+                let tmplNode = tmpl.querySelector(del);
+                tmplNode.removeAttribute('ifs');
+            }
         });
 
         frag.appendChild(clone);
