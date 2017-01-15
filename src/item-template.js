@@ -1,33 +1,73 @@
 const BaseComponent = require('./BaseComponent');
 const dom = require('dom');
+const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const r = /\{\{\w*}}/g;
 
-function walkDom (node, refs) {
+// TODO: switch to ES6 literals
 
-    if(node.attributes) {
-        for(let i = 0; i < node.attributes.length; i++){
-            if(/\{\{/.test(node.attributes[i].value)){
+function createCondition(name, value) {
+    // FIXME name?
+    value = value.replace(r, function (w) {
+        w = w.replace('{{', '').replace('}}', '');
+        return 'item["' + w + '"]';
+    });
+    console.log('createCondition', name, value);
+    return function (item) {
+        return eval(value);
+    };
+}
+
+function walkDom(node, refs) {
+
+    let item = {
+        node: node
+    };
+
+    refs.nodes.push(item);
+
+    if (node.attributes) {
+        for (let i = 0; i < node.attributes.length; i++) {
+            let
+                name = node.attributes[i].name,
+                value = node.attributes[i].value;
+            console.log('  ', name, value);
+            if (name === 'if') {
+                item.conditional = createCondition(name, value);
+            }
+            else if (/\{\{/.test(value)) {
+                // <div id="{{id}}">
                 refs.attributes = refs.attributes || {};
+                item.attributes = item.attributes || {};
+                item.attributes[name] = value;
                 // could be more than one??
                 // same with node?
-                refs.attributes[node.attributes[i].name] = node;
+                refs.attributes[name] = node;
             }
         }
     }
 
-    if(!node.children.length){
-        if(/\{\{/.test(node.innerHTML)){
-            refs[node.innerHTML.replace('{{','').replace('}}','')] = node;
-            node.innerHTML = '';
+    // should probably loop over childNodes and check text nodes for replacements
+    //
+    if (!node.children.length) {
+        if (/\{\{/.test(node.innerHTML)) {
+            // FIXME - innerHTML as value too naive
+            let prop = node.innerHTML.replace('{{', '').replace('}}', '');
+            item.text = item.text || {};
+            item.text[prop] = node.innerHTML;
+            refs[prop] = node;
         }
         return;
     }
-    for(let i = 0; i < node.children.length; i++){
+
+    for (let i = 0; i < node.children.length; i++) {
         walkDom(node.children[i], refs);
     }
 }
 
-function updateItemTemplate (frag) {
-    let refs = {};
+function updateItemTemplate(frag) {
+    let refs = {
+        nodes: []
+    };
     walkDom(frag, refs);
     return refs;
 }
@@ -37,26 +77,98 @@ BaseComponent.prototype.renderList = function (items, container, itemTemplate) {
         frag = document.createDocumentFragment(),
         tmpl = itemTemplate || this.itemTemplate,
         refs = tmpl.itemRefs,
-        clone;
+        clone,
+        defer;
+
+    function warn(name) {
+        clearTimeout(defer);
+        defer = setTimeout(function () {
+            console.warn('Attempted to set attribute from non-existent item property:', name);
+        }, 1);
+    }
 
     items.forEach(function (item) {
-        Object.keys(item).forEach(function (key) {
-            if(refs[key]){
-                refs[key].innerHTML = item[key];
+
+        let
+            ifCount = 0,
+            deletions = [];
+
+        refs.nodes.forEach(function (ref) {
+
+            //
+            // can't swap because the innerHTML is being changed
+            // can't clone because then there is not a node reference
+            //
+            let
+                value,
+                node = ref.node,
+                hasNode = true;
+            if (ref.conditional) {
+                console.log('test condition');
+                if (!ref.conditional(item)) {
+                    // can't actually delete, because this is the original template
+                    console.log('DELETE NODE', ref.node);
+                    hasNode = false;
+                    ifCount++;
+                    ref.node.setAttribute('ifs', ifCount+'');
+                    deletions.push('[ifs="'+ifCount+'"]');
+                }
+            }
+            if (hasNode) {
+                if (ref.attributes) {
+                    Object.keys(ref.attributes).forEach(function (key) {
+                        value = ref.attributes[key];
+                        ref.node.setAttribute(key, item[key]);
+                        //console.log('swap att', key, value, ref.node);
+                    });
+                }
+                if (ref.text) {
+                    Object.keys(ref.text).forEach(function (key) {
+                        value = ref.text[key];
+                        //console.log('swap text', key, item[key]);
+                        node.innerHTML = value.replace(value, item[key])
+                    });
+                }
             }
         });
-        if(refs.attributes){
-            Object.keys(refs.attributes).forEach(function (name) {
-                let node = refs.attributes[name];
-                node.setAttribute(name, item[name]);
-            });
-        }
 
         clone = tmpl.cloneNode(true);
+
+        console.log('deletions', deletions);
+
+        deletions.forEach(function (del) {
+            let node = clone.querySelector(del);
+            console.log('DEL::', node);
+            dom.destroy(node);
+        });
+
         frag.appendChild(clone);
     });
 
     container.appendChild(frag);
+
+    //items.forEach(function (item) {
+    //    Object.keys(item).forEach(function (key) {
+    //        if(refs[key]){
+    //            refs[key].innerHTML = item[key];
+    //        }
+    //    });
+    //    if(refs.attributes){
+    //        Object.keys(refs.attributes).forEach(function (name) {
+    //            let node = refs.attributes[name];
+    //            if(item[name] !== undefined) {
+    //                node.setAttribute(name, item[name]);
+    //            }else{
+    //                warn(name);
+    //            }
+    //        });
+    //    }
+    //
+    //    clone = tmpl.cloneNode(true);
+    //    frag.appendChild(clone);
+    //});
+
+    //container.appendChild(frag);
 };
 
 BaseComponent.addPlugin({
@@ -64,7 +176,7 @@ BaseComponent.addPlugin({
     order: 40,
     preDomReady: function (node) {
         node.itemTemplate = dom.query(node, 'template');
-        if(node.itemTemplate){
+        if (node.itemTemplate) {
             node.itemTemplate.parentNode.removeChild(node.itemTemplate);
             node.itemTemplate = BaseComponent.clone(node.itemTemplate);
             node.itemTemplate.itemRefs = updateItemTemplate(node.itemTemplate);

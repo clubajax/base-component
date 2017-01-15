@@ -198,15 +198,6 @@ customElements.define('test-c', TestC);
 customElements.define('test-d', TestD);
 customElements.define('test-e', TestE);
 
-
-window.itemTemplateString = `<template>
-    <div id="{{id}}">
-        <span>{{first}}</span>
-        <span>{{last}}</span>
-        <span>{{role}}</span>
-    </div>
-</template>`;
-
 class TestList extends BaseComponent {
 
     static get observedAttributes() { return ['list-title']; }
@@ -231,3 +222,76 @@ class TestList extends BaseComponent {
     }
 }
 customElements.define('test-list', TestList);
+
+
+window.ifTemplateString = `<template>
+    <div class="if">
+        if(amount.length > 2){
+        {{if amount}}
+            <span>me</span>
+        {{else}}
+            <span>you</span>
+        {{/if}}
+    </div>
+</template>`;
+
+window.itemTemplateString = `<template>
+    <div id="{{id}}">
+        <span>{{first}}</span>
+        <span>{{last}}</span>
+        <span>{{role}}</span>
+    </div>
+</template>`;
+
+window.ifAttrTemplateString = `<template>
+    <div id="{{id}}">
+        <span>{{first}}</span>
+        <span>{{last}}</span>
+        <span>{{role}}</span>
+        <span if="{{amount}} < 2" class="amount">{{amount}}</span>
+        <span if="{{type}} === 'sane'" class="sanity">{{type}}</span>
+    </div>
+</template>`;
+
+function dev () {
+    var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    var s = '{{amount}} + {{num}} + 3';
+    var list = [{amount: 1, num: 2}, {amount: 3, num: 4}, {amount: 5, num: 6}];
+    var r = /\{\{\w*}}/g;
+    var fn = [];
+    var args = [];
+    var f;
+    s = s.replace(r, function(w){
+        console.log('word', w);
+        var v = alphabet.shift();
+        fn.push(v);
+        args.push(/\w+/g.exec(w)[0]);
+        return v;
+    });
+    fn.push(s);
+
+    console.log('fn', fn);
+    console.log('args', args);
+    //s = 'return ' + s + ';';
+    console.log('s', s);
+
+    window.f = new Function(s);
+
+    var dynFn = function (a,b,c,d,e,f) {
+        var r = eval(s);
+        return r;
+    };
+
+    console.log('  f:', dynFn(1,2));
+    //
+    list.forEach(function (item) {
+        var a = args.map(function (arg) {
+            return item[arg];
+        });
+        var r = dynFn.apply(null, a);
+        console.log('r', r);
+    });
+
+
+}
+//dev();
