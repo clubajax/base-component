@@ -3,7 +3,10 @@ const dom = require('dom');
 const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const r = /\{\{\w*}}/g;
 
-// TODO: switch to ES6 literals
+// TODO: switch to ES6 literals? Maybe not...
+
+// FIXME: time current process
+// Try a new one where meta data is created, instead of a template
 
 function createCondition(name, value) {
     // FIXME name?

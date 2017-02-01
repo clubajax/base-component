@@ -224,16 +224,6 @@ class TestList extends BaseComponent {
 customElements.define('test-list', TestList);
 
 
-window.ifTemplateString = `<template>
-    <div class="if">
-        if(amount.length > 2){
-        {{if amount}}
-            <span>me</span>
-        {{else}}
-            <span>you</span>
-        {{/if}}
-    </div>
-</template>`;
 
 window.itemTemplateString = `<template>
     <div id="{{id}}">
