@@ -192,16 +192,16 @@ See the [clubajax/on](https://github.com/clubajax/on) documentation for a comple
 
 `BaseComponent` uses a plugin architecture, which not only helps keep the code clean and maintainable, it allows for
 flexibility. A plugin looks like this:
-```javascript
+```
 BaseComponent.addPlugin({
-        name: PLUGIN_NAME,
-        order: ORDER_OF_EXECUTION,
-        init                    - fires after constructor
-        preConnected            - fires before connected is called
-        postConnected           - fires after connected is called
-        preDomReady             - fires before domReady is called
-        postDomReady            - fires after domReady is called
-        preAttributeChanged     - fires before attributeChanged is called
+    name: PLUGIN_NAME,
+    order: ORDER_OF_EXECUTION,
+    init                    - fires after constructor
+    preConnected            - fires before connected is called
+    postConnected           - fires after connected is called
+    preDomReady             - fires before domReady is called
+    postDomReady            - fires after domReady is called
+    preAttributeChanged     - fires before attributeChanged is called
 });
 ```
 
@@ -210,9 +210,12 @@ preDomReady) which plugin fires in what order.
 
 All the callbacks fire with the custom element as an argument, with the element and possible options.
 
+When adding one or multiple plugins, all components will have this functionality. It is not possible to have components
+with different plugins.
+
 ### template plugin
 
-The template plugin allows for the association of HTML, via a templateId property, with a custom element. The template 
+The template plugin allows for the association of HTML, via a `templateId` property, with a custom element. The template 
 can be created in a [template element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template), which is not 
 exposed to the document until it is cloned. 
 ```jsx
@@ -227,7 +230,7 @@ class TestTmplId extends BaseComponent {
 }
 ```
 
-Alternatively, an HTML string can be used with the 'templateString' property:
+Alternatively, an HTML string can be used with the `templateString` property:
 ```javascript
 class TestTmplId extends BaseComponent {
     get templateString () {
