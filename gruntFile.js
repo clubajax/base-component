@@ -66,7 +66,7 @@ module.exports = function (grunt) {
             },
             deploy: {
                 files: {
-                    'dist/output.js': ['browserify/app.js']
+                    'dist/BaseComponent.js': ['src/deploy.js']
                 },
                 options: {
                     external: vendorAliases,
