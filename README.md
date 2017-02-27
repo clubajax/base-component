@@ -313,16 +313,27 @@ difficulty in styling, the cons outweigh the pros. This also keeps the library s
 
 ## ES6 FAQ
 
-Q. Uncaught TypeError: Failed to construct 'HTMLElement': Please use the 'new' operator, this DOM object constructor cannot be called as a function.
+Q: **What are the steps for iusing webpack?**
+
+A: Use the shims in this order:
+
+    custom-elements.js
+    native-shim.js
+    
+Use babel: `{"presets": ["es2015"]}`
+
+Decide if you want to use ES6 (Chrome only) or ES5 (all browsers)
+
+Q. **Uncaught TypeError: Failed to construct 'HTMLElement': Please use the 'new' operator, this DOM object constructor cannot be called as a function.**
 
 A. The webcomponents native-shim.js is missing.
 
-Q. Uncaught TypeError:Super expression must either be null or a function, not object
+Q. **Uncaught TypeError:Super expression must either be null or a function, not object**
 
 A. The class is not extending the class correctly. This is because of a typo, a bad class, or when importing, getting a
 wrapper around the object; ergo, instead of `extend MyClass`, do `extend MyClass.default`
 
-Q. Uncaught TypeError: Class constructor cannot be invoked without 'new'
+Q. **Uncaught TypeError: Class constructor cannot be invoked without 'new'**
 
 A. babel is not transpiling. This could be:
  * wrong version (try "latest" or "es2015")
@@ -330,7 +341,7 @@ A. babel is not transpiling. This could be:
  
 Or, as per the above FAQ, it is _*because*_ you added default to the extended class.
 
-Q. What are the `constructor super()` rules?
+Q. **What are the `constructor super()` rules?**
 
 A. Super-Rules:
  
@@ -338,18 +349,18 @@ A. Super-Rules:
  * When extending a class and using a constructor, `super()` must be called.
  * `super()` must be called first - or at least before using the `this` keyword.
  
-Q. Why are my component methods undefined?
+Q. **Why are my component methods undefined?**
 
 A. Did you remember to do: `customElements.define('my-component', MyComponent)`?
 
 ## webpack FAQ
 
-Q. The HMS detects changes, but I do not see them in the document.
+Q. **The HMS detects changes, but I do not see them in the document.**
 
 A. Webpack uses a virtual directory (`output.publicPath`) to serve files. You are probably pointing to the wrong source 
 code in your HTML.
 
-Q. There is an error saying my files are not there - but they are!
+Q. **There is an error saying my files are not there - but they are!**
 
 A. This can happen if webpack is running while you switch branches.
 
