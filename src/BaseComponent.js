@@ -6,7 +6,6 @@
 
 // Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
 
-require('./custom-elements-shim');
 const on = require('on');
 const dom = require('dom');
 
