@@ -66,13 +66,19 @@ module.exports = function (grunt) {
             },
             deploy: {
                 files: {
-                    'dist/BaseComponent.js': ['src/deploy.js']
+                    'dist/BaseComponent.js': [
+						'src/properties',
+						'src/item-template',
+						'src/refs',
+						'src/template',
+                    	'src/BaseComponent.js',
+					]
                 },
                 options: {
                     //external: vendorAliases,
                     transform: babelTransform,
                     browserifyOptions: {
-                        debug: sourceMaps
+                        debug: false//sourceMaps
                     }
                 }
             }
