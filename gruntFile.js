@@ -7,9 +7,9 @@ module.exports = function (grunt) {
     
     // collect dependencies from node_modules
     let nm = path.resolve(__dirname, 'node_modules'),
-        dom = path.resolve(nm, 'dom/src/dom.js'),
-        on = path.resolve(nm, 'on/src/on.js'),
-        poly = path.resolve(nm, 'keyboardevent-key-polyfill/index'),
+        //dom = path.resolve(nm, 'dom/src/dom.js'),
+        //on = path.resolve(nm, 'on/src/on.js'),
+        //poly = path.resolve(nm, 'keyboardevent-key-polyfill/index'),
         vendorAliases = ['dom', 'keyboardevent-key-polyfill', 'on'],
         sourceMaps = true,
         watch = false,
@@ -69,7 +69,7 @@ module.exports = function (grunt) {
                     'dist/BaseComponent.js': ['src/deploy.js']
                 },
                 options: {
-                    external: vendorAliases,
+                    //external: vendorAliases,
                     transform: babelTransform,
                     browserifyOptions: {
                         debug: sourceMaps
