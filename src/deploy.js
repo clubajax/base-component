@@ -4,10 +4,12 @@ const template = require('./template');
 const refs = require('./refs');
 const itemTemplate = require('./item-template');
 
-module.exports = {
-	BaseComponent,
-	properties,
-	template,
-	refs,
-	itemTemplate
-};
+// const elDeployOListic = 'FOO';
+// module.exports = {
+// 	elDeployOListic: elDeployOListic,
+// 	BaseComponent: BaseComponent,
+// 	properties: properties,
+// 	template: template,
+// 	refs: refs,
+// 	itemTemplate: itemTemplate
+// };
