@@ -3,3 +3,11 @@ const properties = require('./properties');
 const template = require('./template');
 const refs = require('./refs');
 const itemTemplate = require('./item-template');
+
+module.exports = {
+	BaseComponent,
+	properties,
+	template,
+	refs,
+	itemTemplate
+};
