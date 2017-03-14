@@ -116,4 +116,6 @@ BaseComponent.addPlugin({
     }
 });
 
-module.exports = {};
+module.exports = {
+	'template': true
+};

@@ -29,4 +29,6 @@ BaseComponent.addPlugin({
     }
 });
 
-module.exports = {};
+module.exports = {
+	'refs': true
+};

@@ -91,4 +91,6 @@ BaseComponent.addPlugin({
 	}
 });
 
-module.exports = {};
+module.exports = {
+	'properties': true
+};

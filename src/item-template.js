@@ -188,4 +188,6 @@ BaseComponent.addPlugin({
     }
 });
 
-module.exports = {};
+module.exports = {
+	'item-template': true
+};
