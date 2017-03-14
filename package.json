@@ -4,9 +4,8 @@
   "description": "A base for more powerful web components",
   "main": "dist/BaseComponent",
   "scripts": {
-    "test": "webpack-dev-server --hot",
-    "dev": "webpack-dev-server --hot",
-    "build": "node ./scripts/deploy",
+    "start": "grunt dev",
+    "build": "grunt deploy",
     "globalize": "node ./scripts/globalES6"
   },
   "repository": {
