@@ -2,7 +2,7 @@
   "name": "BaseComponent",
   "version": "0.0.1",
   "description": "A base for more powerful web components",
-  "main": "dist/BaseComponent",
+  "main": "src/BaseComponent",
   "scripts": {
     "start": "grunt dev",
     "build": "grunt deploy",

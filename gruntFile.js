@@ -11,6 +11,7 @@ module.exports = function (grunt) {
         //on = path.resolve(nm, 'on/src/on.js'),
         //poly = path.resolve(nm, 'keyboardevent-key-polyfill/index'),
         vendorAliases = ['dom', 'keyboardevent-key-polyfill', 'on'],
+		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
         sourceMaps = true,
         watch = false,
         watchPort = 35750,
@@ -67,16 +68,21 @@ module.exports = function (grunt) {
             deploy: {
                 files: {
                     'dist/BaseComponent.js': [
-						'src/properties',
-						'src/item-template',
-						'src/refs',
-						'src/template',
-                    	'src/BaseComponent.js',
+                    	'src/deploy.js'
+						// 'src/properties',
+						// 'src/item-template',
+						// 'src/refs',
+						// 'src/template',
+                    	//'src/BaseComponent.js',
 					]
                 },
                 options: {
-                    //external: vendorAliases,
-                    transform: babelTransform,
+                    external: vendorAliases,
+					alias: baseAliases.map(function (module) {
+						console.log('MOD', module);
+						return module + ':';
+					}),
+					transform: babelTransform,
                     browserifyOptions: {
                         debug: false//sourceMaps
                     }
