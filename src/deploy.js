@@ -7,6 +7,8 @@ const refs = require('./refs');
 const itemTemplate = require('./item-template');
 
 module.exports = {
+	on: on,
+	dom: dom,
 	BaseComponent: BaseComponent,
 	properties: properties,
 	template: template,

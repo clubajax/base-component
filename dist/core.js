@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.dist = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.core = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /* UMD.define */ (function (root, factory) {
     if (typeof customLoader === 'function'){ customLoader(factory, 'dom'); }else if (typeof define === 'function' && define.amd) { define([], factory); } else if (typeof exports === 'object') { module.exports = factory(); } else { root.returnExports = factory(); window.dom = factory(); }
 }(this, function () {
@@ -1260,7 +1260,7 @@ var BaseComponent = function (_HTMLElement) {
     }, {
         key: 'addPlugin',
         value: function addPlugin(plug) {
-            var i,
+            var i = void 0,
                 order = plug.order || 100;
             if (!plugins.length) {
                 plugins.push(plug);
@@ -1356,7 +1356,7 @@ function getChildCustomNodes(node) {
     // collect any children that are custom nodes
     // used to check if their dom is ready before
     // determining if this is ready
-    var i,
+    var i = void 0,
         nodes = [];
     for (i = 0; i < node.children.length; i++) {
         if (node.children[i].nodeName.indexOf('-') > -1) {
@@ -1396,6 +1396,8 @@ var refs = require('./refs');
 var itemTemplate = require('./item-template');
 
 module.exports = {
+	on: on,
+	dom: dom,
 	BaseComponent: BaseComponent,
 	properties: properties,
 	template: template,
@@ -1697,6 +1699,7 @@ module.exports = {
 },{"./BaseComponent":4,"dom":1}],8:[function(require,module,exports){
 'use strict';
 
+var dom = require('dom');
 var BaseComponent = require('./BaseComponent');
 
 function assignRefs(node) {
@@ -1731,7 +1734,7 @@ module.exports = {
     'refs': true
 };
 
-},{"./BaseComponent":4}],9:[function(require,module,exports){
+},{"./BaseComponent":4,"dom":1}],9:[function(require,module,exports){
 'use strict';
 
 var BaseComponent = require('./BaseComponent');

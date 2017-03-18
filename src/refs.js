@@ -1,8 +1,9 @@
-const BaseComponent  = require('./BaseComponent');
+const dom = require('dom');
+const BaseComponent = require('./BaseComponent');
 
 function assignRefs (node) {
     dom.queryAll(node, '[ref]').forEach(function (child) {
-        var name = child.getAttribute('ref');
+        let name = child.getAttribute('ref');
         node[name] = child;
     });
 }
@@ -10,7 +11,7 @@ function assignRefs (node) {
 function assignEvents (node) {
     // <div on="click:onClick">
     dom.queryAll(node, '[on]').forEach(function (child) {
-        var
+        let
             keyValue = child.getAttribute('on'),
             event = keyValue.split(':')[0].trim(),
             method = keyValue.split(':')[1].trim();

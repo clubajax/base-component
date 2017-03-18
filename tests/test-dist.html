@@ -2,10 +2,6 @@
 <html lang="en">
 <head>
     <title>BaseComponent ES5/6 dist test</title>
-
-    <script src="../bower_components/dom/src/dom.js"></script>
-    <script src="../bower_components/on/dist/on.js"></script>
-    <!--<script src="../bower_components/webcomponents/src/native-shim.js"></script>-->
     <script src="../src/loader.js" files="../dist/output"></script>
 </head>
 <body>
@@ -19,13 +15,16 @@
 
 			console.log(window.dist);
 
-        	var BaseComponent = window.dist.BaseComponent;
+        	var
+				on = window.dist.on,
+				dom = window.dist.dom,
+				BaseComponent = window.dist.BaseComponent;
 
             customElements.define('base-component', BaseComponent);
             var node = dom('base-component', {html:'i am base'}, document.body);
             window.node = node;
-            node.on('connected', function () {
-                console.log('base-component.connected');
+            node.on('domready', function () {
+                console.log(' * base-component.domready');
             });
 
         })

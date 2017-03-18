@@ -88,7 +88,7 @@ class BaseComponent extends HTMLElement {
         if (template.content && template.content.children) {
             return document.importNode(template.content, true);
         }
-        var
+        let
             frag = document.createDocumentFragment(),
             cloneNode = document.createElement('div');
         cloneNode.innerHTML = template.innerHTML;
@@ -100,7 +100,7 @@ class BaseComponent extends HTMLElement {
     }
 
     static addPlugin(plug) {
-        var i, order = plug.order || 100;
+        let i, order = plug.order || 100;
         if (!plugins.length) {
             plugins.push(plug);
         }
@@ -146,7 +146,7 @@ function onCheckDomReady() {
         return;
     }
 
-    var
+    let
         count = 0,
         children = getChildCustomNodes(this),
         ourDomReady = onDomReady.bind(this);
@@ -199,7 +199,7 @@ function getChildCustomNodes(node) {
     // collect any children that are custom nodes
     // used to check if their dom is ready before
     // determining if this is ready
-    var i, nodes = [];
+    let i, nodes = [];
     for (i = 0; i < node.children.length; i++) {
         if (node.children[i].nodeName.indexOf('-') > -1) {
             nodes.push(node.children[i]);

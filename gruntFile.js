@@ -68,39 +68,16 @@ module.exports = function (grunt) {
             },
             deploy: {
                 files: {
-                    'dist/output.js': [
-                    	'src/deploy.js'
-						// 'src/properties',
-						// 'src/item-template',
-						// 'src/refs',
-						// 'src/template',
-                    	//'src/BaseComponent.js',
-					]
+                    'dist/core.js': ['src/deploy.js']
                 },
                 options: {
-                    //external: vendorAliases,
-					// alias: allAliases.map(function (module) {
-						// console.log('deploy', module);
-						// return module + ':';
-					// }),
 					transform: babelTransform,
                     browserifyOptions: {
-						standalone: 'dist',
-                        debug: false//sourceMaps
+						standalone: 'core',
+                        debug: false
                     }
                 }
-            },
-			beep:{
-            	files:{
-            		'dist/beep.js': ['src/beep.js']
-				},
-				options: {
-					browserifyOptions: {
-						standalone: 'beep',
-						debug: false
-					}
-				}
-			}
+            }
         },
         
         watch: {
@@ -141,7 +118,7 @@ module.exports = function (grunt) {
         }
     });
 
-    //
+    // watch build task
     grunt.registerTask('build-dev', function (which) {
         console.time('build');
         grunt.task.run('browserify:dev');
@@ -156,7 +133,7 @@ module.exports = function (grunt) {
 
     // task that builds files for production
     grunt.registerTask('deploy', function (which) {
-        grunt.task.run('browserify:vendor');
+        //grunt.task.run('browserify:vendor');
         grunt.task.run('browserify:deploy');
     });
 
@@ -166,11 +143,6 @@ module.exports = function (grunt) {
         grunt.task.run('build');
         grunt.task.run('concurrent:target');
     });
-
-	grunt.registerTask('beep', function (which) {
-		grunt.task.run('browserify:beep');
-		grunt.task.run('concurrent:target');
-	});
 
     // alias for server
     grunt.registerTask('serve', function (which) {
