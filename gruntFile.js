@@ -12,6 +12,7 @@ module.exports = function (grunt) {
         //poly = path.resolve(nm, 'keyboardevent-key-polyfill/index'),
         vendorAliases = ['dom', 'keyboardevent-key-polyfill', 'on'],
 		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
+		allAliases = vendorAliases.concat(baseAliases),
         sourceMaps = true,
         watch = false,
         watchPort = 35750,
@@ -67,7 +68,7 @@ module.exports = function (grunt) {
             },
             deploy: {
                 files: {
-                    'dist/BaseComponent.js': [
+                    'dist/output.js': [
                     	'src/deploy.js'
 						// 'src/properties',
 						// 'src/item-template',
@@ -77,17 +78,29 @@ module.exports = function (grunt) {
 					]
                 },
                 options: {
-                    external: vendorAliases,
-					alias: baseAliases.map(function (module) {
-						console.log('MOD', module);
-						return module + ':';
-					}),
+                    //external: vendorAliases,
+					// alias: allAliases.map(function (module) {
+						// console.log('deploy', module);
+						// return module + ':';
+					// }),
 					transform: babelTransform,
                     browserifyOptions: {
+						standalone: 'dist',
                         debug: false//sourceMaps
                     }
                 }
-            }
+            },
+			beep:{
+            	files:{
+            		'dist/beep.js': ['src/beep.js']
+				},
+				options: {
+					browserifyOptions: {
+						standalone: 'beep',
+						debug: false
+					}
+				}
+			}
         },
         
         watch: {
@@ -153,6 +166,11 @@ module.exports = function (grunt) {
         grunt.task.run('build');
         grunt.task.run('concurrent:target');
     });
+
+	grunt.registerTask('beep', function (which) {
+		grunt.task.run('browserify:beep');
+		grunt.task.run('concurrent:target');
+	});
 
     // alias for server
     grunt.registerTask('serve', function (which) {

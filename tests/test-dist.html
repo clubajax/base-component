@@ -5,8 +5,8 @@
 
     <script src="../bower_components/dom/src/dom.js"></script>
     <script src="../bower_components/on/dist/on.js"></script>
-    <script src="../bower_components/webcomponents/src/native-shim.js"></script>
-    <script src="../src/loader.js" files="../dist/BaseComponent"></script>
+    <!--<script src="../bower_components/webcomponents/src/native-shim.js"></script>-->
+    <script src="../src/loader.js" files="../dist/output"></script>
 </head>
 <body>
     <h1>BaseComponent ES5/6 test</h1>
@@ -15,18 +15,19 @@
 
 
         document.addEventListener('onComponentsReady', function () {
-            customElements.define('base-component', BaseComponent.default);
+
+
+			console.log(window.dist);
+
+        	var BaseComponent = window.dist.BaseComponent;
+
+            customElements.define('base-component', BaseComponent);
             var node = dom('base-component', {html:'i am base'}, document.body);
             window.node = node;
             node.on('connected', function () {
                 console.log('base-component.connected');
             });
 
-            var node2 = new BaseComponent.default();
-            node2.on('connected', function () {
-                console.log('base-component.connected.2!!');
-            });
-            document.body.appendChild(node2);
         })
     </script>
 </body>
