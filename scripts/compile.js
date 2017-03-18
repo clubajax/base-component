@@ -1,5 +1,5 @@
 let suffix = `}));`;
-function prefix(DEFINES, REQUIRES, ROOTS, ARGS, NAME) {
+function getPrefix(DEFINES, REQUIRES, ROOTS, ARGS, NAME) {
 	return `(function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD
@@ -14,6 +14,15 @@ function prefix(DEFINES, REQUIRES, ROOTS, ARGS, NAME) {
 	}(this, function (${ARGS}) {`;
 }
 
+const babel = require("babel-core");
+
+function babelize (code) {
+	let options = {
+		presets: ["latest"]
+	};
+	let result = babel.transform(code, options);
+	return result.code;
+}
 
 module.exports = function (name) {
 
@@ -25,7 +34,10 @@ module.exports = function (name) {
 		deps = [],
 		dep,
 		modName,
-		lines;
+		lines,
+		code,
+		prefix,
+		suffix;
 
 	console.log('fileName', fileName);
 
@@ -46,13 +58,15 @@ module.exports = function (name) {
 		return true;
 	});
 
+	code = babelize(lines.join('\n'));
+
 	if(modName) {
-		lines.push(`
+		suffix = `
 	return ${modName};
 
-}));`);
+}));`;
 	}else{
-		lines.push('\n}));');
+		suffix = '\n}));';
 	}
 
 	let defines, requires, roots, args;
@@ -80,9 +94,9 @@ module.exports = function (name) {
 	console.log('', args);
 
 
-	lines.unshift(prefix(defines, requires, roots, args, modName));
+	prefix = getPrefix(defines, requires, roots, args, modName);
 
-	fs.writeFileSync(`dist/${name}.js`, lines.join('\n'));
+	fs.writeFileSync(`dist/${name}.js`, [prefix, code, suffix].join('\n'));
 
 	console.log('code compilation successful.');
-}
+};
