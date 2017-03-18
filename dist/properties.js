@@ -14,6 +14,7 @@
 function setBoolean (node, prop) {
 	Object.defineProperty(node, prop, {
 		enumerable: true,
+		configurable: true,
 		get () {
 			if(node.hasAttribute(prop)){
 				return dom.normalize(node.getAttribute(prop));
@@ -33,6 +34,7 @@ function setBoolean (node, prop) {
 function setProperty (node, prop) {
 	Object.defineProperty(node, prop, {
 		enumerable: true,
+		configurable: true,
 		get () {
 			return dom.normalize(this.getAttribute(prop));
 		},
@@ -45,6 +47,7 @@ function setProperty (node, prop) {
 function setObject (node, prop) {
 	Object.defineProperty(node, prop, {
 		enumerable: true,
+		configurable: true,
 		get () {
 			return this['__' + prop];
 		},
