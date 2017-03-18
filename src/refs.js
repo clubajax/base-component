@@ -1,5 +1,5 @@
 const dom = require('dom');
-const BaseComponent = require('./BaseComponent');
+const BaseComponent = require('BaseComponent');
 
 function assignRefs (node) {
     dom.queryAll(node, '[ref]').forEach(function (child) {

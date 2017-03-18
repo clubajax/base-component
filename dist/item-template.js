@@ -1,15 +1,15 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(["dom"], factory);
+        define(["BaseComponent", "dom"], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node / CommonJS
-        module.exports = factory(require('dom'));
+        module.exports = factory(require('BaseComponent'), require('dom'));
     } else {
         // Browser globals (root is window)
-        root['undefined'] = factory(root.dom);
+        root['undefined'] = factory(root.BaseComponent, root.dom);
     }
-	}(this, function (dom) {
+	}(this, function (BaseComponent, dom) {
 const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const r = /\{\{\w*}}/g;
 
@@ -197,5 +197,9 @@ BaseComponent.addPlugin({
         }
     }
 });
+
+module.exports = {
+	'item-template': true
+};
 
 }));

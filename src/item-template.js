@@ -1,4 +1,4 @@
-const BaseComponent = require('./BaseComponent');
+const BaseComponent = require('BaseComponent');
 const dom = require('dom');
 const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const r = /\{\{\w*}}/g;
@@ -187,3 +187,7 @@ BaseComponent.addPlugin({
         }
     }
 });
+
+module.exports = {
+	'item-template': true
+};

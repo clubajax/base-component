@@ -1,15 +1,15 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(["dom"], factory);
+        define(["dom", "BaseComponent"], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node / CommonJS
-        module.exports = factory(require('dom'));
+        module.exports = factory(require('dom'), require('BaseComponent'));
     } else {
         // Browser globals (root is window)
-        root['undefined'] = factory(root.dom);
+        root['undefined'] = factory(root.dom, root.BaseComponent);
     }
-	}(this, function (dom) {
+	}(this, function (dom, BaseComponent) {
 
 function assignRefs (node) {
     dom.queryAll(node, '[ref]').forEach(function (child) {

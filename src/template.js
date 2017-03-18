@@ -1,4 +1,4 @@
-const BaseComponent  = require('./BaseComponent');
+const BaseComponent  = require('BaseComponent');
 const dom = require('dom');
 
 var
