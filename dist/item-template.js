@@ -1,5 +1,15 @@
-const BaseComponent = require('./BaseComponent');
-const dom = require('dom');
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(["dom"], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        // Node / CommonJS
+        module.exports = factory(require('dom'));
+    } else {
+        // Browser globals (root is window)
+        root['undefined'] = factory(root.dom);
+    }
+	}(this, function (dom) {
 const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const r = /\{\{\w*}}/g;
 
@@ -187,3 +197,5 @@ BaseComponent.addPlugin({
         }
     }
 });
+
+}));

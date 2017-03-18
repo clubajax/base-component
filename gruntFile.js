@@ -13,6 +13,7 @@ module.exports = function (grunt) {
         vendorAliases = ['dom', 'keyboardevent-key-polyfill', 'on'],
 		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
 		allAliases = vendorAliases.concat(baseAliases),
+		pluginAliases = ['dom', 'keyboardevent-key-polyfill', 'on', 'BaseComponent'],
         sourceMaps = true,
         watch = false,
         watchPort = 35750,
@@ -53,6 +54,9 @@ module.exports = function (grunt) {
                     watch: false,
                     keepAlive: false,
                     external: vendorAliases,
+					alias: {
+                    	'BaseComponent': './src/BaseComponent'
+					},
                     browserifyOptions: {
                         debug: sourceMaps
                     },
@@ -66,6 +70,31 @@ module.exports = function (grunt) {
                     }
                 }
             },
+			BaseComponent:{
+            	files:{
+            		'dist/BaseComponent.js': ['src/BaseComponent.js']
+				},
+				options: {
+					transform: babelTransform,
+					browserifyOptions: {
+						standalone: 'BaseComponent',
+						debug: false
+					}
+				}
+			},
+			properties:{
+				files:{
+					'dist/properties.js': ['src/properties.js']
+				},
+				options: {
+					external: pluginAliases,
+					transform: babelTransform,
+					browserifyOptions: {
+						standalone: 'properties',
+						debug: false
+					}
+				}
+			},
             deploy: {
                 files: {
                     'dist/core.js': ['src/deploy.js']
@@ -134,7 +163,9 @@ module.exports = function (grunt) {
     // task that builds files for production
     grunt.registerTask('deploy', function (which) {
         //grunt.task.run('browserify:vendor');
-        grunt.task.run('browserify:deploy');
+        //grunt.task.run('browserify:deploy');
+		grunt.task.run('browserify:BaseComponent');
+		grunt.task.run('browserify:properties');
     });
 
 
@@ -149,7 +180,18 @@ module.exports = function (grunt) {
         grunt.task.run('http-server');
     });
 
-    grunt.loadNpmTasks('grunt-concurrent');
+	grunt.registerTask('compile', function (which) {
+		const compile = require('./scripts/compile');
+		compile('BaseComponent');
+		compile('properties');
+		compile('template');
+		compile('refs');
+		compile('item-template');
+	});
+
+
+
+	grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-http-server');

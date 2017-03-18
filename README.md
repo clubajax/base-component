@@ -341,6 +341,10 @@ A. babel is not transpiling. This could be:
  
 Or, as per the above FAQ, it is _*because*_ you added default to the extended class.
 
+Q. **Uncaught ReferenceError: this is not defined**
+
+A. `super()` is required in the constructor when extending another class.
+
 Q. **What are the `constructor super()` rules?**
 
 A. Super-Rules:
@@ -353,16 +357,9 @@ Q. **Why are my component methods undefined?**
 
 A. Did you remember to do: `customElements.define('my-component', MyComponent)`?
 
-## webpack FAQ
+### More Information:
 
-Q. **The HMS detects changes, but I do not see them in the document.**
-
-A. Webpack uses a virtual directory (`output.publicPath`) to serve files. You are probably pointing to the wrong source 
-code in your HTML.
-
-Q. **There is an error saying my files are not there - but they are!**
-
-A. This can happen if webpack is running while you switch branches.
+http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
 
 ## License
 
