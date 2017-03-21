@@ -32,8 +32,9 @@
     "grunt-http-server": "^2.0.0"
   },
   "dependencies": {
-    "webcomponents":"webcomponents/custom-elements",
+    "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill",
     "dom": "clubajax/dom",
-    "on": "clubajax/on#master"
+    "on": "clubajax/on#master",
+    "webcomponents": "webcomponents/custom-elements"
   }
 }
