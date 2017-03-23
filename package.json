@@ -1,6 +1,6 @@
 {
   "name": "BaseComponent",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "A base for more powerful web components",
   "main": "dist/BaseComponent.js",
   "scripts": {
@@ -36,5 +36,8 @@
     "dom": "clubajax/dom",
     "on": "clubajax/on#master",
     "webcomponents": "webcomponents/custom-elements"
+  },
+  "peerDependencies": {
+    "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill"
   }
 }
