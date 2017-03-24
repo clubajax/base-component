@@ -1,4 +1,4 @@
-#BaseComponent
+# BaseComponent
 
 A base for more powerful web components
 
@@ -313,7 +313,7 @@ difficulty in styling, the cons outweigh the pros. This also keeps the library s
 
 ## ES6 FAQ
 
-Q: **What are the steps for iusing webpack?**
+Q: **What are the steps for using webpack?**
 
 A: Use the shims in this order:
 
@@ -326,7 +326,7 @@ Decide if you want to use ES6 (Chrome only) or ES5 (all browsers)
 
 Q. **Uncaught TypeError: Failed to construct 'HTMLElement': Please use the 'new' operator, this DOM object constructor cannot be called as a function.**
 
-A. The webcomponents native-shim.js is missing.
+A. The webcomponents native-shim.js is missing. Ensure that the shim is loading before any custom element code.
 
 Q. **Uncaught TypeError:Super expression must either be null or a function, not object**
 
@@ -335,13 +335,11 @@ wrapper around the object; ergo, instead of `extend MyClass`, do `extend MyClass
 
 Q. **Uncaught TypeError: Class constructor cannot be invoked without 'new'**
 
-A. babel is not transpiling. This could be:
- * wrong version (try "latest" or "es2015")
- * using "excludes" in webpack (this kills babel for some reason)
+A. babel is not transpiling. This could be the wrong version (try "latest" or "es2015")
  
-Or, as per the above FAQ, it is _*because*_ you added default to the extended class.
+Or, as per the above FAQ, it is _*because*_ you added `.default` to the extended class.
 
-Q. **Uncaught ReferenceError: this is not defined**
+Q. **Uncaught ReferenceError: "this" is not defined**
 
 A. `super()` is required in the constructor when extending another class.
 
