@@ -1,8 +1,8 @@
 {
   "name": "BaseComponent",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "A base for more powerful web components",
-  "main": "src/BaseComponent",
+  "main": "dist/BaseComponent.js",
   "scripts": {
     "start": "grunt dev",
     "build": "grunt deploy",
@@ -29,12 +29,15 @@
     "grunt-browserify": "^5.0.0",
     "grunt-concurrent": "^2.3.1",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-http-server": "^2.0.0",
-    "keyboardevent-key-polyfill": "^1.0.2"
+    "grunt-http-server": "^2.0.0"
   },
   "dependencies": {
-    "webcomponents":"webcomponents/custom-elements",
+    "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill",
     "dom": "clubajax/dom",
-    "on": "clubajax/on#master"
+    "on": "clubajax/on#master",
+    "webcomponents": "webcomponents/custom-elements"
+  },
+  "peerDependencies": {
+    "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill"
   }
 }

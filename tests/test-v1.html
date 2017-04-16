@@ -123,7 +123,7 @@
                     type: 'sane',
                     amount: 3
                 }
- ,{
+ 				,{
                     id:'d',
                     first: 'Jerry',
                     last: 'Smith',
@@ -154,14 +154,8 @@
                     on = window.on,
                     expect = chai.expect,
                     body = document.body;
-
-                function xsuite() {
-                }
-
-                function xtest() {
-                }
-
-                xsuite('create / destroy', function () {
+				
+                suite('create / destroy', function () {
 
                     test('it should create a component', function () {
                         var node = dom('test-lifecycle', {css:'foo'}, body);
@@ -196,7 +190,7 @@
                     // TODO: test inheritance
                 });
 
-                xsuite('plugins', function () {
+                suite('plugins', function () {
                     test('it should connect to a plugin\'s events', function (done) {
                         var
                             called = 0,
@@ -222,7 +216,7 @@
                     });
                 });
 
-                xsuite('lifecycle methods', function () {
+                suite('lifecycle methods', function () {
                     test('it should call component\'s `connected` method', function () {
                         var
                             node,
@@ -371,7 +365,7 @@
                     });
                 });
 
-                xsuite('templates', function () {
+                suite('templates', function () {
                     test('it should create a component with a templateString', function () {
                         var node = dom('test-tmpl-string', {}, body);
                         expect(dom.isNode(node)).to.equal(true);
@@ -388,7 +382,7 @@
                     });
                 });
 
-                xsuite('template refs', function () {
+                suite('template refs', function () {
                     test('it should reference nodes with the `ref` attribute', function () {
                         var node = dom('test-tmpl-refs', {}, body);
                         expect(dom.isNode(node.labelNode)).to.equal(true);
@@ -525,7 +519,7 @@
                     });
                 });
 
-                xsuite('temp', function () {
+                suite('temp', function () {
 
                 });
             });
