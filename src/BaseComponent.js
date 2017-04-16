@@ -19,7 +19,7 @@ class BaseComponent extends HTMLElement {
 	}
 
 	connectedCallback() {
-		privates[this._uid].DOMSTATE = 'connected';
+		privates[this._uid].DOMSTATE = privates[this._uid].domReadyFired ? 'domready' : 'connected';
 		plugin('preConnected', this);
 		nextTick(onCheckDomReady.bind(this));
 		if (this.connected) {
@@ -69,14 +69,14 @@ class BaseComponent extends HTMLElement {
 
 	on(node, eventName, selector, callback) {
 		return this.registerHandle(
-			typeof node != 'string' ? // no node is supplied
+			typeof node !== 'string' ? // no node is supplied
 				on(node, eventName, selector, callback) :
 				on(this, node, eventName, selector));
 	}
 
 	once(node, eventName, selector, callback) {
 		return this.registerHandle(
-			typeof node != 'string' ? // no node is supplied
+			typeof node !== 'string' ? // no node is supplied
 				on.once(node, eventName, selector, callback) :
 				on.once(this, node, eventName, selector, callback));
 	}
@@ -156,18 +156,18 @@ function plugin(method, node, a, b, c) {
 }
 
 function onCheckDomReady() {
-	if (this.DOMSTATE != 'connected' || privates[this._uid].domReadyFired) {
+	if (this.DOMSTATE !== 'connected' || privates[this._uid].domReadyFired) {
 		return;
 	}
 
-	var
+	let
 		count = 0,
 		children = getChildCustomNodes(this),
 		ourDomReady = onDomReady.bind(this);
 
 	function addReady() {
 		count++;
-		if (count == children.length) {
+		if (count === children.length) {
 			ourDomReady();
 		}
 	}
@@ -182,7 +182,8 @@ function onCheckDomReady() {
 		//
 		children.forEach(function (child) {
 			// check if child is already ready
-			if (child.DOMSTATE == 'domready') {
+			// also check for connected - this handles moving a node from another node
+			if (child.DOMSTATE === 'domready' || child.DOMSTATE === 'connected') {
 				addReady();
 			}
 			// if not, wait for event

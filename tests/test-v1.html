@@ -217,7 +217,30 @@
                 });
 
                 suite('lifecycle methods', function () {
-                    test('it should call component\'s `connected` method', function () {
+					test.only('it should should be in the domready state when re-added to the DOM', function (done) {
+						var
+							node,
+							called = false,
+							h = on(document, 'connected-called', function () {
+								called = true;
+							});
+						node = dom('test-lifecycle', {}, body);
+						expect(called).to.equal(true);
+						expect(node.DOMSTATE).to.equal('connected');
+
+						setTimeout(function () {
+							expect(node.DOMSTATE).to.equal('domready');
+							body.removeChild(node);
+							expect(node.DOMSTATE).to.equal('disconnected');
+							body.appendChild(node);
+							expect(node.DOMSTATE).to.equal('domready');
+							node.destroy();
+							h.remove();
+							done();
+						}, 100);
+					});
+
+                	test('it should call component\'s `connected` method', function () {
                         var
                             node,
                             called = false,
