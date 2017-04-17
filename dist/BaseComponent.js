@@ -48,6 +48,8 @@ var BaseComponent = function (_HTMLElement) {
 	}, {
 		key: 'disconnectedCallback',
 		value: function disconnectedCallback() {
+			var _this2 = this;
+
 			privates[this._uid].DOMSTATE = 'disconnected';
 			plugin('preDisconnected', this);
 			if (this.disconnected) {
@@ -56,10 +58,14 @@ var BaseComponent = function (_HTMLElement) {
 			this.fire('disconnected');
 
 			var time = void 0,
-			    doc = BaseComponent.destroyOnDisconnect;
-			if (doc) {
-				time = typeof doc === 'number' ? doc : 100;
-				setTimeout(this.destroy.bind(this), time);
+			    dod = BaseComponent.destroyOnDisconnect;
+			if (dod) {
+				time = typeof doc === 'number' ? doc : 300;
+				setTimeout(function () {
+					if (_this2.DOMSTATE === 'disconnected') {
+						_this2.destroy();
+					}
+				}, time);
 			}
 		}
 	}, {
