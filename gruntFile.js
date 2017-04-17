@@ -75,6 +75,7 @@ module.exports = function (grunt) {
             		'dist/BaseComponent.js': ['src/BaseComponent.js']
 				},
 				options: {
+					external: [...vendorAliases, ...pluginAliases],
 					transform: babelTransform,
 					browserifyOptions: {
 						standalone: 'BaseComponent',
