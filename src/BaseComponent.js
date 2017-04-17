@@ -37,10 +37,14 @@ class BaseComponent extends HTMLElement {
 		}
 		this.fire('disconnected');
 
-		let time, doc = BaseComponent.destroyOnDisconnect;
-		if (doc) {
-			time = typeof doc === 'number' ? doc : 100;
-			setTimeout(this.destroy.bind(this), time);
+		let time, dod = BaseComponent.destroyOnDisconnect;
+		if (dod) {
+			time = typeof doc === 'number' ? doc : 300;
+			setTimeout(() => {
+				if(this.DOMSTATE === 'disconnected'){
+					this.destroy();
+				}
+			}, time);
 		}
 	}
 
