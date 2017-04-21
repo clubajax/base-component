@@ -38,6 +38,8 @@
     "webcomponents": "webcomponents/custom-elements"
   },
   "peerDependencies": {
-    "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill"
+    "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill",
+		"dom": "clubajax/dom",
+		"on": "clubajax/on#master"
   }
 }
