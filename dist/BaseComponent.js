@@ -1,4 +1,15 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.BaseComponent = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(["on", "dom"], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        // Node / CommonJS
+        module.exports = factory(require('on'), require('dom'));
+    } else {
+        // Browser globals (root is window)
+        root['BaseComponent'] = factory(root.on, root.dom);
+    }
+	}(this, function (on, dom) {
 "use strict";
 
 // class/component rules
@@ -7,6 +18,7 @@
 
 // Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
 
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -14,9 +26,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _on = require('on');
-var dom = require('dom');
 
 var BaseComponent = function (_HTMLElement) {
 	_inherits(BaseComponent, _HTMLElement);
@@ -88,24 +97,34 @@ var BaseComponent = function (_HTMLElement) {
 	}, {
 		key: 'fire',
 		value: function fire(eventName, eventDetail, bubbles) {
-			return _on.fire(this, eventName, eventDetail, bubbles);
+			return on.fire(this, eventName, eventDetail, bubbles);
 		}
 	}, {
 		key: 'emit',
 		value: function emit(eventName, value) {
-			return _on.emit(this, eventName, value);
+			return on.emit(this, eventName, value);
 		}
 	}, {
 		key: 'on',
-		value: function on(node, eventName, selector, callback) {
+		value: function (_on) {
+			function on(_x, _x2, _x3, _x4) {
+				return _on.apply(this, arguments);
+			}
+
+			on.toString = function () {
+				return _on.toString();
+			};
+
+			return on;
+		}(function (node, eventName, selector, callback) {
 			return this.registerHandle(typeof node !== 'string' ? // no node is supplied
-			_on(node, eventName, selector, callback) : _on(this, node, eventName, selector));
-		}
+			on(node, eventName, selector, callback) : on(this, node, eventName, selector));
+		})
 	}, {
 		key: 'once',
 		value: function once(node, eventName, selector, callback) {
 			return this.registerHandle(typeof node !== 'string' ? // no node is supplied
-			_on.once(node, eventName, selector, callback) : _on.once(this, node, eventName, selector, callback));
+			on.once(node, eventName, selector, callback) : on.once(this, node, eventName, selector, callback));
 		}
 	}, {
 		key: 'registerHandle',
@@ -268,7 +287,6 @@ window.onDomReady = function (node, callback) {
 	}
 };
 
-module.exports = BaseComponent;
+	return BaseComponent;
 
-},{"dom":"dom","on":"on"}]},{},[1])(1)
-});
+}));

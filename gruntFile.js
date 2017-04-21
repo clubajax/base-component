@@ -162,7 +162,7 @@ module.exports = function (grunt) {
     });
 
     // task that builds files for production
-    grunt.registerTask('deploy', function (which) {
+    grunt.registerTask('old-deploy', function (which) {
         //grunt.task.run('browserify:vendor');
         //grunt.task.run('browserify:deploy');
 		grunt.task.run('browserify:BaseComponent');
@@ -181,7 +181,7 @@ module.exports = function (grunt) {
         grunt.task.run('http-server');
     });
 
-	grunt.registerTask('compile', function (which) {
+	grunt.registerTask('deploy', function (which) {
 		const compile = require('./scripts/compile');
 		compile('BaseComponent');
 		compile('properties');
