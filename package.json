@@ -34,12 +34,12 @@
   "dependencies": {
     "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill",
     "dom": "clubajax/dom",
-    "on": "clubajax/on#master",
+    "on": "clubajax/on",
     "webcomponents": "webcomponents/custom-elements"
   },
   "peerDependencies": {
     "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill",
 		"dom": "clubajax/dom",
-		"on": "clubajax/on#master"
+		"on": "clubajax/on"
   }
 }
