@@ -98,7 +98,7 @@ BaseComponent.addPlugin({
 	},
 	preAttributeChanged: function preAttributeChanged(node, name, value) {
 		this[name] = dom.normalize(value);
-		if (!value && (node.bools || node.booleans || []).indexOf(name)) {
+		if (value === null && (node.bools || node.booleans || []).indexOf(name)) {
 			node.removeAttribute(name);
 		}
 	}
