@@ -1,6 +1,6 @@
 {
   "name": "BaseComponent",
-	"version": "0.8.2",
+	"version": "0.9.0",
   "description": "A base for more powerful web components",
   "main": "src/BaseComponent.js",
   "authors": [

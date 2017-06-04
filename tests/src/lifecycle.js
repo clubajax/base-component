@@ -6,14 +6,12 @@ const itemTemplate = require('../../src/item-template');
 
 class TestProps extends BaseComponent {
 
-    static get observedAttributes() { return ['foo', 'bar', 'nbc', 'cbs', 'disabled']; }
+    static get observedAttributes() { return ['foo', 'bar', 'nbc', 'cbs', 'disabled', 'readonly']; }
     get props () { return ['foo', 'bar']; }
-    get bools () { return ['nbc', 'cbs']; }
+    get bools () { return ['nbc', 'cbs', 'disabled', 'readonly']; }
 
     attributeChanged (name, value) {
-        //console.log('CHG', name, value);
-        //this[name] = dom.normalize(value);
-        this[name + '-changed'] = dom.normalize(value);
+        this[name + '-changed'] = dom.normalize(value) || value !== null;
     }
 }
 

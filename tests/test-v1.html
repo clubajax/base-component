@@ -475,7 +475,7 @@
                     });
                 });
 
-                suite('properties', function () {
+                suite.only('properties', function () {
                     test('it should sync properties and attributes', function () {
                         var node = dom('test-props', {attr:{foo:true}}, body);
                         expect(node.getAttribute('foo')).to.equal('true');
@@ -502,6 +502,14 @@
 
                     test('it should sync booleans and attributes', function (done) {
                         var node = dom('test-props', {attr:{nbc:true, disabled:true}}, body);
+                        var onDisabled;
+                        var onReadonly;
+                        node.onDisabled = function (value) {
+							onDisabled = value;
+						};
+                        node.onReadonly = function (value) {
+							onReadonly = value;
+						};
                         onDomReady(node, function () {
                             expect(node.hasAttribute('nbc')).to.equal(true);
                             expect(node.nbc).to.equal(true);
@@ -517,6 +525,30 @@
                             node.nbc = true;
                             expect(node.hasAttribute('cbs')).to.equal(false);
                             expect(node.hasAttribute('nbc')).to.equal(true);
+
+							node.disabled = true;
+							expect(node.hasAttribute('disabled')).to.equal(true);
+							expect(node.disabled).to.equal(true);
+							expect(node['disabled-changed']).to.equal(true);
+							expect(onDisabled).to.equal(true);
+
+							node.readonly = true;
+							expect(node.hasAttribute('readonly')).to.equal(true);
+							expect(node.readonly).to.equal(true);
+							expect(node['readonly-changed']).to.equal(true);
+							expect(onReadonly).to.equal(true);
+
+							node.removeAttribute('disabled');
+							expect(node.hasAttribute('disabled')).to.equal(false);
+							expect(node.disabled).to.equal(false);
+							expect(node['disabled-changed']).to.equal(false);
+							expect(onDisabled).to.equal(null);
+
+							node.removeAttribute('readonly');
+							expect(node.hasAttribute('readonly')).to.equal(false);
+							expect(node.readonly).to.equal(false);
+							expect(node['readonly-changed']).to.equal(false);
+							expect(onReadonly).to.equal(null);
                             done();
                         });
                     });

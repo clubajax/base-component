@@ -12,22 +12,30 @@
 	}(this, function (BaseComponent, dom) {
 'use strict';
 
+function onify(name) {
+	return 'on' + name.substring(0, 1).toUpperCase() + name.substring(1);
+}
+
 function setBoolean(node, prop) {
 	Object.defineProperty(node, prop, {
 		enumerable: true,
 		configurable: true,
 		get: function get() {
-			if (node.hasAttribute(prop)) {
-				return dom.normalize(node.getAttribute(prop));
-			}
-			return false;
+			return node.hasAttribute(prop);
 		},
 		set: function set(value) {
+			this.isSettingAttribute = true;
 			if (value) {
 				this.setAttribute(prop, '');
 			} else {
 				this.removeAttribute(prop);
 			}
+			var fn = this[onify(prop)];
+			if (fn) {
+				fn(value);
+			}
+
+			this.isSettingAttribute = false;
 		}
 	});
 }
@@ -40,7 +48,13 @@ function setProperty(node, prop) {
 			return dom.normalize(this.getAttribute(prop));
 		},
 		set: function set(value) {
+			this.isSettingAttribute = true;
 			this.setAttribute(prop, value);
+			var fn = this[onify(prop)];
+			if (fn) {
+				fn(value);
+			}
+			this.isSettingAttribute = false;
 		}
 	});
 }
@@ -97,7 +111,10 @@ BaseComponent.addPlugin({
 		setBooleans(node);
 	},
 	preAttributeChanged: function preAttributeChanged(node, name, value) {
-		this[name] = dom.normalize(value);
+		if (node.isSettingAttribute) {
+			return false;
+		}
+		node[name] = dom.normalize(value);
 		if (value === null && (node.bools || node.booleans || []).indexOf(name)) {
 			node.removeAttribute(name);
 		}
