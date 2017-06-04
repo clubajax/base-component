@@ -1,10 +1,6 @@
 const BaseComponent = require('BaseComponent');
 const dom = require('dom');
 
-function onify (name) {
-	return 'on' + name.substring(0,1).toUpperCase() + name.substring(1);
-}
-
 function setBoolean (node, prop) {
 	Object.defineProperty(node, prop, {
 		enumerable: true,
@@ -93,6 +89,14 @@ function setObjects (node) {
 	}
 }
 
+function onify (name) {
+	return 'on' + name.substring(0,1).toUpperCase() + name.substring(1);
+}
+
+function isBool (node, name) {
+	return (node.bools || node.booleans || []).indexOf(name)
+}
+
 BaseComponent.addPlugin({
 	name: 'properties',
 	order: 10,
@@ -104,9 +108,20 @@ BaseComponent.addPlugin({
 		if (node.isSettingAttribute) {
 			return false;
 		}
-		node[name] = dom.normalize(value);
-		if (value === null && (node.bools || node.booleans || []).indexOf(name)) {
-			node.removeAttribute(name);
+
+		if(isBool(node, name)){
+			node[name] = value !== null;
+			if(value === null){
+				node[name] = false;
+				node.isSettingAttribute = true;
+				node.removeAttribute(name);
+				node.isSettingAttribute = false;
+			} else {
+				node[name] = true;
+			}
+			return;
 		}
+
+		node[name] = dom.normalize(value);
 	}
 });

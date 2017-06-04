@@ -39,27 +39,6 @@
             width: 70px;
         }
     </style>
-    <script>
-        var i;
-        var amt = 10000;
-        var s = '${amount} - ${num} < 3';
-        var f = new Function('a', 'b', 'return a - b < 3');
-        console.log('EXP', f(4, 1));
-        console.time('exp');
-        for(i = 0; i < amt; i++){
-            f(i,1);
-        }
-        console.timeEnd('exp');
-
-        var fn = function (a, b) {
-            return a - b < 3;
-        };
-        console.time('func');
-        for(i = 0; i < amt; i++){
-            fn(i,1);
-        }
-        console.timeEnd('func');
-    </script>
 </head>
 <body>
     <h1>Test BaseComponent</h1>
@@ -78,6 +57,7 @@
         </li>
     </template>
 
+	<test-props disabled readonly id="test-1"></test-props>
 
     <div id="mocha"></div>
 
@@ -476,6 +456,17 @@
                 });
 
                 suite.only('properties', function () {
+
+                	test('it should set properties from naked attributes', function () {
+                		var node = dom.byId('test-1');
+						console.log('', node);
+                		expect(node.hasAttribute('disabled')).to.equal(true);
+						expect(node.hasAttribute('readonly')).to.equal(true);
+
+						expect(node.disabled).to.equal(true);
+						expect(node.readonly).to.equal(true);
+					});
+
                     test('it should sync properties and attributes', function () {
                         var node = dom('test-props', {attr:{foo:true}}, body);
                         expect(node.getAttribute('foo')).to.equal('true');
@@ -545,13 +536,13 @@
 							expect(node.hasAttribute('disabled')).to.equal(false);
 							expect(node.disabled).to.equal(false);
 							expect(node['disabled-changed']).to.equal(false);
-							expect(onDisabled).to.equal(null);
+							expect(onDisabled).to.equal(false);
 
 							node.removeAttribute('readonly');
 							expect(node.hasAttribute('readonly')).to.equal(false);
 							expect(node.readonly).to.equal(false);
 							expect(node['readonly-changed']).to.equal(false);
-							expect(onReadonly).to.equal(null);
+							expect(onReadonly).to.equal(false);
                             done();
                         });
                     });
