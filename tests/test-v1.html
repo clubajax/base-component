@@ -497,6 +497,9 @@
                         expect(node.getAttribute('bar')).to.equal('true');
                         expect(node.bar).to.equal(true);
 
+                        node.tabindex = 0;
+						expect(node.getAttribute('tabindex')).to.equal('0');
+
                         expect(node['bar-changed']).to.equal(true);
                     });
 
