@@ -104,7 +104,7 @@ function onify(name) {
 }
 
 function isBool(node, name) {
-	return (node.bools || node.booleans || []).indexOf(name);
+	return (node.bools || node.booleans || []).indexOf(name) > -1;
 }
 
 BaseComponent.addPlugin({

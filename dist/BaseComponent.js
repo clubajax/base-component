@@ -127,6 +127,18 @@ var BaseComponent = function (_HTMLElement) {
 			on.once(node, eventName, selector, callback) : on.once(this, node, eventName, selector, callback));
 		}
 	}, {
+		key: 'attr',
+		value: function attr(key, value, toggle) {
+			this.isSettingAttribute = true;
+			var add = toggle === undefined ? true : !!toggle;
+			if (add) {
+				this.setAttribute(key, value);
+			} else {
+				this.removeAttribute(key);
+			}
+			this.isSettingAttribute = false;
+		}
+	}, {
 		key: 'registerHandle',
 		value: function registerHandle(handle) {
 			privates[this._uid].handleList.push(handle);
