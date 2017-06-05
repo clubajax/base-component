@@ -28,7 +28,7 @@ function setBoolean(node, prop) {
 			}
 			var fn = this[onify(prop)];
 			if (fn) {
-				fn(value);
+				fn.call(this, value);
 			}
 
 			this.isSettingAttribute = false;
@@ -48,7 +48,7 @@ function setProperty(node, prop) {
 			this.setAttribute(prop, value);
 			var fn = this[onify(prop)];
 			if (fn) {
-				fn(value);
+				fn.call(this, value);
 			}
 			this.isSettingAttribute = false;
 		}
