@@ -107,6 +107,17 @@ function isBool(node, name) {
 	return (node.bools || node.booleans || []).indexOf(name) > -1;
 }
 
+function boolNorm(value) {
+	if (value === '') {
+		return true;
+	}
+	return dom.normalize(value);
+}
+
+function propNorm(value) {
+	return dom.normalize(value);
+}
+
 BaseComponent.addPlugin({
 	name: 'properties',
 	order: 10,
@@ -118,10 +129,10 @@ BaseComponent.addPlugin({
 		if (node.isSettingAttribute) {
 			return false;
 		}
-
 		if (isBool(node, name)) {
-			node[name] = value !== null;
-			if (value === null) {
+			value = boolNorm(value);
+			node[name] = !!value;
+			if (!value) {
 				node[name] = false;
 				node.isSettingAttribute = true;
 				node.removeAttribute(name);
@@ -132,7 +143,7 @@ BaseComponent.addPlugin({
 			return;
 		}
 
-		node[name] = dom.normalize(value);
+		node[name] = propNorm(value);
 	}
 });
 

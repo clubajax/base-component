@@ -97,10 +97,14 @@ function isBool (node, name) {
 	return (node.bools || node.booleans || []).indexOf(name) > -1;
 }
 
-function norm (value) {
+function boolNorm (value) {
 	if(value === ''){
 		return true;
 	}
+	return dom.normalize(value);
+}
+
+function propNorm (value) {
 	return dom.normalize(value);
 }
 
@@ -115,8 +119,8 @@ BaseComponent.addPlugin({
 		if (node.isSettingAttribute) {
 			return false;
 		}
-		value = norm(value);
 		if(isBool(node, name)){
+			value = boolNorm(value);
 			node[name] = !!value;
 			if(!value){
 				node[name] = false;
@@ -129,6 +133,6 @@ BaseComponent.addPlugin({
 			return;
 		}
 
-		node[name] = value;
+		node[name] = propNorm(value);
 	}
 });
