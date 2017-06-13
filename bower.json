@@ -1,6 +1,6 @@
 {
   "name": "BaseComponent",
-	"version": "0.9.0",
+	"version": "1.0.0",
   "description": "A base for more powerful web components",
   "main": "src/BaseComponent.js",
   "authors": [
@@ -13,8 +13,8 @@
   ],
   "homepage": "https://github.com/clubajax/BaseComponent",
   "dependencies": {
-    "on": "clubajax/on",
-    "dom": "clubajax/dom",
+		"dom": "clubajax/dom#v1.4.1",
+		"on": "clubajax/on#v1.7.8",
     "webcomponents": "webcomponents/custom-elements#1.0.0-alpha.3"
   },
   "devDependencies": {
