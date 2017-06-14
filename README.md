@@ -381,7 +381,7 @@ Q. **Uncaught ReferenceError: "this" is not defined**
 
 A. `super()` is required in the constructor when extending another class.
 
-Q. **What are the `constructor super()` rules?**
+Q. **What are the `constructor super()` rules?** 
 
 A. Super-Rules:
  

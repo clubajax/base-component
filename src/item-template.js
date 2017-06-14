@@ -1,6 +1,6 @@
 const BaseComponent = require('BaseComponent');
 const dom = require('dom');
-const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+//const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 const r = /\{\{\w*}}/g;
 
 // TODO: switch to ES6 literals? Maybe not...
@@ -14,7 +14,7 @@ function createCondition(name, value) {
         w = w.replace('{{', '').replace('}}', '');
         return 'item["' + w + '"]';
     });
-    console.log('createCondition', name, value);
+    //console.log('createCondition', name, value);
     return function (item) {
         return eval(value);
     };
@@ -33,7 +33,7 @@ function walkDom(node, refs) {
             let
                 name = node.attributes[i].name,
                 value = node.attributes[i].value;
-            console.log('  ', name, value);
+            //console.log('  ', name, value);
             if (name === 'if') {
                 item.conditional = createCondition(name, value);
             }

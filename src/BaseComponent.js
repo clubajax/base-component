@@ -197,7 +197,8 @@ function onCheckDomReady() {
 		children.forEach(function (child) {
 			// check if child is already ready
 			// also check for connected - this handles moving a node from another node
-			if (child.DOMSTATE === 'domready' || child.DOMSTATE === 'connected') {
+			// NOPE, that failed. removed for now child.DOMSTATE === 'connected'
+			if (child.DOMSTATE === 'domready') {
 				addReady();
 			}
 			// if not, wait for event
@@ -216,8 +217,7 @@ function onDomReady() {
 	// subsequent events
 	if (this.domReady) {
 		this.domReady();
-		this.domReady = function () {
-		};
+		this.domReady = function () {};
 	}
 
 	this.fire('domready');

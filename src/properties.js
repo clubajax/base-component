@@ -26,19 +26,21 @@ function setBoolean (node, prop) {
 }
 
 function setProperty (node, prop) {
+	let propValue;
 	Object.defineProperty(node, prop, {
 		enumerable: true,
 		configurable: true,
 		get () {
-			return dom.normalize(this.getAttribute(prop));
+			return propValue !== undefined ? propValue : dom.normalize(this.getAttribute(prop));
 		},
 		set (value) {
 			this.isSettingAttribute = true;
 			this.setAttribute(prop, value);
 			const fn = this[onify(prop)];
 			if(fn){
-				fn.call(this, value);
+				value = fn.call(this, value) || value;
 			}
+			propValue = value;
 			this.isSettingAttribute = false;
 		}
 	});
@@ -89,8 +91,12 @@ function setObjects (node) {
 	}
 }
 
+function cap (name) {
+	return name.substring(0,1).toUpperCase() + name.substring(1);
+}
+
 function onify (name) {
-	return 'on' + name.substring(0,1).toUpperCase() + name.substring(1);
+	return 'on' + name.split('-').map(word => cap(word)).join('');
 }
 
 function isBool (node, name) {

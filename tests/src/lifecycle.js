@@ -6,8 +6,8 @@ const itemTemplate = require('../../src/item-template');
 
 class TestProps extends BaseComponent {
 
-    static get observedAttributes() { return ['foo', 'bar', 'nbc', 'cbs', 'disabled', 'readonly', 'tabindex']; }
-    get props () { return ['foo', 'bar', 'tabindex']; }
+    static get observedAttributes() { return ['min', 'max', 'foo', 'bar', 'nbc', 'cbs', 'disabled', 'readonly', 'tabindex', 'my-complex-prop']; }
+    get props () { return ['foo', 'bar', 'tabindex', 'min', 'max', 'my-complex-prop']; }
     get bools () { return ['nbc', 'cbs', 'disabled', 'readonly']; }
 
     attributeChanged (name, value) {

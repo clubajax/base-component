@@ -197,7 +197,7 @@
                 });
 
                 suite('lifecycle methods', function () {
-					test.only('it should should be in the domready state when re-added to the DOM', function (done) {
+					test('it should should be in the domready state when re-added to the DOM', function (done) {
 						var
 							node,
 							called = false,
@@ -217,7 +217,7 @@
 							node.destroy();
 							h.remove();
 							done();
-						}, 100);
+						}, 300);
 					});
 
                 	test('it should call component\'s `connected` method', function () {
@@ -267,21 +267,25 @@
                     });
                     test('it should call component\'s `domReady` method when children are ready', function (done) {
                         var
-                            node,
+							parent,
                             called = 0,
                             h = on(document, 'domready-called', function () {
                                 called++;
                             });
-                        node = dom('test-lifecycle', {}, body);
-                        dom('test-lifecycle', {}, node);
-                        dom('test-lifecycle', {}, node);
-                        dom('test-lifecycle', {}, node);
-                        node.on('domready', function () {
+						parent = dom('test-lifecycle', {}, body);
+                        dom('test-lifecycle', {}, parent);
+                        dom('test-lifecycle', {}, parent);
+						dom('test-lifecycle', {}, parent);
+                        //setTimeout(function () {
+
+
+                        parent.on('domready', function () {
                             expect(called).to.equal(4);
                             h.remove();
-                            node.destroy();
+                            parent.destroy();
                             done();
-                        });
+                        //});
+						})
                     });
                     test('it should call component\'s `domReady` method when descendants are ready', function (done) {
                         var
@@ -448,18 +452,16 @@
                             content = dom.queryAll(node, 'div').map(function (n) {
                                 return n.innerHTML;
                             }).join(',');
-                        console.log('content', content);
                         expect(dom.isNode(node)).to.equal(true);
                         expect(content).to.equal('content A before,content C before,Light DOM,content C after,content A after');
                         node.destroy();
                     });
                 });
 
-                suite.only('properties', function () {
+                suite('properties', function () {
 
                 	test('it should set properties from naked attributes', function () {
                 		var node = dom.byId('test-1');
-						console.log('', node);
                 		expect(node.hasAttribute('disabled')).to.equal(true);
 						expect(node.hasAttribute('readonly')).to.equal(true);
 
@@ -493,6 +495,50 @@
 
                         expect(node['bar-changed']).to.equal(true);
                     });
+
+                    test('it should handle properties', function () {
+						var node = dom('test-props', {}, body);
+						node.setAttribute('min', '50%');
+						node.setAttribute('max', '-75%');
+
+						// values changed in
+						expect(node.min).to.equal(50);
+						expect(node.max).to.equal(-75);
+						expect(node.getAttribute('min')).to.equal('50');
+						expect(node.getAttribute('max')).to.equal('-75');
+					});
+
+					test('it should handle property callbacks and changed values', function () {
+						var node = dom('test-props', {}, body);
+
+						node.onMin = function (value) {
+							return value + 12;
+						};
+						node.onMax = function (value) {
+							return value - 1;
+						};
+						node.setAttribute('min', '50%');
+						node.setAttribute('max', '-75%');
+
+						// values changed in
+						expect(node.min).to.equal(62);
+						expect(node.max).to.equal(-76);
+						expect(node.getAttribute('min')).to.equal('50');
+						expect(node.getAttribute('max')).to.equal('-75');
+					});
+
+					test('it should handle a complex property callback', function () {
+						var node = dom('test-props', {}, body);
+
+						node.onMyComplexProp = function (value) {
+							return 'no';
+						};
+						node.setAttribute('my-complex-prop', 'yes');
+
+						// values changed in
+						expect(node['my-complex-prop']).to.equal('no');
+						expect(node.getAttribute('my-complex-prop')).to.equal('yes');
+					});
 
                     test('it should sync booleans and attributes', function (done) {
                         var node = dom('test-props', {attr:{nbc:true, disabled:true}}, body);

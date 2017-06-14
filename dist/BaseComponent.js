@@ -69,7 +69,7 @@ var BaseComponent = function (_HTMLElement) {
 			var time = void 0,
 			    dod = BaseComponent.destroyOnDisconnect;
 			if (dod) {
-				time = typeof doc === 'number' ? doc : 300;
+				time = typeof dod === 'number' ? doc : 300;
 				setTimeout(function () {
 					if (_this2.DOMSTATE === 'disconnected') {
 						_this2.destroy();
@@ -155,8 +155,8 @@ var BaseComponent = function (_HTMLElement) {
 			if (template.content && template.content.children) {
 				return document.importNode(template.content, true);
 			}
-			var frag = document.createDocumentFragment(),
-			    cloneNode = document.createElement('div');
+			var frag = document.createDocumentFragment();
+			var cloneNode = document.createElement('div');
 			cloneNode.innerHTML = template.innerHTML;
 
 			while (cloneNode.children.length) {
@@ -167,7 +167,7 @@ var BaseComponent = function (_HTMLElement) {
 	}, {
 		key: 'addPlugin',
 		value: function addPlugin(plug) {
-			var i,
+			var i = void 0,
 			    order = plug.order || 100;
 			if (!plugins.length) {
 				plugins.push(plug);
@@ -241,7 +241,8 @@ function onCheckDomReady() {
 		children.forEach(function (child) {
 			// check if child is already ready
 			// also check for connected - this handles moving a node from another node
-			if (child.DOMSTATE === 'domready' || child.DOMSTATE === 'connected') {
+			// NOPE, that failed. removed for now child.DOMSTATE === 'connected'
+			if (child.DOMSTATE === 'domready') {
 				addReady();
 			}
 			// if not, wait for event
@@ -272,7 +273,7 @@ function getChildCustomNodes(node) {
 	// collect any children that are custom nodes
 	// used to check if their dom is ready before
 	// determining if this is ready
-	var i,
+	var i = void 0,
 	    nodes = [];
 	for (i = 0; i < node.children.length; i++) {
 		if (node.children[i].nodeName.indexOf('-') > -1) {
