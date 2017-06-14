@@ -4,7 +4,7 @@ A base for more powerful web components
 
 ## Description
 
-Use BaseComponent as a way to make developing with web components easier.
+Use BaseComponent as a way to make developing web components faster and easier.
 
 A good resource to learn about web components is [Google Developers](https://developers.google.com/web/fundamentals/getting-started/primers/customelements)
  
@@ -12,9 +12,11 @@ A good resource to learn about web components is [Google Developers](https://dev
 
     npm install clubajax/BaseComponent --save
     
+You will most likely want to use the polyfill as well (explained below)
+    
+    npm install clubajax/custom-elements-polyfill --save
+    
 You may also use `bower` if you prefer, although build tools like Webpack prefer *node_modules*. 
-
-BaseComponent has dependencies on [clubajax/on](https://github.com/clubajax/on) and [clubajax/dom](https://github.com/clubajax/dom)
 
 ## Adding to a Project
 
@@ -42,11 +44,6 @@ Custom elements use ES6 classes, so that is how this library is written, and how
 The built code in */dist* is transpiled into ES5 and will work out of the box, using the 
 [custom elements polyfill](https://github.com/clubajax/custom-elements-polyfill), 
 which is based on the efforts from the [webcomponents polyfills](https://github.com/webcomponents/custom-elements) 
-
-[webreflection](https://www.webreflection.co.uk/blog/2016/08/21/custom-elements-v1)
-[w3 mailing list](https://lists.w3.org/Archives/Public/public-webapps-github/2016Mar/1932.html)
-[mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
-[Classes](http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods)
    
 ## Docs
 
@@ -60,18 +57,18 @@ class MyCustom extends BaseComponent {
 }
 customElements.define('my-custom', MyCustom);
 
+// In your HTML:
+<my-custom></my-custom>
+
 // programmatic usage:
 var element = document.createElement('my-custom');
-
-// markup:
-<my-custom></my-custom>
 ```
 Because of BaseComponent's reliance upon [clubajax/dom](https://github.com/clubajax/dom) you could use shorthand:
 ```jsx harmony
-dom('my-custom', {}, document.body);
+dom('my-custom', {}, parentNode);
 ```
 
-### lifecycle
+## Lifecycle
 
 BaseComponent follows the v1 spec for [lifecycle methods](https://developers.google.com/web/fundamentals/getting-started/primers/customelements#reactions)
  under the hood, and exposes them via shorthand methods:
@@ -87,31 +84,36 @@ Because of this, BaseComponent provides additional lifecycle methods:
  * `domReady()`
  * `destroy()`
  
-#### domReady
+### domReady
 
-domReady is called after the following criteria has been met:
+`domReady` is called after the following criteria has been met:
  * Element is attached to the document
  * An asynchronous amount of time has passed to allow for children to be added programmatically
  * The element's children are in a 'domready' state
 
-domReady has to be triggered asynchronously because of the following:
+`domReady` has to be triggered asynchronously because of the following:
 ```jsx harmony
 var element = dom('my-parent', {}, document.body);
 var child = dom('my-child', {}, element); 
 ```
 
-In this scenario, `connected` will be called synchronously before the child has been added. Typically an element needs to
-know about its children to set itself up. This setup can be done in `domReady`, which is called after a 
+In that scenario, `connected` will be called synchronously before the child has been added. Typically an element needs to
+know about its children in order to initialize its structure. This setup can be done in `domReady`, which is called after a 
 `requestAnimationFrame`.
 
-`domReady` is guaranteed to only be called once per custom element.
+`domReady` is guaranteed to only be called once in a custom element's lifecycle.
 
-#### destroy
+### destroy
 
 `destroy` is not called automatically, it must be explicitly called. Under the hood, all eventListeners will be 
-disconnected, while in the element code, other cleanup can be done, like destroying child custom elements.
+disconnected. In your code, other cleanup can be done, like destroying child custom elements.
 
-#### Handling Asynchronous lifecycle
+You can set a global static property, `BaseComponent.destroyOnDisconnect`, which will can `destroy` automatically for you
+when the element is removed from the document. The reason this optional is because some frameworks remove elements but keep
+them in memory to be added again later. `destroyOnDisconnect` will fire `destroy` after a default of 300 ms (or whatever you 
+set `destroyOnDisconnect`) to give you time to move elements around.
+
+### Handling Asynchronous lifecycle
 
 Because a majority of setup happens in `domReady`, there needs to be a way to know when the element is done setting up.
 Ideally it could be done like this:
@@ -144,13 +146,15 @@ state the callback will still fire. Also, the event listener is cleaned up under
    
 ## Event Handling
  
-create-element uses the [clubajax/on](https://github.com/clubajax/on) library to handle events. To add even more power
+BaseComponent uses the [clubajax/on](https://github.com/clubajax/on) library to handle events. To add even more power
 to custom elements, `on` is included, and its context set to itself. For example:
 ```jsx harmony
 myCustomElement.on('click', function (event) {
     // handle click
 });
-this.on('click', this.myMethod.bind(this));
+this.on('click', (e) => {
+	this.myMethod();
+});
 
 ```
 
@@ -253,7 +257,7 @@ To associate events, use an `on` attribute, with a colon-delineated event-method
 
 ## properties plugin
 
-The `properties` plugin is used to reduce redundancy on getter setters. The [spec](https://w3c.github.io/webcomponents/spec/custom/#custom-elements-autonomous-example)
+The `properties` plugin is used to reduce redundancy on getter/setters. The [spec](https://w3c.github.io/webcomponents/spec/custom/#custom-elements-autonomous-example)
  is designed to make it easy to sync properties with attributes; but in doing so, the result is a `get` and `set` for 
  every property that only sets or returns its corresponding attribute.
 
@@ -280,22 +284,25 @@ change. When `foo` changes. `onFoo` is fired, passing the value.
 If there is a `return` in the callback, that will become the new property - with the caveat that it breaks the sync 
 between the attribute and the property. Note this only works with `props`, not with `bools`.
 ```jsx harmony
-class TestProps extends BaseComponent {
+class MyCustom extends BaseComponent {
 
     onFoo (value) {
     	console.log('foo:', value); // 10
     	return value * 0.1; // this.foo is now 1 but this.getAttribute('foo') is still 10
     }
 }
+customElements.define('my-custom', MyCustom);
+
+<my-custom foo="10" />
 ``` 
 
 There is a `props` and a `bool` array:
 
-####props
+### props
 `props` are strings or numbers. The value is normalized, so that the property and the value in the callback will be a 
 number (or whatever)
 
-####bools
+### bools
 `bools` are naturally, always booleans. The reason these are special is attributes can work via existence, for example:
 ```jsx harmony
 // not set strictly to "true", but as an attribute, equates to true:
@@ -336,6 +343,8 @@ Use the same inheritance you would use with [ES6 classes](http://exploringjs.com
 BaseComponent purposely does not use the Shadow DOM. There are only a few use cases for Shadow DOM, and due to the 
 difficulty in styling, the cons outweigh the pros. This also keeps the library simple.
 
+This should not prevent you from using Shadow DOM in your custom elements.
+
 ## ES6 FAQ
 
 Q: **What are the steps for using webpack?**
@@ -346,15 +355,19 @@ Use babel: `{"presets": ["es2015"]}`
 
 Decide if you want to use ES6 (Chrome only) or ES5 (all browsers)
 
+If only targeting browsers with native elements, the polyfill is not necessary, and your `import` can be pointed to 
+`src/BaseComponent`. Otherwise, your `import` should be pointed to `dist/BaseComponent`, which is transpiled to work 
+with ES5. The polyfill includes the native-shim, which allows Chrome to work with the transpiled class. 
+
 Q. **Uncaught TypeError: Failed to construct 'HTMLElement': Please use the 'new' operator, this DOM object constructor cannot be called as a function.**
 
-A. The webcomponents native-shim.js (in the custom elements polyfill) is missing. 
+A. The web components native-shim.js (in the custom elements polyfill) is missing. 
 Ensure that the shim is loading before any custom element code.
 
 Q. **Uncaught TypeError:Super expression must either be null or a function, not object**
 
 A. The class is not extending the class correctly. This is because of a typo, a bad class, or when importing, getting a
-wrapper around the object; ergo, instead of `extend MyClass`, do `extend MyClass.default`
+wrapper around the object; ergo, instead of `extend MyClass`, you may have to do `extend MyClass.default` (although this is rare)
 
 Q. **Uncaught TypeError: Class constructor cannot be invoked without 'new'**
 
@@ -375,7 +388,7 @@ A. Super-Rules:
  * Do not call `super()` if not extending a class
  * When extending a class and using a constructor, `super()` must be called.
  * `super()` must be called first - or at least before using the `this` keyword.
- * Do not try to pass arguments into a constructor - they are not passed into extended HTMLElements (at last not in the v1 spec)
+ * Do not try to pass arguments into a constructor - they are not passed into extended HTMLElements (at least not in the v1 spec)
  
 Q. **Why are my component methods undefined?**
 
@@ -401,7 +414,13 @@ shim. `import` and `export` and not yet a specification standard and are not yet
 closest in Edge).
 
     npm run globalize
-    
+## Resources
+
+[webreflection](https://www.webreflection.co.uk/blog/2016/08/21/custom-elements-v1)  
+[w3 mailing list](https://lists.w3.org/Archives/Public/public-webapps-github/2016Mar/1932.html)  
+[mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)  
+[Classes](http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods)  
+
 ## License
 
 This uses the [MIT license](./LICENSE). Feel free to use, and redistribute at will.

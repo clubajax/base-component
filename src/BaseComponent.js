@@ -39,7 +39,7 @@ class BaseComponent extends HTMLElement {
 
 		let time, dod = BaseComponent.destroyOnDisconnect;
 		if (dod) {
-			time = typeof doc === 'number' ? doc : 300;
+			time = typeof dod === 'number' ? doc : 300;
 			setTimeout(() => {
 				if(this.DOMSTATE === 'disconnected'){
 					this.destroy();
@@ -117,9 +117,8 @@ class BaseComponent extends HTMLElement {
 		if (template.content && template.content.children) {
 			return document.importNode(template.content, true);
 		}
-		var
-			frag = document.createDocumentFragment(),
-			cloneNode = document.createElement('div');
+		const frag = document.createDocumentFragment();
+		const cloneNode = document.createElement('div');
 		cloneNode.innerHTML = template.innerHTML;
 
 		while (cloneNode.children.length) {
@@ -129,7 +128,7 @@ class BaseComponent extends HTMLElement {
 	}
 
 	static addPlugin(plug) {
-		var i, order = plug.order || 100;
+		let i, order = plug.order || 100;
 		if (!plugins.length) {
 			plugins.push(plug);
 		}
@@ -230,7 +229,7 @@ function getChildCustomNodes(node) {
 	// collect any children that are custom nodes
 	// used to check if their dom is ready before
 	// determining if this is ready
-	var i, nodes = [];
+	let i, nodes = [];
 	for (i = 0; i < node.children.length; i++) {
 		if (node.children[i].nodeName.indexOf('-') > -1) {
 			nodes.push(node.children[i]);
