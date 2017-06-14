@@ -2,65 +2,56 @@
 
 A base for more powerful web components
 
+## Description
+
+Use BaseComponent as a way to make developing with web components easier.
+
+A good resource to learn about web components is [Google Developers](https://developers.google.com/web/fundamentals/getting-started/primers/customelements)
+ 
 ## To Install
 
     npm install clubajax/BaseComponent --save
     
-You may also use `bower` if you prefer, although build tools like webpack prefer node_modules. 
-
-Or, you can clone the repository with your generic clone commands as a standalone repository or submodule.
-
-	git clone git://github.com/clubajax/BaseComponent.git
-
+You may also use `bower` if you prefer, although build tools like Webpack prefer *node_modules*. 
 
 BaseComponent has dependencies on [clubajax/on](https://github.com/clubajax/on) and [clubajax/dom](https://github.com/clubajax/dom)
 
-## To run the code
+## Adding to a Project
 
-To run the tests in `tests/test-v1.html`, start the webpack build and webpack-dev-server:
+Import the polyfill, then BaseComponent, then write your code:
 
-    npm test
-    
-To run the webpack build for distribution to be accessed by `tests/test-dist.html`:
+```jsx harmony
+import 'custom-elements-polyfill';
+import BaseComponent from 'BaseComponent';
 
-    npm run deploy
-    
-A "globalized" version can be built and accessed with `tests/globalES6.html`. This converts the ES6 `import` and `export` into window globals, but otherwise leaves
-the remaining code as ES6. This way the code can be run in Chrome natively, and in Firefox and Edge with the webcomponents
-shim. `import` and `export` and not yet a specification standard and are not yet supported in any browers (although it is
-closest in Edge).
+class MyWidget extends BaseComponent {
+    // your code here
+}
 
-    npm run globalize
+customElements.define('my-widget', MyWidget);
+```
 
 ## Browser and ES Version Support
 
-Custom elements use ES6 classes, so, consequently, that is how this library is written and how your code should be written.
+BaseComponent works out of the box with Chrome.
 
-## src/loader
+Using polyfills, this will work in all modern browsers including IE11. It might work in IE10 but it's not tested.
 
-TODO: DOC THIS
+Custom elements use ES6 classes, so that is how this library is written, and how your code should be written.
 
-### ES5
+The built code in */dist* is transpiled into ES5 and will work out of the box, using the 
+[custom elements polyfill](https://github.com/clubajax/custom-elements-polyfill), 
+which is based on the efforts from the [webcomponents polyfills](https://github.com/webcomponents/custom-elements) 
 
-The built code in */dist* is transpiled into ES5 and will work out of the box. This will allow you to add the UI elements.
-
-However, while it is possible to develop custom elements or extend existing components with ES5, at the moment, 
-BaseComponent does not have examples or docs. Good resources: 
 [webreflection](https://www.webreflection.co.uk/blog/2016/08/21/custom-elements-v1)
 [w3 mailing list](https://lists.w3.org/Archives/Public/public-webapps-github/2016Mar/1932.html)
 [mdn](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
-
-BaseComponent works out of the box with Chrome.
-
-Using the [custom elements shim](https://github.com/webcomponents/custom-elements), it supports all modern browsers, 
-IE11 and up. It should work on IE10.
-
-A good resource to learn about web components is [Google Developers](https://developers.google.com/web/fundamentals/getting-started/primers/customelements)
-    
+[Classes](http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods)
+   
 ## Docs
 
 Basic element creation and usage:
-```jsx
+```jsx harmony
 // create
 class MyCustom extends BaseComponent {
     get templateString () {
@@ -76,7 +67,7 @@ var element = document.createElement('my-custom');
 <my-custom></my-custom>
 ```
 Because of BaseComponent's reliance upon [clubajax/dom](https://github.com/clubajax/dom) you could use shorthand:
-```javascript
+```jsx harmony
 dom('my-custom', {}, document.body);
 ```
 
@@ -85,16 +76,16 @@ dom('my-custom', {}, document.body);
 BaseComponent follows the v1 spec for [lifecycle methods](https://developers.google.com/web/fundamentals/getting-started/primers/customelements#reactions)
  under the hood, and exposes them via shorthand methods:
 
- * connectedCallback() -> connected()
- * disconnectedCallback() -> disconnected()
- * attributeChangedCallback() -> attributeChanged()
+ * `connectedCallback()` -> `connected()`
+ * `disconnectedCallback()` -> `disconnected()`
+ * a`ttributeChangedCallback()` -> `attributeChanged()`
  
 Note that connected and disconnected (as well as their under-the-hood callers) are not very useful, since they are called
 multiple times if the element is added and removed multiple times from the document, as some frameworks tend to do.
 Because of this, BaseComponent provides additional lifecycle methods:
 
- * domReady()
- * destroy()
+ * `domReady()`
+ * `destroy()`
  
 #### domReady
 
@@ -104,7 +95,7 @@ domReady is called after the following criteria has been met:
  * The element's children are in a 'domready' state
 
 domReady has to be triggered asynchronously because of the following:
-```javascript
+```jsx harmony
 var element = dom('my-parent', {}, document.body);
 var child = dom('my-child', {}, element); 
 ```
@@ -124,23 +115,23 @@ disconnected, while in the element code, other cleanup can be done, like destroy
 
 Because a majority of setup happens in `domReady`, there needs to be a way to know when the element is done setting up.
 Ideally it could be done like this:
-```javascript
+```jsx harmony
 var element = dom('my-custom', {}, document.body);
 element.on('domready', function () {
-    // can continue work here
+    // continue work here
 });
 ```
-However, that does not always work with the webcomponents shim in browsers outside of Chrome. Due to the limitations of
+However, that does not always work with the custom-elements-polyfill in browsers outside of Chrome. Due to the limitations of
 the shim, element hydration (moving from UnknownElement to a custom element with lifecycle methods) happens asynchronously,
 and helper methods like `element.on` were not been added immediately. This could be solved without the shorthand:
-```javascript
+```jsx harmony
 var element = dom('my-custom', {}, document.body);
 element.addEventListener('domready', function () {
     // can continue work here
 });
 ```
 Or the convenience function (inserted globally from BaseComponent) can be used:
-```javascript
+```jsx harmony
 var element = dom('my-custom', {}, document.body);
 onDomReady(element, function (element) {
     // can continue work here
@@ -155,24 +146,26 @@ state the callback will still fire. Also, the event listener is cleaned up under
  
 create-element uses the [clubajax/on](https://github.com/clubajax/on) library to handle events. To add even more power
 to custom elements, `on` is included, and its context set to itself. For example:
-```javascript
+```jsx harmony
 myCustomElement.on('click', function (event) {
     // handle click
 });
+this.on('click', this.myMethod.bind(this));
+
 ```
 
 The power happens by functionality that remembers the events, and when `destroy()` is called, they are all removed. So
 all event cleanup is a matter of calling `destroy()`.
 
 While context defaults to the element itself, you can optionally specify a different element (or window in this case):
-```javascript
+```jsx harmony
 myCustomElement.on(window, 'resize', function (event) {
     // handle resize
 });
 ```
 
 You can also use the `once` feature:
-```javascript
+```jsx harmony
 myCustomElement.once(img, 'load', function (event) {
     // handle image loading
     // this event will never fire again
@@ -181,7 +174,7 @@ myCustomElement.once(img, 'load', function (event) {
 
 Also mixed into the custom element are `on`'s `emit` and `fire` methods. Typically, `emit` is for standard events, and
 `fire` is for custom events.
-```javascript
+```jsx harmony
 this.emit('change', {value: this.value});
 this.fire('closed');
 ```
@@ -191,34 +184,14 @@ See the [clubajax/on](https://github.com/clubajax/on) documentation for a comple
 ## Plugins
 
 `BaseComponent` uses a plugin architecture, which not only helps keep the code clean and maintainable, it allows for
-flexibility. A plugin looks like this:
-```
-BaseComponent.addPlugin({
-    name: PLUGIN_NAME,
-    order: ORDER_OF_EXECUTION,
-    init                    - fires after constructor
-    preConnected            - fires before connected is called
-    postConnected           - fires after connected is called
-    preDomReady             - fires before domReady is called
-    postDomReady            - fires after domReady is called
-    preAttributeChanged     - fires before attributeChanged is called
-});
-```
-
-The `name` should be unique, and the `order` determines, if multiple plugins all have the same callback (such as 
-preDomReady) which plugin fires in what order.
-
-All the callbacks fire with the custom element as an argument, with the element and possible options.
-
-When adding one or multiple plugins, all components will have this functionality. It is not possible to have components
-with different plugins.
+flexibility. 
 
 ### template plugin
 
 The template plugin allows for the association of HTML, via a `templateId` property, with a custom element. The template 
 can be created in a [template element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template), which is not 
 exposed to the document until it is cloned. 
-```jsx
+```jsx harmony
 <template id="my-custom-template">
     <div>This will be inserted into the custom element</div>
 </template>
@@ -231,7 +204,7 @@ class TestTmplId extends BaseComponent {
 ```
 
 Alternatively, an HTML string can be used with the `templateString` property:
-```javascript
+```jsx harmony
 class TestTmplId extends BaseComponent {
     get templateString () {
         return '<div>my-custom-template</div>';
@@ -243,7 +216,7 @@ class TestTmplId extends BaseComponent {
 
 The refs plugin allows for `ref` attributes to be used in the template as shortcuts for properties. The value of the 
 `ref` attribute will be added as a property in the node and assigned the value of the node that contained the attribute.
-```jsx
+```jsx harmony
 <template id="my-custom-template">
     <div ref="coolNode">Cool</div>
     <div ref="uncoolNode">Uncool</div>
@@ -262,7 +235,7 @@ class TestTmplId extends BaseComponent {
 ```
 
 To associate events, use an `on` attribute, with a colon-delineated event-method pair:
-```jsx
+```jsx harmony
     <template id="my-custom-template">
         <div on="click:onClick">Cool</div>
         <div on="change:onChange">Uncool</div>
@@ -284,49 +257,99 @@ The `properties` plugin is used to reduce redundancy on getter setters. The [spe
  is designed to make it easy to sync properties with attributes; but in doing so, the result is a `get` and `set` for 
  every property that only sets or returns its corresponding attribute.
 
-Using the `properties` plugin, and adding a `props` array that is the same or a subset of the `observedAttributes` array
-will automatically add those getters and setters, including the special case for `disabled` which removes the attribute
-and checks for existence (don't worry, it just works).
+Using the `properties` plugin, and adding a `props` and/or a `bool` array that is the same or a subset of the `observedAttributes` array
+will automatically add those getters and setters.
 
-Then do any work in the `attributeChanged` method.
-```javascript
+```jsx harmony
 class TestProps extends BaseComponent {
 
-    static get observedAttributes() { return ['foo', 'bar']; }
+    static get observedAttributes() { return ['foo', 'bar', 'disabled', 'readonly']; }
     get props () { return ['foo', 'bar']; }
+    get bools () { return ['disabled', 'readonly']; }
  
-    attributeChanged (name, value) {
-        if(name === 'foo') // do foo things
-        if(name === 'bar') // do bar things
+    domReady () {
+    	console.log(this.disabled);
+    	console.log(this.foo);
     }
 }
-```  
-    
+``` 
+
+A dynamic callback is generated and can be used if an operation needs to occur on an attribute or property 
+change. When `foo` changes. `onFoo` is fired, passing the value. 
+
+If there is a `return` in the callback, that will become the new property - with the caveat that it breaks the sync 
+between the attribute and the property. Note this only works with `props`, not with `bools`.
+```jsx harmony
+class TestProps extends BaseComponent {
+
+    onFoo (value) {
+    	console.log('foo:', value); // 10
+    	return value * 0.1; // this.foo is now 1 but this.getAttribute('foo') is still 10
+    }
+}
+``` 
+
+There is a `props` and a `bool` array:
+
+####props
+`props` are strings or numbers. The value is normalized, so that the property and the value in the callback will be a 
+number (or whatever)
+
+####bools
+`bools` are naturally, always booleans. The reason these are special is attributes can work via existence, for example:
+```jsx harmony
+// not set strictly to "true", but as an attribute, equates to true:
+<my-custom disabled /> 
+// not set at all, but as an attribute, equates to false:
+<my-custom />
+``` 
+### Developing a Plugin
+
+A plugin looks like this:
+```
+BaseComponent.addPlugin({
+    name: PLUGIN_NAME,
+    order: ORDER_OF_EXECUTION,
+    init                    - fires after constructor
+    preConnected            - fires before connected is called
+    postConnected           - fires after connected is called
+    preDomReady             - fires before domReady is called
+    postDomReady            - fires after domReady is called
+    preAttributeChanged     - fires before attributeChanged is called
+});
+```
+
+The `name` should be unique, and the `order` determines, if multiple plugins all have the same callback (such as 
+preDomReady) which plugin fires in what order.
+
+All the callbacks fire with the custom element as an argument, with the element and possible options.
+
+When adding one or multiple plugins, all components will have this functionality. It is not possible to have components
+with different plugins.
+
 ## Inheritance
 
 Use the same inheritance you would use with [ES6 classes](http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods). 
 
 ## Shadow DOM (not used!)
 
-create-element purposely does not use the Shadow DOM. There are only a few use cases for Shadow DOM, and due to the 
+BaseComponent purposely does not use the Shadow DOM. There are only a few use cases for Shadow DOM, and due to the 
 difficulty in styling, the cons outweigh the pros. This also keeps the library simple.
 
 ## ES6 FAQ
 
 Q: **What are the steps for using webpack?**
 
-A: Use the shims in this order:
+A: The [custom elements polyfill](https://github.com/clubajax/custom-elements-polyfill) makes this easy. See *Adding to a Project* above.:
 
-    custom-elements.js
-    native-shim.js
-    
 Use babel: `{"presets": ["es2015"]}`
 
 Decide if you want to use ES6 (Chrome only) or ES5 (all browsers)
 
 Q. **Uncaught TypeError: Failed to construct 'HTMLElement': Please use the 'new' operator, this DOM object constructor cannot be called as a function.**
 
-A. The webcomponents native-shim.js is missing. Ensure that the shim is loading before any custom element code.
+A. The webcomponents native-shim.js (in the custom elements polyfill) is missing. 
+Ensure that the shim is loading before any custom element code.
 
 Q. **Uncaught TypeError:Super expression must either be null or a function, not object**
 
@@ -339,6 +362,8 @@ A. babel is not transpiling. This could be the wrong version (try "latest" or "e
  
 Or, as per the above FAQ, it is _*because*_ you added `.default` to the extended class.
 
+Or, you might be linking to *src/BaseComponent* instead of *dist/BaseComponent*. 
+
 Q. **Uncaught ReferenceError: "this" is not defined**
 
 A. `super()` is required in the constructor when extending another class.
@@ -350,15 +375,33 @@ A. Super-Rules:
  * Do not call `super()` if not extending a class
  * When extending a class and using a constructor, `super()` must be called.
  * `super()` must be called first - or at least before using the `this` keyword.
+ * Do not try to pass arguments into a constructor - they are not passed into extended HTMLElements (at last not in the v1 spec)
  
 Q. **Why are my component methods undefined?**
 
 A. Did you remember to do: `customElements.define('my-component', MyComponent)`?
 
-### More Information:
+## Developing
 
-http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
+Clone the repository with your generic clone commands as a standalone repository or submodule.
 
+	git clone git://github.com/clubajax/BaseComponent.git
+	
+To run the tests in `tests/test-v1.html`, start the webpack build and webpack-dev-server:
+
+    npm start
+    
+To run the webpack build for distribution to be accessed by `tests/test-dist.html`:
+
+    npm run deploy
+    
+A "globalized" version can be built and accessed with `tests/globalES6.html`. This converts the ES6 `import` and `export` into window globals, but otherwise leaves
+the remaining code as ES6. This way the code can be run in Chrome natively, and in Firefox and Edge with the webcomponents
+shim. `import` and `export` and not yet a specification standard and are not yet supported in any browers (although it is
+closest in Edge).
+
+    npm run globalize
+    
 ## License
 
 This uses the [MIT license](./LICENSE). Feel free to use, and redistribute at will.

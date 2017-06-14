@@ -73,7 +73,6 @@
     loadScript('../bower_components/webcomponents/src/native-shim.js');
 
     const supportsCustomElementsV1 = 'customElements' in window;
-    console.log('supportsCustomElementsV1:', supportsCustomElementsV1);
 
     if (!supportsCustomElementsV1) {
         loadScript('/bower_components/webcomponents/custom-elements.min.js', onShimReady);
