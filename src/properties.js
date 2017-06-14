@@ -38,9 +38,13 @@ function setProperty (node, prop) {
 			this.setAttribute(prop, value);
 			const fn = this[onify(prop)];
 			if(fn){
-				value = fn.call(this, value) || value;
+				onDomReady(this, () => {
+					value = fn.call(this, value) || value;
+					if(value !== undefined){
+						propValue = value;
+					}
+				});
 			}
-			propValue = value;
 			this.isSettingAttribute = false;
 		}
 	});

@@ -281,6 +281,8 @@ class TestProps extends BaseComponent {
 A dynamic callback is generated and can be used if an operation needs to occur on an attribute or property 
 change. When `foo` changes. `onFoo` is fired, passing the value. 
 
+**Because a majority of the time, properties are used to change the DOM, the dynamic callback is fired using onDomReady.**
+
 If there is a `return` in the callback, that will become the new property - with the caveat that it breaks the sync 
 between the attribute and the property. Note this only works with `props`, not with `bools`.
 ```jsx harmony

@@ -520,14 +520,15 @@
 						node.setAttribute('min', '50%');
 						node.setAttribute('max', '-75%');
 
-						// values changed in
-						expect(node.min).to.equal(62);
-						expect(node.max).to.equal(-76);
-						expect(node.getAttribute('min')).to.equal('50');
-						expect(node.getAttribute('max')).to.equal('-75');
+						onDomReady(node, function () {
+							expect(node.min).to.equal(62);
+							expect(node.max).to.equal(-76);
+							expect(node.getAttribute('min')).to.equal('50');
+							expect(node.getAttribute('max')).to.equal('-75');
+						});
 					});
 
-					test('it should handle a complex property callback', function () {
+					test('it should handle a complex property callback', function (done) {
 						var node = dom('test-props', {}, body);
 
 						node.onMyComplexProp = function (value) {
@@ -535,9 +536,12 @@
 						};
 						node.setAttribute('my-complex-prop', 'yes');
 
-						// values changed in
-						expect(node['my-complex-prop']).to.equal('no');
-						expect(node.getAttribute('my-complex-prop')).to.equal('yes');
+						onDomReady(node, function () {
+							expect(node['my-complex-prop']).to.equal('no');
+							expect(node.getAttribute('my-complex-prop')).to.equal('yes');
+							done();
+						});
+
 					});
 
                     test('it should sync booleans and attributes', function (done) {

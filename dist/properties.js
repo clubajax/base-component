@@ -45,13 +45,19 @@ function setProperty(node, prop) {
 			return propValue !== undefined ? propValue : dom.normalize(this.getAttribute(prop));
 		},
 		set: function set(value) {
+			var _this = this;
+
 			this.isSettingAttribute = true;
 			this.setAttribute(prop, value);
 			var fn = this[onify(prop)];
 			if (fn) {
-				value = fn.call(this, value) || value;
+				onDomReady(this, function () {
+					value = fn.call(_this, value) || value;
+					if (value !== undefined) {
+						propValue = value;
+					}
+				});
 			}
-			propValue = value;
 			this.isSettingAttribute = false;
 		}
 	});
