@@ -1,23 +1,19 @@
 'use strict';
 
-let
-    path = require('path');
+const path = require('path');
 
 module.exports = function (grunt) {
     
     // collect dependencies from node_modules
     let nm = path.resolve(__dirname, 'node_modules'),
-        //dom = path.resolve(nm, 'dom/src/dom.js'),
-        //on = path.resolve(nm, 'on/src/on.js'),
-        //poly = path.resolve(nm, 'keyboardevent-key-polyfill/index'),
-        vendorAliases = ['dom', 'keyboardevent-key-polyfill', 'on'],
+        vendorAliases = ['mocha', 'chai', 'dom', 'on'],
 		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
 		allAliases = vendorAliases.concat(baseAliases),
-		pluginAliases = ['dom', 'keyboardevent-key-polyfill', 'on', 'BaseComponent'],
+		pluginAliases = ['dom', 'on', 'BaseComponent'],
         sourceMaps = true,
         watch = false,
         watchPort = 35750,
-        babelTransform = [["babelify", { "presets": ["latest"] }]],
+        babelTransform = [['babelify', { presets: ['latest'] }]],
         devBabel = false;
     
     grunt.initConfig({
@@ -47,7 +43,7 @@ module.exports = function (grunt) {
             },
             dev: {
                 files: {
-                    'tests/dist/output.js': ['tests/src/lifecycle.js']
+                    'tests/dist/output.js': ['tests/src/globals.js', 'tests/src/lifecycle.js']
                 },
                 options: {
                     // not using browserify-watch; it did not trigger a page reload
@@ -161,15 +157,6 @@ module.exports = function (grunt) {
         grunt.task.run('build-dev');
     });
 
-    // task that builds files for production
-    grunt.registerTask('old-deploy', function (which) {
-        //grunt.task.run('browserify:vendor');
-        //grunt.task.run('browserify:deploy');
-		grunt.task.run('browserify:BaseComponent');
-		grunt.task.run('browserify:properties');
-    });
-
-
     // The general task: builds, serves and watches
     grunt.registerTask('dev', function (which) {
         grunt.task.run('build');
@@ -189,8 +176,6 @@ module.exports = function (grunt) {
 		compile('refs');
 		compile('item-template');
 	});
-
-
 
 	grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-contrib-watch');

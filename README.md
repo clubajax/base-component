@@ -373,12 +373,14 @@ wrapper around the object; ergo, instead of `extend MyClass`, you may have to do
 
 Q. **Uncaught TypeError: Class constructor cannot be invoked without 'new'**
 
-A. babel is not transpiling. This could be the wrong version (try "latest" or "es2015")
+A. Multiple possibilities:
+
+ * Babel is not transpiling. This could be the wrong version (try "latest" or "es2015")
+ * As per the above FAQ, it is _*because*_ you added `.default` to the extended class.
+ * You might be linking to *src/BaseComponent* instead of *dist/BaseComponent*. 
+ * You are using the native-shim from custom-elements-polyfill, with untranspiled code. If this is the purpose, use
+ `window['no-native-shim'] = true;` before loading the polyfill, to prevent the native-shim from loading.
  
-Or, as per the above FAQ, it is _*because*_ you added `.default` to the extended class.
-
-Or, you might be linking to *src/BaseComponent* instead of *dist/BaseComponent*. 
-
 Q. **Uncaught ReferenceError: "this" is not defined**
 
 A. `super()` is required in the constructor when extending another class.

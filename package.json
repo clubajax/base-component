@@ -1,12 +1,12 @@
 {
   "name": "BaseComponent",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A base for more powerful web components",
   "main": "dist/BaseComponent.js",
   "scripts": {
     "start": "grunt dev",
     "build": "grunt deploy",
-    "globalize": "node ./scripts/globalES6"
+		"deploy": "grunt deploy"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,8 @@
   "devDependencies": {
     "babel-preset-latest": "^6.16.0",
     "babelify": "^7.3.0",
+    "chai": "^4.0.2",
+    "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill#base64",
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0",
     "grunt-concurrent": "^2.3.1",
@@ -32,9 +34,8 @@
     "grunt-http-server": "^2.0.0"
   },
   "dependencies": {
-    "custom-elements-polyfill": "github:clubajax/custom-elements-polyfill",
     "dom": "clubajax/dom#v1.4.1",
-    "on": "clubajax/on#v1.7.8",
-    "webcomponents": "webcomponents/custom-elements"
+    "mocha": "^3.4.2",
+    "on": "clubajax/on#v1.7.8"
   }
 }
