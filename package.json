@@ -6,7 +6,7 @@
   "scripts": {
     "start": "grunt dev",
     "build": "grunt deploy",
-		"deploy": "grunt deploy"
+    "deploy": "grunt deploy"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/clubajax/BaseComponent#readme",
   "devDependencies": {
+    "Randomizer": "github:clubajax/randomizer",
     "babel-preset-latest": "^6.16.0",
     "babelify": "^7.3.0",
     "chai": "^4.0.2",
@@ -34,7 +35,7 @@
     "grunt-http-server": "^2.0.0"
   },
   "dependencies": {
-    "dom": "clubajax/dom#v1.4.1",
+    "dom": "clubajax/dom#v1.4.2",
     "mocha": "^3.4.2",
     "on": "clubajax/on#v1.7.8"
   }

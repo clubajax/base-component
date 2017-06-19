@@ -6,7 +6,7 @@ module.exports = function (grunt) {
     
     // collect dependencies from node_modules
     let nm = path.resolve(__dirname, 'node_modules'),
-        vendorAliases = ['mocha', 'chai', 'dom', 'on'],
+        vendorAliases = ['dom', 'on', 'randomizer', 'custom-elements-polyfill'],
 		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
 		allAliases = vendorAliases.concat(baseAliases),
 		pluginAliases = ['dom', 'on', 'BaseComponent'],
