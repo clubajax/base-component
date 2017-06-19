@@ -1,11 +1,5 @@
 "use strict";
 
-// class/component rules
-// always call super() first in the ctor. This also calls the extended class' ctor.
-// cannot call NEW on a Component class
-
-// Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
-
 const on = require('on');
 const dom = require('dom');
 
@@ -27,6 +21,26 @@ class BaseComponent extends HTMLElement {
 		}
 		this.fire('connected');
 		plugin('postConnected', this);
+	}
+
+	onConnected (callback) {
+		if(this.DOMSTATE === 'connected' || this.DOMSTATE === 'domready'){
+			callback(this);
+			return;
+		}
+		this.once('connected', () => {
+			callback(this);
+		});
+	}
+
+	onDomReady (callback) {
+		if(this.DOMSTATE === 'domready'){
+			callback(this);
+			return;
+		}
+		this.once('domready', () => {
+			callback(this);
+		});
 	}
 
 	disconnectedCallback() {

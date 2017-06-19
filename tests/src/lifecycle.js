@@ -3,6 +3,7 @@ const properties = require('../../src/properties');
 const template = require('../../src/template');
 const refs = require('../../src/refs');
 const itemTemplate = require('../../src/item-template');
+window.rand = require('randomizer');
 
 class TestProps extends BaseComponent {
 
@@ -221,7 +222,161 @@ class TestList extends BaseComponent {
 }
 customElements.define('test-list', TestList);
 
+class TestListComponent extends BaseComponent {
 
+	static get observedAttributes() { return ['item-tag']; }
+	get props () { return ['item-tag']; }
+
+	constructor () {
+		super();
+	}
+
+	set data (items) {
+		this.items = items;
+		this.onConnected(this.renderItems.bind(this));
+	}
+
+	renderItems () {
+		const frag = document.createDocumentFragment();
+		const tag = this['item-tag'];
+		const self = this;
+		this.items.forEach(function (item) {
+			const node = dom(tag, {}, frag);
+			node.data = item;
+		});
+		this.onDomReady(() => {
+			this.appendChild(frag);
+		});
+	}
+
+	domReady () {
+
+	}
+}
+customElements.define('test-list-component', TestListComponent);
+
+// address1:"6441"
+// address2:"Alexander Way"
+// birthday:"01/14/2018"
+// city:"Durham"
+// company:"Craigslist"
+// email:"jcurtis@craigslist.com"
+// firstName:"Jordan"
+// lastName:"Curtis"
+// phone:"704-750-4316"
+// ssn:"361-17-6344"
+// state:"North Carolina"
+// zipcode:"86310"
+
+
+class TestListComponentItem extends BaseComponent {
+
+	static get observedAttributes() { return ['list-title']; }
+	get props () { return ['list-title']; }
+
+	constructor () {
+		super();
+	}
+
+	set data (item) {
+		this.item = item;
+		this.onConnected(this.renderItem.bind(this));
+	}
+
+	renderItem () {
+		const item = this.item;
+		const self = this;
+
+		dom('div', {html:[
+			dom('label', {html: 'Name:'}),
+			dom('span', {html: item.firstName}),
+			dom('span', {html: item.lastName})
+		]}, this);
+
+		dom('div', {html:[
+			dom('div', {class: 'indent', html:[
+				dom('div', {html:[
+					dom('label', {html: 'Address:'}),
+					dom('span', {html: item.address1}),
+					dom('span', {html: item.address2}),
+					dom('span', {html: item.city}),
+					dom('span', {html: item.state}),
+					dom('span', {html: item.zipcode})
+				]}),
+				dom('div', {html:[
+					dom('label', {html: 'Company:'}),
+					dom('span', {html: item.company})
+				]}),
+				dom('div', {html:[
+					dom('label', {html: 'Birthday:'}),
+					dom('span', {html: item.birthday})
+				]}),
+				dom('div', {html:[
+					dom('label', {html: 'SSN:'}),
+					dom('span', {html: item.ssn})
+				]})
+			]})
+		]}, this);
+	}
+
+	domReady () {
+
+	}
+}
+customElements.define('test-list-component-item', TestListComponentItem);
+
+class TestListComponentTmpl extends BaseComponent {
+
+	static get observedAttributes() { return ['list-title']; }
+	get props () { return ['list-title']; }
+
+	constructor () {
+		super();
+	}
+
+	get templateString () {
+		return `
+            <div>
+            	<label>Name:</label><span ref="firstName"></span><span ref="lastName"></span>
+			</div>
+			<div class="indent">
+				<div>
+					<label>Address:</label><span ref="address1"></span><span ref="address2"></span><span ref="city"></span><span ref="state"></span><span ref="zipcode"></span>
+				</div>
+				<div>
+					<label>Company:</label><span ref="company"></span>
+				</div>
+				<div>
+					<label>DOB:</label><span ref="birthday"></span>
+				</div>
+				<div>
+					<label>SSN:</label><span ref="ssn"></span>
+				</div>
+			</div>
+		`;
+	}
+
+	set data (item) {
+		this.item = item;
+		this.onConnected(this.renderItem.bind(this));
+	}
+
+	renderItem () {
+		const item = this.item;
+		const self = this;
+		Object.keys(item).forEach(function (key) {
+			if(self[key]){
+				let node = document.createTextNode(item[key]);
+				self[key].appendChild(node);
+			}
+		})
+	}
+
+	domReady () {
+
+	}
+}
+customElements.define('test-list-component-tmpl', TestListComponentTmpl);
 
 window.itemTemplateString = `<template>
     <div id="{{id}}">

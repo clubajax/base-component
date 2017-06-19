@@ -12,13 +12,6 @@
 	}(this, function (on, dom) {
 "use strict";
 
-// class/component rules
-// always call super() first in the ctor. This also calls the extended class' ctor.
-// cannot call NEW on a Component class
-
-// Classes http://exploringjs.com/es6/ch_classes.html#_the-species-pattern-in-static-methods
-
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55,9 +48,35 @@ var BaseComponent = function (_HTMLElement) {
 			plugin('postConnected', this);
 		}
 	}, {
+		key: 'onConnected',
+		value: function onConnected(callback) {
+			var _this2 = this;
+
+			if (this.DOMSTATE === 'connected' || this.DOMSTATE === 'domready') {
+				callback(this);
+				return;
+			}
+			this.once('connected', function () {
+				callback(_this2);
+			});
+		}
+	}, {
+		key: 'onDomReady',
+		value: function onDomReady(callback) {
+			var _this3 = this;
+
+			if (this.DOMSTATE === 'domready') {
+				callback(this);
+				return;
+			}
+			this.once('domready', function () {
+				callback(_this3);
+			});
+		}
+	}, {
 		key: 'disconnectedCallback',
 		value: function disconnectedCallback() {
-			var _this2 = this;
+			var _this4 = this;
 
 			privates[this._uid].DOMSTATE = 'disconnected';
 			plugin('preDisconnected', this);
@@ -71,8 +90,8 @@ var BaseComponent = function (_HTMLElement) {
 			if (dod) {
 				time = typeof dod === 'number' ? doc : 300;
 				setTimeout(function () {
-					if (_this2.DOMSTATE === 'disconnected') {
-						_this2.destroy();
+					if (_this4.DOMSTATE === 'disconnected') {
+						_this4.destroy();
 					}
 				}, time);
 			}

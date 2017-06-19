@@ -39,6 +39,33 @@
 			display: inline-block;
 			width: 70px;
 		}
+		test-list-component{
+			display: block;
+			width: 200px;
+			height: 200px;
+			overflow-y: auto;
+			margin: 20px;
+		}
+		test-list-component-item,
+		test-list-component-tmpl{
+			display: block;
+			font-size: 11px;
+			border: 1px solid #ccc;
+			background-color: #ffefe4;
+			padding: 10px;
+			margin-bottom: 5px;
+		}
+		test-list-component-item span,
+		test-list-component-tmpl span{
+			margin: 3px;
+		}
+		test-list-component-item .indent,
+		test-list-component-tmpl .indent{
+			margin-left: 20px;
+		}
+		test-list-component-tmpl{
+			background-color: #d7f7ff;
+		}
 	</style>
 </head>
 <body>
@@ -618,6 +645,33 @@
 					//expect(dom.queryAll(node, 'span').length).to.equal(15);
 					done();
 				});
+			});
+		});
+		
+		suite.only('item-template/component', function () {
+			test.only('it should render a dom-based list', function () {
+				var data = rand.data(600);
+				var node = dom('test-list-component', {attr:{
+					'item-tag': 'test-list-component-item'
+				}}, body);
+				setTimeout(function () {
+					console.time('dom-based');
+					node.data = data;
+					console.timeEnd('dom-based');
+				}, 1)
+			});
+
+			test.only('it should render a template-based list', function () {
+				var data = rand.data(600);
+				var node = dom('test-list-component', {attr:{
+					'item-tag': 'test-list-component-tmpl'
+				}}, body);
+				setTimeout(function () {
+					console.time('tmpl-based');
+					node.data = data;
+					console.timeEnd('tmpl-based');
+				}, 1)
+
 			});
 		});
 
