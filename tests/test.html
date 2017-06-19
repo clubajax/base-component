@@ -650,7 +650,7 @@
 		
 		suite.only('item-template/component', function () {
 			test.only('it should render a dom-based list', function () {
-				var data = rand.data(600);
+				var data = rand.data(10);
 				var node = dom('test-list-component', {attr:{
 					'item-tag': 'test-list-component-item'
 				}}, body);
@@ -662,7 +662,7 @@
 			});
 
 			test.only('it should render a template-based list', function () {
-				var data = rand.data(600);
+				var data = rand.data(10);
 				var node = dom('test-list-component', {attr:{
 					'item-tag': 'test-list-component-tmpl'
 				}}, body);
