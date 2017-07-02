@@ -380,14 +380,14 @@
 						})
 					]);
 
-				node = dom('test-lifecycle', { css: '1' }, document.body); // 1
+				node = dom('test-lifecycle', { class: '1' }, document.body); // 1
 				dom('test-lifecycle', {
-					css: '2',
+					class: '2',
 					html: dom('test-lifecycle', {
-						css: '3',
+						class: '3',
 						html: dom('test-lifecycle', {
-							css: '4',
-							html: dom('test-lifecycle', { css: '5' })
+							class: '4',
+							html: dom('test-lifecycle', { class: '5' })
 						})
 					})
 				}, node);
@@ -648,8 +648,8 @@
 			});
 		});
 		
-		suite.only('item-template/component', function () {
-			test.only('it should render a dom-based list', function () {
+		suite('item-template/component', function () {
+			test('it should render a dom-based list', function () {
 				var data = rand.data(10);
 				var node = dom('test-list-component', {attr:{
 					'item-tag': 'test-list-component-item'
@@ -661,7 +661,7 @@
 				}, 1)
 			});
 
-			test.only('it should render a template-based list', function () {
+			test('it should render a template-based list', function () {
 				var data = rand.data(10);
 				var node = dom('test-list-component', {attr:{
 					'item-tag': 'test-list-component-tmpl'
