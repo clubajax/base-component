@@ -52,10 +52,10 @@ function setProperty(node, prop) {
 			var fn = this[onify(prop)];
 			if (fn) {
 				onDomReady(this, function () {
-					value = fn.call(_this, value) || value;
 					if (value !== undefined) {
 						propValue = value;
 					}
+					value = fn.call(_this, value) || value;
 				});
 			}
 			this.isSettingAttribute = false;

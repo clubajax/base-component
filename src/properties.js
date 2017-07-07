@@ -39,10 +39,10 @@ function setProperty (node, prop) {
 			const fn = this[onify(prop)];
 			if(fn){
 				onDomReady(this, () => {
-					value = fn.call(this, value) || value;
 					if(value !== undefined){
 						propValue = value;
 					}
+					value = fn.call(this, value) || value;
 				});
 			}
 			this.isSettingAttribute = false;
