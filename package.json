@@ -1,6 +1,6 @@
 {
   "name": "BaseComponent",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "A base for more powerful web components",
   "main": "dist/BaseComponent.js",
   "scripts": {
@@ -36,7 +36,7 @@
     "grunt-http-server": "^2.0.0"
   },
   "dependencies": {
-    "dom": "clubajax/dom#v2.0.alpha",
-    "on": "clubajax/on#v2.0.alpha"
+    "dom": "clubajax/dom#v2.0.0",
+    "on": "clubajax/on#v2.0.0"
   }
 }
