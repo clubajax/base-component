@@ -1,9 +1,7 @@
 const BaseComponent = require('BaseComponent');
-const dom = require('dom');
-//const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
-const r = /\{\{\w*}}/g;
 
-// TODO: switch to ES6 literals? Maybe not...
+const r = /\{\{\w*}}/g;
+const destroyer = document.createElement('div');
 
 // FIXME: time current process
 // Try a new one where meta data is created, instead of a template
@@ -75,6 +73,13 @@ function updateItemTemplate(frag) {
     return refs;
 }
 
+function destroy (node) {
+	if(node) {
+		destroyer.appendChild(node);
+		destroyer.innerHTML = '';
+	}
+}
+
 BaseComponent.prototype.renderList = function (items, container, itemTemplate) {
     let
         frag = document.createDocumentFragment(),
@@ -140,7 +145,7 @@ BaseComponent.prototype.renderList = function (items, container, itemTemplate) {
         deletions.forEach(function (del) {
             let node = clone.querySelector(del);
             if(node) {
-                dom.destroy(node);
+                destroy(node);
                 let tmplNode = tmpl.querySelector(del);
                 tmplNode.removeAttribute('ifs');
             }
@@ -179,7 +184,7 @@ BaseComponent.addPlugin({
     name: 'item-template',
     order: 40,
     preDomReady: function (node) {
-        node.itemTemplate = dom.query(node, 'template');
+        node.itemTemplate = node.querySelector('template');
         if (node.itemTemplate) {
             node.itemTemplate.parentNode.removeChild(node.itemTemplate);
             node.itemTemplate = BaseComponent.clone(node.itemTemplate);

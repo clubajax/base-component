@@ -1,9 +1,7 @@
 const BaseComponent  = require('BaseComponent');
-const dom = require('dom');
 
-var
-    lightNodes = {},
-    inserted = {};
+const lightNodes = {};
+const inserted = {};
 
 function insert (node) {
     if(inserted[node._uid] || !hasTemplate(node)){
@@ -26,7 +24,7 @@ function hasTemplate (node) {
 }
 
 function insertTemplateChain (node) {
-    var templates = node.getTemplateChain();
+    const templates = node.getTemplateChain();
     templates.reverse().forEach(function (template) {
         getContainer(node).appendChild(BaseComponent.clone(template));
     });
@@ -38,8 +36,7 @@ function insertTemplate (node) {
         insertTemplateChain(node);
         return;
     }
-    var
-        templateNode = node.getTemplateNode();
+    const templateNode = node.getTemplateNode();
 
     if(templateNode) {
         node.appendChild(BaseComponent.clone(templateNode));
@@ -48,7 +45,7 @@ function insertTemplate (node) {
 }
 
 function getContainer (node) {
-    var containers = node.querySelectorAll('[ref="container"]');
+    const containers = node.querySelectorAll('[ref="container"]');
     if(!containers || !containers.length){
         return node;
     }
@@ -56,15 +53,21 @@ function getContainer (node) {
 }
 
 function insertChildren (node) {
-    var i,
-        container = getContainer(node),
-        children = lightNodes[node._uid];
+    let i;
+	const container = getContainer(node);
+	const children = lightNodes[node._uid];
 
     if(container && children && children.length){
         for(i = 0; i < children.length; i++){
             container.appendChild(children[i]);
         }
     }
+}
+
+function toDom (html){
+	const node = document.createElement('div');
+	node.innerHTML = html;
+	return node.firstChild;
 }
 
 BaseComponent.prototype.getLightNodes = function () {
@@ -74,12 +77,12 @@ BaseComponent.prototype.getLightNodes = function () {
 BaseComponent.prototype.getTemplateNode = function () {
     // caching causes different classes to pull the same template - wat?
     //if(!this.templateNode) {
-        if (this.templateId) {
-            this.templateNode = dom.byId(this.templateId.replace('#',''));
-        }
-        else if (this.templateString) {
-            this.templateNode = dom.toDom('<template>' + this.templateString + '</template>');
-        }
+	if (this.templateId) {
+		this.templateNode = document.getElementById(this.templateId.replace('#',''));
+	}
+	else if (this.templateString) {
+		this.templateNode = toDom('<template>' + this.templateString + '</template>');
+	}
     //}
     return this.templateNode;
 };

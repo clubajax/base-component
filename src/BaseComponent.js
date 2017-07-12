@@ -1,12 +1,11 @@
 "use strict";
 
 const on = require('on');
-const dom = require('dom');
 
 class BaseComponent extends HTMLElement {
 	constructor() {
 		super();
-		this._uid = dom.uid(this.localName);
+		this._uid = uid(this.localName);
 		privates[this._uid] = {DOMSTATE: 'created'};
 		privates[this._uid].handleList = [];
 		plugin('init', this);
@@ -74,7 +73,7 @@ class BaseComponent extends HTMLElement {
 		privates[this._uid].handleList.forEach(function (handle) {
 			handle.remove();
 		});
-		dom.destroy(this);
+		destroy(this);
 	}
 
 	fire(eventName, eventDetail, bubbles) {
@@ -255,6 +254,25 @@ function getChildCustomNodes(node) {
 function nextTick(cb) {
 	requestAnimationFrame(cb);
 }
+
+const uids = {};
+function uid (type = 'uid'){
+	if(uids[type] === undefined){
+		uids[type] = 0;
+	}
+	const id = type + '-' + (uids[type] + 1);
+	uids[type]++;
+	return id;
+}
+
+const destroyer = document.createElement('div');
+function destroy (node) {
+	if(node) {
+		destroyer.appendChild(node);
+		destroyer.innerHTML = '';
+	}
+}
+
 
 window.onDomReady = function (node, callback) {
 	function onReady() {

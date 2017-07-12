@@ -63,7 +63,7 @@ customElements.define('my-custom', MyCustom);
 // programmatic usage:
 var element = document.createElement('my-custom');
 ```
-Because of BaseComponent's reliance upon [clubajax/dom](https://github.com/clubajax/dom) you could use shorthand:
+If using [clubajax/dom](https://github.com/clubajax/dom) you could use shorthand:
 ```jsx harmony
 dom('my-custom', {}, parentNode);
 ```

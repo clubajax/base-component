@@ -1,5 +1,4 @@
 const BaseComponent = require('BaseComponent');
-const dom = require('dom');
 
 function setBoolean (node, prop) {
 	Object.defineProperty(node, prop, {
@@ -31,7 +30,7 @@ function setProperty (node, prop) {
 		enumerable: true,
 		configurable: true,
 		get () {
-			return propValue !== undefined ? propValue : dom.normalize(this.getAttribute(prop));
+			return propValue !== undefined ? propValue : normalize(this.getAttribute(prop));
 		},
 		set (value) {
 			this.isSettingAttribute = true;
@@ -111,11 +110,33 @@ function boolNorm (value) {
 	if(value === ''){
 		return true;
 	}
-	return dom.normalize(value);
+	return normalize(value);
 }
 
 function propNorm (value) {
-	return dom.normalize(value);
+	return normalize(value);
+}
+
+function normalize (val){
+	if(typeof val === 'string') {
+		if(val === 'false'){
+			return false;
+		}
+		else if(val === 'null'){
+			return null;
+		}
+		else if(val === 'true'){
+			return true;
+		}
+		if (val.indexOf('/') > -1 || (val.match(/-/g) || []).length > 1) {
+			// type of date
+			return val;
+		}
+	}
+	if(!isNaN(parseFloat(val))){
+		return parseFloat(val);
+	}
+	return val;
 }
 
 BaseComponent.addPlugin({
