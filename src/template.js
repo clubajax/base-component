@@ -20,7 +20,7 @@ function collectLightNodes(node){
 }
 
 function hasTemplate (node) {
-    return !!node.getTemplateNode();
+	return node.templateString || node.templateId;
 }
 
 function insertTemplateChain (node) {

@@ -106,6 +106,34 @@ class TestTmplRefs extends BaseComponent {
 }
 customElements.define('test-tmpl-refs', TestTmplRefs);
 
+
+class ChildButton extends BaseComponent {
+	get templateString () {
+		return `<button ref="btnNode" on="click:onClick">Click Me</button>`;
+	}
+
+	onClick () {
+		this.emit('change', {value: this.getAttribute('value')});
+	}
+
+}
+customElements.define('child-button', ChildButton);
+
+class TestTmplCmptRefs extends BaseComponent {
+	get templateString () {
+		return `<div>
+			<child-button on="change:onChange" value="A" ></child-button>
+			<child-button on="change:onChange" value="B" ></child-button>
+			<child-button on="change:onChange" value="C" ></child-button>
+        </div>`;
+	}
+
+	onChange (e) {
+		on.fire(document, 'ref-change-called', {value:e.value});
+	}
+}
+customElements.define('test-tmpl-cmpt-refs', TestTmplCmptRefs);
+
 class TestTmplContainer extends BaseComponent {
     get templateString () {
         return `<div>

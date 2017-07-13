@@ -420,6 +420,24 @@
 		});
 
 		suite('template refs', function () {
+
+			test('it should handle deep child templates with refs', function (done) {
+				var node = dom('test-tmpl-cmpt-refs', {}, body);
+				onDomReady(node, function () {
+					var results = [];
+					var h = on(document, 'ref-change-called', function (e) {
+						results.push(e.detail.value);
+					});
+					expect(node.btnNode).to.equal(undefined); // should not pick up child template
+					var buttons = dom.queryAll(node, 'button').forEach(function (btn) {
+						on.emit(btn, 'click');
+					});
+					expect(results.join(',')).to.equal('A,B,C');
+					done();
+				});
+
+			});
+
 			test('it should reference nodes with the `ref` attribute', function () {
 				var node = dom('test-tmpl-refs', {}, body);
 				expect(dom.isNode(node.labelNode)).to.equal(true);
