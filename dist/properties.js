@@ -1,15 +1,15 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(["BaseComponent", "dom"], factory);
+        define(["BaseComponent"], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node / CommonJS
-        module.exports = factory(require('BaseComponent'), require('dom'));
+        module.exports = factory(require('BaseComponent'));
     } else {
         // Browser globals (root is window)
-        root['undefined'] = factory(root.BaseComponent, root.dom);
+        root['undefined'] = factory(root.BaseComponent);
     }
-	}(this, function (BaseComponent, dom) {
+	}(this, function (BaseComponent) {
 'use strict';
 
 function setBoolean(node, prop) {
@@ -42,7 +42,7 @@ function setProperty(node, prop) {
 		enumerable: true,
 		configurable: true,
 		get: function get() {
-			return propValue !== undefined ? propValue : dom.normalize(this.getAttribute(prop));
+			return propValue !== undefined ? propValue : normalize(this.getAttribute(prop));
 		},
 		set: function set(value) {
 			var _this = this;
@@ -125,11 +125,31 @@ function boolNorm(value) {
 	if (value === '') {
 		return true;
 	}
-	return dom.normalize(value);
+	return normalize(value);
 }
 
 function propNorm(value) {
-	return dom.normalize(value);
+	return normalize(value);
+}
+
+function normalize(val) {
+	if (typeof val === 'string') {
+		if (val === 'false') {
+			return false;
+		} else if (val === 'null') {
+			return null;
+		} else if (val === 'true') {
+			return true;
+		}
+		if (val.indexOf('/') > -1 || (val.match(/-/g) || []).length > 1) {
+			// type of date
+			return val;
+		}
+	}
+	if (!isNaN(parseFloat(val))) {
+		return parseFloat(val);
+	}
+	return val;
 }
 
 BaseComponent.addPlugin({

@@ -233,7 +233,11 @@ function onDomReady() {
 		this.domReady = function () {};
 	}
 
-	this.fire('domready');
+	// allow component to fire this event
+	// domReady() will still be called
+	if(!this.fireOwnDomready) {
+		this.fire('domready');
+	}
 
 	plugin('postDomReady', this);
 }

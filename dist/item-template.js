@@ -1,21 +1,19 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(["BaseComponent", "dom"], factory);
+        define(["BaseComponent"], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node / CommonJS
-        module.exports = factory(require('BaseComponent'), require('dom'));
+        module.exports = factory(require('BaseComponent'));
     } else {
         // Browser globals (root is window)
-        root['undefined'] = factory(root.BaseComponent, root.dom);
+        root['undefined'] = factory(root.BaseComponent);
     }
-	}(this, function (BaseComponent, dom) {
+	}(this, function (BaseComponent) {
 'use strict';
 
-//const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 var r = /\{\{\w*}}/g;
-
-// TODO: switch to ES6 literals? Maybe not...
+var destroyer = document.createElement('div');
 
 // FIXME: time current process
 // Try a new one where meta data is created, instead of a template
@@ -85,6 +83,13 @@ function updateItemTemplate(frag) {
     return refs;
 }
 
+function destroy(node) {
+    if (node) {
+        destroyer.appendChild(node);
+        destroyer.innerHTML = '';
+    }
+}
+
 BaseComponent.prototype.renderList = function (items, container, itemTemplate) {
     var frag = document.createDocumentFragment(),
         tmpl = itemTemplate || this.itemTemplate,
@@ -147,7 +152,7 @@ BaseComponent.prototype.renderList = function (items, container, itemTemplate) {
         deletions.forEach(function (del) {
             var node = clone.querySelector(del);
             if (node) {
-                dom.destroy(node);
+                destroy(node);
                 var tmplNode = tmpl.querySelector(del);
                 tmplNode.removeAttribute('ifs');
             }
@@ -186,7 +191,7 @@ BaseComponent.addPlugin({
     name: 'item-template',
     order: 40,
     preDomReady: function preDomReady(node) {
-        node.itemTemplate = dom.query(node, 'template');
+        node.itemTemplate = node.querySelector('template');
         if (node.itemTemplate) {
             node.itemTemplate.parentNode.removeChild(node.itemTemplate);
             node.itemTemplate = BaseComponent.clone(node.itemTemplate);

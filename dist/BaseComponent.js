@@ -1,15 +1,15 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(["on", "dom"], factory);
+        define(["on"], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node / CommonJS
-        module.exports = factory(require('on'), require('dom'));
+        module.exports = factory(require('on'));
     } else {
         // Browser globals (root is window)
-        root['BaseComponent'] = factory(root.on, root.dom);
+        root['BaseComponent'] = factory(root.on);
     }
-	}(this, function (on, dom) {
+	}(this, function (on) {
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -28,7 +28,7 @@ var BaseComponent = function (_HTMLElement) {
 
 		var _this = _possibleConstructorReturn(this, (BaseComponent.__proto__ || Object.getPrototypeOf(BaseComponent)).call(this));
 
-		_this._uid = dom.uid(_this.localName);
+		_this._uid = uid(_this.localName);
 		privates[_this._uid] = { DOMSTATE: 'created' };
 		privates[_this._uid].handleList = [];
 		plugin('init', _this);
@@ -111,7 +111,7 @@ var BaseComponent = function (_HTMLElement) {
 			privates[this._uid].handleList.forEach(function (handle) {
 				handle.remove();
 			});
-			dom.destroy(this);
+			_destroy(this);
 		}
 	}, {
 		key: 'fire',
@@ -283,7 +283,11 @@ function onDomReady() {
 		this.domReady = function () {};
 	}
 
-	this.fire('domready');
+	// allow component to fire this event
+	// domReady() will still be called
+	if (!this.fireOwnDomready) {
+		this.fire('domready');
+	}
 
 	plugin('postDomReady', this);
 }
@@ -304,6 +308,26 @@ function getChildCustomNodes(node) {
 
 function nextTick(cb) {
 	requestAnimationFrame(cb);
+}
+
+var uids = {};
+function uid() {
+	var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'uid';
+
+	if (uids[type] === undefined) {
+		uids[type] = 0;
+	}
+	var id = type + '-' + (uids[type] + 1);
+	uids[type]++;
+	return id;
+}
+
+var destroyer = document.createElement('div');
+function _destroy(node) {
+	if (node) {
+		destroyer.appendChild(node);
+		destroyer.innerHTML = '';
+	}
 }
 
 window.onDomReady = function (node, callback) {
