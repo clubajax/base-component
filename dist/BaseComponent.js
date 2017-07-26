@@ -330,16 +330,36 @@ function _destroy(node) {
 	}
 }
 
-window.onDomReady = function (node, callback) {
-	function onReady() {
-		callback(node);
-		node.removeEventListener('domready', onReady);
+window.onDomReady = function (nodeOrNodes, callback) {
+	function handleDomReady(node, cb) {
+		function onReady() {
+			cb(node);
+			node.removeEventListener('domready', onReady);
+		}
+
+		if (node.DOMSTATE === 'domready') {
+			cb(node);
+		} else {
+			node.addEventListener('domready', onReady);
+		}
 	}
 
-	if (node.DOMSTATE === 'domready') {
-		callback(node);
-	} else {
-		node.addEventListener('domready', onReady);
+	if (!Array.isArray(nodeOrNodes)) {
+		handleDomReady(nodeOrNodes, callback);
+		return;
+	}
+
+	var count = 0;
+
+	function onArrayNodeReady() {
+		count++;
+		if (count === nodeOrNodes.length) {
+			callback(nodeOrNodes);
+		}
+	}
+
+	for (var i = 0; i < nodeOrNodes.length; i++) {
+		handleDomReady(nodeOrNodes[i], onArrayNodeReady);
 	}
 };
 

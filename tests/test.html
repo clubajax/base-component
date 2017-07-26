@@ -39,15 +39,17 @@
 			display: inline-block;
 			width: 70px;
 		}
-		test-list-component{
+
+		test-list-component {
 			display: block;
 			width: 200px;
 			height: 200px;
 			overflow-y: auto;
 			margin: 20px;
 		}
+
 		test-list-component-item,
-		test-list-component-tmpl{
+		test-list-component-tmpl {
 			display: block;
 			font-size: 11px;
 			border: 1px solid #ccc;
@@ -55,15 +57,18 @@
 			padding: 10px;
 			margin-bottom: 5px;
 		}
+
 		test-list-component-item span,
-		test-list-component-tmpl span{
+		test-list-component-tmpl span {
 			margin: 3px;
 		}
+
 		test-list-component-item .indent,
-		test-list-component-tmpl .indent{
+		test-list-component-tmpl .indent {
 			margin-left: 20px;
 		}
-		test-list-component-tmpl{
+
+		test-list-component-tmpl {
 			background-color: #d7f7ff;
 		}
 	</style>
@@ -224,6 +229,35 @@
 		});
 
 		suite('lifecycle methods', function () {
+			test.only('onDomReady should handle a sngle node', function (done) {
+				var node = dom('test-a', {}, body);
+				onDomReady(node, function (n) {
+					expect(dom.isNode(n)).to.equal(true);
+					dom.destroy(node);
+					done();
+				});
+			});
+
+			test.only('onDomReady should handle an array of nodes', function (done) {
+				var n1 = dom('test-a', {}, body);
+				var n2 = dom('test-a', {}, body);
+				var n3 = dom('test-a');
+				onDomReady([n1,n2,n3], function (array) {
+					expect(dom.isNode(array[0])).to.equal(true);
+					expect(dom.isNode(array[1])).to.equal(true);
+					expect(dom.isNode(array[2])).to.equal(true);
+					dom.destroy(n1);
+					dom.destroy(n2);
+					dom.destroy(n3);
+					done();
+				});
+
+				// ensure async test
+				setTimeout(function () {
+					body.appendChild(n3);
+				}, 30);
+			});
+
 			test('it should should be in the domready state when re-added to the DOM', function (done) {
 				var
 					node,
@@ -569,8 +603,8 @@
 				node.setAttribute('max', '-75%');
 
 				onDomReady(node, function () {
-//					expect(node.min).to.equal(62);
-//					expect(node.max).to.equal(-76);
+					//					expect(node.min).to.equal(62);
+					//					expect(node.max).to.equal(-76);
 					expect(node.getAttribute('min')).to.equal('50');
 					expect(node.getAttribute('max')).to.equal('-75');
 				});
@@ -665,13 +699,15 @@
 				});
 			});
 		});
-		
+
 		suite('item-template/component', function () {
 			test('it should render a dom-based list', function () {
 				var data = rand.data(10);
-				var node = dom('test-list-component', {attr:{
-					'item-tag': 'test-list-component-item'
-				}}, body);
+				var node = dom('test-list-component', {
+					attr: {
+						'item-tag': 'test-list-component-item'
+					}
+				}, body);
 				setTimeout(function () {
 					console.time('dom-based');
 					node.data = data;
@@ -681,9 +717,11 @@
 
 			test('it should render a template-based list', function () {
 				var data = rand.data(10);
-				var node = dom('test-list-component', {attr:{
-					'item-tag': 'test-list-component-tmpl'
-				}}, body);
+				var node = dom('test-list-component', {
+					attr: {
+						'item-tag': 'test-list-component-tmpl'
+					}
+				}, body);
 				setTimeout(function () {
 					console.time('tmpl-based');
 					node.data = data;

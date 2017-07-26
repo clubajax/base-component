@@ -140,6 +140,16 @@ onDomReady(element, function (element) {
 });
 ``` 
 
+`onDomReady` also works with a list of nodes:
+```jsx harmony
+var n1 = dom('my-custom', {}, document.body);
+var n2 = dom('my-custom', {}, document.body);
+var n3 = dom('my-custom', {}, document.body);
+onDomReady([n1,n2,n3], function (nodes) {
+    // can continue work here
+});
+``` 
+
 The benefit of `onDomReady` over `element.addEventListener` is that if the element is already in the `domready` 
 state the callback will still fire. Also, the event listener is cleaned up under the hood, while using 
 `element.addEventListener` leaves that up to you.

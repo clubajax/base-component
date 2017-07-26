@@ -3,15 +3,15 @@
 const on = require('on');
 
 class BaseComponent extends HTMLElement {
-	constructor() {
+	constructor () {
 		super();
 		this._uid = uid(this.localName);
-		privates[this._uid] = {DOMSTATE: 'created'};
+		privates[this._uid] = { DOMSTATE: 'created' };
 		privates[this._uid].handleList = [];
 		plugin('init', this);
 	}
 
-	connectedCallback() {
+	connectedCallback () {
 		privates[this._uid].DOMSTATE = privates[this._uid].domReadyFired ? 'domready' : 'connected';
 		plugin('preConnected', this);
 		nextTick(onCheckDomReady.bind(this));
@@ -23,7 +23,7 @@ class BaseComponent extends HTMLElement {
 	}
 
 	onConnected (callback) {
-		if(this.DOMSTATE === 'connected' || this.DOMSTATE === 'domready'){
+		if (this.DOMSTATE === 'connected' || this.DOMSTATE === 'domready') {
 			callback(this);
 			return;
 		}
@@ -33,7 +33,7 @@ class BaseComponent extends HTMLElement {
 	}
 
 	onDomReady (callback) {
-		if(this.DOMSTATE === 'domready'){
+		if (this.DOMSTATE === 'domready') {
 			callback(this);
 			return;
 		}
@@ -42,7 +42,7 @@ class BaseComponent extends HTMLElement {
 		});
 	}
 
-	disconnectedCallback() {
+	disconnectedCallback () {
 		privates[this._uid].DOMSTATE = 'disconnected';
 		plugin('preDisconnected', this);
 		if (this.disconnected) {
@@ -54,21 +54,21 @@ class BaseComponent extends HTMLElement {
 		if (dod) {
 			time = typeof dod === 'number' ? doc : 300;
 			setTimeout(() => {
-				if(this.DOMSTATE === 'disconnected'){
+				if (this.DOMSTATE === 'disconnected') {
 					this.destroy();
 				}
 			}, time);
 		}
 	}
 
-	attributeChangedCallback(attrName, oldVal, newVal) {
+	attributeChangedCallback (attrName, oldVal, newVal) {
 		plugin('preAttributeChanged', this, attrName, newVal, oldVal);
 		if (this.attributeChanged) {
 			this.attributeChanged(attrName, newVal, oldVal);
 		}
 	}
 
-	destroy() {
+	destroy () {
 		this.fire('destroy');
 		privates[this._uid].handleList.forEach(function (handle) {
 			handle.remove();
@@ -76,22 +76,22 @@ class BaseComponent extends HTMLElement {
 		destroy(this);
 	}
 
-	fire(eventName, eventDetail, bubbles) {
+	fire (eventName, eventDetail, bubbles) {
 		return on.fire(this, eventName, eventDetail, bubbles);
 	}
 
-	emit(eventName, value) {
+	emit (eventName, value) {
 		return on.emit(this, eventName, value);
 	}
 
-	on(node, eventName, selector, callback) {
+	on (node, eventName, selector, callback) {
 		return this.registerHandle(
 			typeof node !== 'string' ? // no node is supplied
 				on(node, eventName, selector, callback) :
 				on(this, node, eventName, selector));
 	}
 
-	once(node, eventName, selector, callback) {
+	once (node, eventName, selector, callback) {
 		return this.registerHandle(
 			typeof node !== 'string' ? // no node is supplied
 				on.once(node, eventName, selector, callback) :
@@ -101,32 +101,32 @@ class BaseComponent extends HTMLElement {
 	attr (key, value, toggle) {
 		this.isSettingAttribute = true;
 		const add = toggle === undefined ? true : !!toggle;
-		if(add){
+		if (add) {
 			this.setAttribute(key, value);
-		}else{
+		} else {
 			this.removeAttribute(key);
 		}
 		this.isSettingAttribute = false;
 	}
 
-	registerHandle(handle) {
+	registerHandle (handle) {
 		privates[this._uid].handleList.push(handle);
 		return handle;
 	}
 
-	get DOMSTATE() {
+	get DOMSTATE () {
 		return privates[this._uid].DOMSTATE;
 	}
 
-	static set destroyOnDisconnect(value) {
+	static set destroyOnDisconnect (value) {
 		privates['destroyOnDisconnect'] = value;
 	}
 
-	static get destroyOnDisconnect() {
+	static get destroyOnDisconnect () {
 		return privates['destroyOnDisconnect'];
 	}
 
-	static clone(template) {
+	static clone (template) {
 		if (template.content && template.content.children) {
 			return document.importNode(template.content, true);
 		}
@@ -140,7 +140,7 @@ class BaseComponent extends HTMLElement {
 		return frag;
 	}
 
-	static addPlugin(plug) {
+	static addPlugin (plug) {
 		let i, order = plug.order || 100;
 		if (!plugins.length) {
 			plugins.push(plug);
@@ -174,7 +174,7 @@ let
 	privates = {},
 	plugins = [];
 
-function plugin(method, node, a, b, c) {
+function plugin (method, node, a, b, c) {
 	plugins.forEach(function (plug) {
 		if (plug[method]) {
 			plug[method](node, a, b, c);
@@ -182,7 +182,7 @@ function plugin(method, node, a, b, c) {
 	});
 }
 
-function onCheckDomReady() {
+function onCheckDomReady () {
 	if (this.DOMSTATE !== 'connected' || privates[this._uid].domReadyFired) {
 		return;
 	}
@@ -192,7 +192,7 @@ function onCheckDomReady() {
 		children = getChildCustomNodes(this),
 		ourDomReady = onDomReady.bind(this);
 
-	function addReady() {
+	function addReady () {
 		count++;
 		if (count === children.length) {
 			ourDomReady();
@@ -220,7 +220,7 @@ function onCheckDomReady() {
 	}
 }
 
-function onDomReady() {
+function onDomReady () {
 	privates[this._uid].DOMSTATE = 'domready';
 	// domReady should only ever fire once
 	privates[this._uid].domReadyFired = true;
@@ -235,14 +235,14 @@ function onDomReady() {
 
 	// allow component to fire this event
 	// domReady() will still be called
-	if(!this.fireOwnDomready) {
+	if (!this.fireOwnDomready) {
 		this.fire('domready');
 	}
 
 	plugin('postDomReady', this);
 }
 
-function getChildCustomNodes(node) {
+function getChildCustomNodes (node) {
 	// collect any children that are custom nodes
 	// used to check if their dom is ready before
 	// determining if this is ready
@@ -255,13 +255,13 @@ function getChildCustomNodes(node) {
 	return nodes;
 }
 
-function nextTick(cb) {
+function nextTick (cb) {
 	requestAnimationFrame(cb);
 }
 
 const uids = {};
-function uid (type = 'uid'){
-	if(uids[type] === undefined){
+function uid (type = 'uid') {
+	if (uids[type] === undefined) {
 		uids[type] = 0;
 	}
 	const id = type + '-' + (uids[type] + 1);
@@ -271,25 +271,46 @@ function uid (type = 'uid'){
 
 const destroyer = document.createElement('div');
 function destroy (node) {
-	if(node) {
+	if (node) {
 		destroyer.appendChild(node);
 		destroyer.innerHTML = '';
 	}
 }
 
 
-window.onDomReady = function (node, callback) {
-	function onReady() {
-		callback(node);
-		node.removeEventListener('domready', onReady);
+window.onDomReady = function (nodeOrNodes, callback) {
+	function handleDomReady (node, cb) {
+		function onReady () {
+			cb(node);
+			node.removeEventListener('domready', onReady);
+		}
+
+		if (node.DOMSTATE === 'domready') {
+			cb(node);
+		}
+		else {
+			node.addEventListener('domready', onReady);
+		}
 	}
 
-	if (node.DOMSTATE === 'domready') {
-		callback(node);
+	if (!Array.isArray(nodeOrNodes)) {
+		handleDomReady(nodeOrNodes, callback);
+		return;
 	}
-	else {
-		node.addEventListener('domready', onReady);
+
+	let count = 0;
+
+	function onArrayNodeReady () {
+		count++;
+		if (count === nodeOrNodes.length) {
+			callback(nodeOrNodes);
+		}
 	}
+
+	for (let i = 0; i < nodeOrNodes.length; i++) {
+		handleDomReady(nodeOrNodes[i], onArrayNodeReady);
+	}
+
 };
 
 module.exports = BaseComponent;
