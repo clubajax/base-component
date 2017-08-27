@@ -1,6 +1,6 @@
 {
-  "name": "BaseComponent",
-  "version": "1.5.1",
+  "name": "base-component",
+  "version": "1.5.2",
   "description": "A base for more powerful web components",
   "main": "dist/BaseComponent.js",
   "scripts": {
