@@ -6,10 +6,11 @@ module.exports = function (grunt) {
     
     // collect dependencies from node_modules
     let nm = path.resolve(__dirname, 'node_modules'),
-        vendorAliases = ['dom', 'on', 'randomizer', 'custom-elements-polyfill'],
+        vendorAliases = ['@clubajax/on', 'randomizer', 'custom-elements-polyfill'],
+		devAliases = ['@clubajax/dom', ...vendorAliases],
 		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
 		allAliases = vendorAliases.concat(baseAliases),
-		pluginAliases = ['dom', 'on', 'BaseComponent'],
+		pluginAliases = ['@clubajax/on', 'BaseComponent'],
         sourceMaps = true,
         watch = false,
         watchPort = 35750,
@@ -31,7 +32,7 @@ module.exports = function (grunt) {
                 dest: 'tests/dist/vendor.js',
                 options: {
                     // expose the modules
-                    alias: vendorAliases.map(function (module) {
+                    alias: devAliases.map(function (module) {
                         return module + ':';
                     }),
                     // not consuming any modules
@@ -49,7 +50,7 @@ module.exports = function (grunt) {
                     // not using browserify-watch; it did not trigger a page reload
                     watch: false,
                     keepAlive: false,
-                    external: vendorAliases,
+                    external: devAliases,
 					alias: {
                     	'BaseComponent': './src/BaseComponent'
 					},

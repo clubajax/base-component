@@ -10,21 +10,24 @@ A good resource to learn about web components is [Google Developers](https://dev
  
 ## To Install
 
-    npm install clubajax/BaseComponent --save
+    npm install @clubajax/base-component --save
     
 You will most likely want to use the polyfill as well (explained below)
     
-    npm install clubajax/custom-elements-polyfill --save
+    npm install @clubajax/custom-elements-polyfill --save
     
 You may also use `bower` if you prefer, although build tools like Webpack prefer *node_modules*. 
+    
+    bower install clubajax/base-component --save
+    bower install clubajax/custom-elements-polyfill --save
 
 ## Adding to a Project
 
 Import the polyfill, then BaseComponent, then write your code:
 
 ```jsx harmony
-import 'custom-elements-polyfill';
-import BaseComponent from 'BaseComponent';
+import '@clubajax/custom-elements-polyfill';
+import BaseComponent from '@clubajax/base-component';
 
 class MyWidget extends BaseComponent {
     // your code here
@@ -386,6 +389,7 @@ Q. **Uncaught TypeError: Class constructor cannot be invoked without 'new'**
 A. Multiple possibilities:
 
  * Babel is not transpiling. This could be the wrong version (try "latest" or "es2015")
+ * You might not be transpiling `node_modules` dependencies. Ensure they are not excluded in webpack's `exclude`.
  * As per the above FAQ, it is _*because*_ you added `.default` to the extended class.
  * You might be linking to *src/BaseComponent* instead of *dist/BaseComponent*. 
  * You are using the native-shim from custom-elements-polyfill, with untranspiled code. If this is the purpose, use

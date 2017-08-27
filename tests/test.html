@@ -229,7 +229,7 @@
 		});
 
 		suite('lifecycle methods', function () {
-			test.only('onDomReady should handle a sngle node', function (done) {
+			test('onDomReady should handle a sngle node', function (done) {
 				var node = dom('test-a', {}, body);
 				onDomReady(node, function (n) {
 					expect(dom.isNode(n)).to.equal(true);
@@ -238,7 +238,7 @@
 				});
 			});
 
-			test.only('onDomReady should handle an array of nodes', function (done) {
+			test('onDomReady should handle an array of nodes', function (done) {
 				var n1 = dom('test-a', {}, body);
 				var n2 = dom('test-a', {}, body);
 				var n3 = dom('test-a');

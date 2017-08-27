@@ -1,4 +1,4 @@
-const on = require('on');
+const on = require('@clubajax/on');
 const dom = require('dom');
 const BaseComponent = require('./BaseComponent');
 const properties = require('./properties');

@@ -1,6 +1,6 @@
 "use strict";
 
-const on = require('on');
+const on = require('@clubajax/on');
 
 class BaseComponent extends HTMLElement {
 	constructor () {

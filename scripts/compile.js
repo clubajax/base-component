@@ -31,6 +31,8 @@ module.exports = function (name) {
 		dir = './src/',
 		fileName = dir + name + '.js',
 		repRegExp = /\(\'(\w*)\'\)/,
+		rePath = /\(\'(@*\w*\/*\w+)\'\)/,
+		reName = /\(\'@*\w*\/*(\w+)\'\)/,
 		deps = [],
 		dep,
 		modName,
@@ -43,7 +45,7 @@ module.exports = function (name) {
 
 	lines = fs.readFileSync(fileName).toString().split('\n').filter(function (line) {
 		if (line.indexOf('require') > -1) {
-			dep = repRegExp.exec(line);
+			dep = rePath.exec(line);
 			if (dep && dep.length > 1) {
 				console.log('', line);
 				console.log('DEP', dep[1]);
@@ -80,10 +82,12 @@ module.exports = function (name) {
 	}).join(', ');
 
 	roots = deps.map(function (dep) {
-		return `root.${dep}`;
+		return `root.${nameOnly(dep)}`;
 	}).join(', ');
 
-	args = deps.join(', ');
+	args = deps.map(function (dep) {
+		return nameOnly(dep);
+	}).join(', ');
 
 	console.log('deps:', deps);
 	console.log('mod', modName);
@@ -100,3 +104,7 @@ module.exports = function (name) {
 
 	console.log('code compilation successful.');
 };
+
+function nameOnly (dep) {
+	return dep.replace('@clubajax/', '');
+}
