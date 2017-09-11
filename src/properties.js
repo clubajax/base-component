@@ -1,4 +1,4 @@
-const BaseComponent = require('BaseComponent');
+const BaseComponent = require('@clubajax/base-component');
 
 function setBoolean (node, prop) {
 	Object.defineProperty(node, prop, {

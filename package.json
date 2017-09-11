@@ -1,6 +1,6 @@
 {
-  "name": "base-component",
-  "version": "1.5.2",
+  "name": "@clubajax/base-component",
+  "version": "1.5.3",
   "description": "A base for more powerful web components",
   "main": "dist/BaseComponent.js",
   "scripts": {
@@ -38,5 +38,8 @@
   },
   "dependencies": {
     "@clubajax/on": "^2.1.4"
+  },
+  "directories": {
+    "test": "tests"
   }
 }
