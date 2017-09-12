@@ -7,7 +7,7 @@ module.exports = function (grunt) {
     // collect dependencies from node_modules
     let nm = path.resolve(__dirname, 'node_modules'),
         vendorAliases = ['@clubajax/on', 'randomizer', 'custom-elements-polyfill'],
-		devAliases = ['@clubajax/dom', ...vendorAliases],
+		devAliases = [...vendorAliases],
 		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
 		allAliases = vendorAliases.concat(baseAliases),
 		pluginAliases = ['@clubajax/on', 'BaseComponent'],
@@ -95,9 +95,10 @@ module.exports = function (grunt) {
 			},
             deploy: {
                 files: {
-                    'dist/core.js': ['src/deploy.js']
+                    'dist/index.js': ['src/deploy.js']
                 },
                 options: {
+					external: [...vendorAliases],
 					transform: babelTransform,
                     browserifyOptions: {
 						standalone: 'core',
@@ -170,12 +171,13 @@ module.exports = function (grunt) {
     });
 
 	grunt.registerTask('deploy', function (which) {
-		const compile = require('./scripts/compile');
-		compile('BaseComponent');
-		compile('properties');
-		compile('template');
-		compile('refs');
-		compile('item-template');
+		// const compile = require('./scripts/compile');
+		// compile('BaseComponent');
+		// compile('properties');
+		// compile('template');
+		// compile('refs');
+		// compile('item-template');
+		grunt.task.run('browserify:deploy');
 	});
 
 	grunt.loadNpmTasks('grunt-concurrent');

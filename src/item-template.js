@@ -1,4 +1,4 @@
-const BaseComponent = require('@clubajax/base-component');
+const BaseComponent = require('./BaseComponent');
 
 const r = /\{\{\w*}}/g;
 const destroyer = document.createElement('div');

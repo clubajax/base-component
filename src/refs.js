@@ -1,4 +1,4 @@
-const BaseComponent = require('@clubajax/base-component');
+const BaseComponent = require('./BaseComponent');
 
 function assignRefs (node) {
 
