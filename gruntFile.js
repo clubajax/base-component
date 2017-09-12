@@ -101,7 +101,7 @@ module.exports = function (grunt) {
 					external: [...vendorAliases],
 					transform: babelTransform,
                     browserifyOptions: {
-						standalone: 'core',
+						standalone: 'BaseComponent',
                         debug: false
                     }
                 }
