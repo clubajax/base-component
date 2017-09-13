@@ -351,19 +351,12 @@ module.exports = BaseComponent;
 
 var on = require('@clubajax/on');
 var BaseComponent = require('./BaseComponent');
-var properties = require('./properties');
-var template = require('./template');
-var refs = require('./refs');
+require('./properties');
+require('./template');
+require('./refs');
 //const itemTemplate = require('./item-template');
 
-module.exports = {
-	on: on,
-	BaseComponent: BaseComponent,
-	properties: properties,
-	template: template,
-	refs: refs
-	//itemTemplate: itemTemplate
-};
+module.exports = BaseComponent;
 
 },{"./BaseComponent":1,"./properties":3,"./refs":4,"./template":5,"@clubajax/on":"@clubajax/on"}],3:[function(require,module,exports){
 'use strict';

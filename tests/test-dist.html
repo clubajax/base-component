@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Test BaseComponent</title>
+	<link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+	<script src="../node_modules/mocha/mocha.js"></script>
+	<script src="../node_modules/chai/chai.js"></script>
+	<script src="./dist/vendor.js"></script>
+	<script src="./dist/dist-output.js"></script>
+
+	<script src="//localhost:35750/livereload.js"></script>
+
+	<style>
+		body {
+			padding: 20px;
+			font-family: sans-serif;
+		}
+
+		section {
+			border: 1px solid #ccc;
+			padding: 3px;
+			margin: 5px;
+		}
+
+		section section {
+			border: 0;
+			padding: 0;
+			margin: 0;
+		}
+
+		test-list [ref=container],
+		test-list [ref=titleNode] {
+			border: 1px solid #ccc;
+			margin: 5px;
+			padding: 3px;
+		}
+
+		test-list span {
+			display: inline-block;
+			width: 70px;
+		}
+
+		test-list-component {
+			display: block;
+			width: 200px;
+			height: 200px;
+			overflow-y: auto;
+			margin: 20px;
+		}
+
+		test-list-component-item,
+		test-list-component-tmpl {
+			display: block;
+			font-size: 11px;
+			border: 1px solid #ccc;
+			background-color: #ffefe4;
+			padding: 10px;
+			margin-bottom: 5px;
+		}
+
+		test-list-component-item span,
+		test-list-component-tmpl span {
+			margin: 3px;
+		}
+
+		test-list-component-item .indent,
+		test-list-component-tmpl .indent {
+			margin-left: 20px;
+		}
+
+		test-list-component-tmpl {
+			background-color: #d7f7ff;
+		}
+	</style>
+</head>
+<body>
+<h1>Test BaseComponent</h1>
+
+<test-props disabled readonly id="test-1"></test-props>
+
+<div id="mocha"></div>
+
+<script>
+	window.mocha.setup('tdd');
+
+	suite('BaseComponent', function () {
+		this.timeout(3000);
+		var suite = window.suite,
+			test = window.test,
+			dom = window.dom,
+			on = window.on,
+			expect = chai.expect,
+			body = document.body;
+
+		suite('create / destroy', function () {
+
+			test('it should create a component', function () {
+				var node = dom('test-lifecycle', { css: 'foo' }, body);
+				expect(dom.isNode(node)).to.equal(true);
+				expect(typeof node.on).to.equal('function');
+				expect(node.DOMSTATE).to.equal('connected');
+			});
+		});
+	});
+
+	window.mocha.run();
+
+</script>
+</body>
+</html>

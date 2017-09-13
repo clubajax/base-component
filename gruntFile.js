@@ -6,7 +6,7 @@ module.exports = function (grunt) {
     
     // collect dependencies from node_modules
     let nm = path.resolve(__dirname, 'node_modules'),
-        vendorAliases = ['@clubajax/on', 'randomizer', 'custom-elements-polyfill'],
+        vendorAliases = ['@clubajax/on', '@clubajax/dom', 'randomizer', 'custom-elements-polyfill'],
 		devAliases = [...vendorAliases],
 		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
 		allAliases = vendorAliases.concat(baseAliases),
@@ -67,6 +67,32 @@ module.exports = function (grunt) {
                     }
                 }
             },
+			test: {
+				files: {
+					'tests/dist/dist-output.js': ['tests/src/globals.js', 'tests/src/dist-test.js']
+				},
+				options: {
+					// not using browserify-watch; it did not trigger a page reload
+					watch: false,
+					keepAlive: false,
+					external: devAliases,
+
+					alias: {
+						// needed for internal references
+						'BaseComponent': './src/BaseComponent'
+					},
+					browserifyOptions: {
+						debug: sourceMaps,
+						standalone: 'BaseComponent',
+					},
+					// since this is testing the distro, we need to babelize the test
+					transform: babelTransform,
+					postBundleCB: function (err, src, next) {
+						console.timeEnd('build');
+						next(err, src);
+					}
+				}
+			},
 			BaseComponent:{
             	files:{
             		'dist/BaseComponent.js': ['src/BaseComponent.js']
@@ -149,8 +175,8 @@ module.exports = function (grunt) {
     // watch build task
     grunt.registerTask('build-dev', function (which) {
         console.time('build');
-        grunt.task.run('browserify:dev');
-
+        //grunt.task.run('browserify:dev');
+		grunt.task.run('browserify:test');
     });
 
     // task that builds vendor and dev files during development
