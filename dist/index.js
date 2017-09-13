@@ -488,7 +488,6 @@ function propNorm(value) {
 }
 
 function normalize(val) {
-	console.log('normalize', val);
 	if (typeof val === 'string') {
 		val = val.trim();
 		if (val === 'false') {
