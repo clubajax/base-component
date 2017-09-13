@@ -1,8 +1,6 @@
 require('@clubajax/custom-elements-polyfill');
 const BaseComponent  = require('../../dist/index');
 
-console.log('BaseComponent', BaseComponent);
-
 class TestLifecycle extends BaseComponent {
 
 	static get observedAttributes() {return ['foo', 'bar']; }

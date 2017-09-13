@@ -537,7 +537,7 @@ BaseComponent.addPlugin({
 		node[name] = propNorm(value);
 	}
 });			
-	}())
+}());
 
 (function () {
 				
@@ -660,7 +660,7 @@ BaseComponent.addPlugin({
         insert(node);
     }
 });			
-	}())
+}());
 
 (function () {
 				
@@ -702,7 +702,7 @@ BaseComponent.addPlugin({
         assignEvents(node);
     }
 });			
-	}())
+}());
 
 	return BaseComponent;
 

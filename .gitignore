@@ -21,3 +21,5 @@ testem.log
 .idea/UI-X.iml
 *.lnk
 ebuild.bat
+
+tests/dist/dist-output.js

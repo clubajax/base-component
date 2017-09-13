@@ -32,7 +32,7 @@ function run () {
 		if (index) {
 			return `(function () {
 				${str}			
-	}())`;
+}());`;
 		}
 		return str;
 	}).join('\n\n');
