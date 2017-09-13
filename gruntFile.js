@@ -6,10 +6,10 @@ module.exports = function (grunt) {
     
     // collect dependencies from node_modules
     let nm = path.resolve(__dirname, 'node_modules'),
-        vendorAliases = ['@clubajax/on', '@clubajax/dom', 'randomizer', 'custom-elements-polyfill'],
+        vendorAliases = ['@clubajax/on', '@clubajax/dom', 'randomizer', '@clubajax/custom-elements-polyfill'],
 		devAliases = [...vendorAliases],
-		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template', './src/item-template'],
-		allAliases = vendorAliases.concat(baseAliases),
+		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template'],  //, './src/item-template'
+		// allAliases = vendorAliases.concat(baseAliases),
 		pluginAliases = ['@clubajax/on', 'BaseComponent'],
         sourceMaps = true,
         watch = false,
@@ -119,19 +119,46 @@ module.exports = function (grunt) {
 					}
 				}
 			},
-            deploy: {
+            xdeploy: {
                 files: {
-                    'dist/index.js': ['src/deploy.js']
+                	// remember to include the extension
+                    'dist/index.js': ['./src/BaseComponent.js']
                 },
-                options: {
+				options: {
+					alias: {
+						// needed for internal references
+						'BaseComponent': './src/BaseComponent.js'
+					},
 					external: [...vendorAliases],
 					transform: babelTransform,
                     browserifyOptions: {
 						standalone: 'BaseComponent',
+						//standalone: 'TestComponent',
                         debug: false
                     }
                 }
-            }
+            },
+			deploy: {
+				files: {
+					// remember to include the extension
+					//'dist/index.js': ['./src/plugin.js', './src/TestComponent.js']
+					'dist/index.js': ['./src/deploy.js']
+				},
+				options: {
+					alias: {
+						// needed for internal references
+						'TestComponent': './src/TestComponent.js',
+						//'plugin': './src/plugin.js'
+					},
+					external: [...vendorAliases],
+					transform: babelTransform,
+					browserifyOptions: {
+						//standalone: 'BaseComponent',
+						standalone: 'TestComponent',
+						debug: false
+					}
+				}
+			}
         },
         
         watch: {
@@ -203,7 +230,9 @@ module.exports = function (grunt) {
 		// compile('template');
 		// compile('refs');
 		// compile('item-template');
-		grunt.task.run('browserify:deploy');
+		//grunt.task.run('browserify:deploy');
+
+		const compile = require('./scripts/compile-all');
 	});
 
 	grunt.loadNpmTasks('grunt-concurrent');

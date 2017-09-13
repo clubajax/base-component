@@ -1,4 +1,4 @@
-require('custom-elements-polyfill');
+require('@clubajax/custom-elements-polyfill');
 const BaseComponent  = require('../../dist/index');
 
 console.log('BaseComponent', BaseComponent);

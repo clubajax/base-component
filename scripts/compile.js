@@ -67,6 +67,7 @@ module.exports = function (name) {
 	return ${modName};
 
 }));`;
+
 	}else{
 		suffix = '\n}));';
 	}

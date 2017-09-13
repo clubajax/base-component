@@ -119,6 +119,7 @@ function propNorm (value) {
 
 function normalize (val){
 	if(typeof val === 'string') {
+		val = val.trim();
 		if(val === 'false'){
 			return false;
 		}
@@ -128,8 +129,9 @@ function normalize (val){
 		else if(val === 'true'){
 			return true;
 		}
-		if (val.indexOf('/') > -1 || (val.match(/-/g) || []).length > 1) {
-			// type of date
+		// finds strings that start with numbers, but are not numbers:
+		// '1team' '123 Street', '1-2-3', etc
+		if ((''+val).replace(/\d*/, '').length) {
 			return val;
 		}
 	}

@@ -1,5 +1,3 @@
-"use strict";
-
 const on = require('@clubajax/on');
 
 class BaseComponent extends HTMLElement {
@@ -190,7 +188,7 @@ function onCheckDomReady () {
 	let
 		count = 0,
 		children = getChildCustomNodes(this),
-		ourDomReady = onDomReady.bind(this);
+		ourDomReady = onSelfDomReady.bind(this);
 
 	function addReady () {
 		count++;
@@ -220,7 +218,7 @@ function onCheckDomReady () {
 	}
 }
 
-function onDomReady () {
+function onSelfDomReady () {
 	privates[this._uid].DOMSTATE = 'domready';
 	// domReady should only ever fire once
 	privates[this._uid].domReadyFired = true;
