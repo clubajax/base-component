@@ -117,25 +117,24 @@ function propNorm (value) {
 	return normalize(value);
 }
 
-function normalize (val){
-	if(typeof val === 'string') {
+function normalize(val) {
+	console.log('normalize', val);
+	if (typeof val === 'string') {
 		val = val.trim();
-		if(val === 'false'){
+		if (val === 'false') {
 			return false;
-		}
-		else if(val === 'null'){
+		} else if (val === 'null') {
 			return null;
-		}
-		else if(val === 'true'){
+		} else if (val === 'true') {
 			return true;
 		}
 		// finds strings that start with numbers, but are not numbers:
 		// '1team' '123 Street', '1-2-3', etc
-		if ((''+val).replace(/\d*/, '').length) {
+		if (('' + val).replace(/-?\d*\.?\d*/, '').length) {
 			return val;
 		}
 	}
-	if(!isNaN(parseFloat(val))){
+	if (!isNaN(parseFloat(val))) {
 		return parseFloat(val);
 	}
 	return val;

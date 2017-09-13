@@ -488,6 +488,7 @@ function propNorm(value) {
 }
 
 function normalize(val) {
+	console.log('normalize', val);
 	if (typeof val === 'string') {
 		val = val.trim();
 		if (val === 'false') {
@@ -499,7 +500,7 @@ function normalize(val) {
 		}
 		// finds strings that start with numbers, but are not numbers:
 		// '1team' '123 Street', '1-2-3', etc
-		if (('' + val).replace(/\d*/, '').length) {
+		if (('' + val).replace(/-?\d*\.?\d*/, '').length) {
 			return val;
 		}
 	}
