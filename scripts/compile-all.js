@@ -1,7 +1,6 @@
 const exName = 'BaseComponent';
 const outputName = 'index';
 const outputPath = `./dist/${outputName}.js`;
-//const files = ['./src/TestComponent.js', './src/plugin.js'];
 const files = ['./src/BaseComponent.js', './src/properties.js', './src/template.js', './src/refs.js'];
 
 console.log('');

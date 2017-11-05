@@ -141,14 +141,12 @@ module.exports = function (grunt) {
 			deploy: {
 				files: {
 					// remember to include the extension
-					//'dist/index.js': ['./src/plugin.js', './src/TestComponent.js']
 					'dist/index.js': ['./src/deploy.js']
 				},
 				options: {
 					alias: {
 						// needed for internal references
 						'TestComponent': './src/TestComponent.js',
-						//'plugin': './src/plugin.js'
 					},
 					external: [...vendorAliases],
 					transform: babelTransform,
