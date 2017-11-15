@@ -275,40 +275,43 @@ function destroy (node) {
 	}
 }
 
+function makeGlobalListeners (name, eventName) {
+	window[name] = function (nodeOrNodes, callback) {
+		function handleDomReady (node, cb) {
+			function onReady () {
+				cb(node);
+				node.removeEventListener(eventName, onReady);
+			}
 
-window.onDomReady = function (nodeOrNodes, callback) {
-	function handleDomReady (node, cb) {
-		function onReady () {
-			cb(node);
-			node.removeEventListener('domready', onReady);
+			if (node.DOMSTATE === eventName) {
+				cb(node);
+			}
+			else {
+				node.addEventListener(eventName, onReady);
+			}
 		}
 
-		if (node.DOMSTATE === 'domready') {
-			cb(node);
+		if (!Array.isArray(nodeOrNodes)) {
+			handleDomReady(nodeOrNodes, callback);
+			return;
 		}
-		else {
-			node.addEventListener('domready', onReady);
+
+		let count = 0;
+
+		function onArrayNodeReady () {
+			count++;
+			if (count === nodeOrNodes.length) {
+				callback(nodeOrNodes);
+			}
 		}
-	}
 
-	if (!Array.isArray(nodeOrNodes)) {
-		handleDomReady(nodeOrNodes, callback);
-		return;
-	}
-
-	let count = 0;
-
-	function onArrayNodeReady () {
-		count++;
-		if (count === nodeOrNodes.length) {
-			callback(nodeOrNodes);
+		for (let i = 0; i < nodeOrNodes.length; i++) {
+			handleDomReady(nodeOrNodes[i], onArrayNodeReady);
 		}
-	}
+	};
+}
 
-	for (let i = 0; i < nodeOrNodes.length; i++) {
-		handleDomReady(nodeOrNodes[i], onArrayNodeReady);
-	}
-
-};
+makeGlobalListeners('onDomReady', 'domready');
+makeGlobalListeners('onConnected', 'connected');
 
 module.exports = BaseComponent;
