@@ -331,38 +331,43 @@ function _destroy(node) {
 	}
 }
 
-window.onDomReady = function (nodeOrNodes, callback) {
-	function handleDomReady(node, cb) {
-		function onReady() {
-			cb(node);
-			node.removeEventListener('domready', onReady);
+function makeGlobalListeners(name, eventName) {
+	window[name] = function (nodeOrNodes, callback) {
+		function handleDomReady(node, cb) {
+			function onReady() {
+				cb(node);
+				node.removeEventListener(eventName, onReady);
+			}
+
+			if (node.DOMSTATE === eventName) {
+				cb(node);
+			} else {
+				node.addEventListener(eventName, onReady);
+			}
 		}
 
-		if (node.DOMSTATE === 'domready') {
-			cb(node);
-		} else {
-			node.addEventListener('domready', onReady);
+		if (!Array.isArray(nodeOrNodes)) {
+			handleDomReady(nodeOrNodes, callback);
+			return;
 		}
-	}
 
-	if (!Array.isArray(nodeOrNodes)) {
-		handleDomReady(nodeOrNodes, callback);
-		return;
-	}
+		var count = 0;
 
-	var count = 0;
-
-	function onArrayNodeReady() {
-		count++;
-		if (count === nodeOrNodes.length) {
-			callback(nodeOrNodes);
+		function onArrayNodeReady() {
+			count++;
+			if (count === nodeOrNodes.length) {
+				callback(nodeOrNodes);
+			}
 		}
-	}
 
-	for (var i = 0; i < nodeOrNodes.length; i++) {
-		handleDomReady(nodeOrNodes[i], onArrayNodeReady);
-	}
-};
+		for (var i = 0; i < nodeOrNodes.length; i++) {
+			handleDomReady(nodeOrNodes[i], onArrayNodeReady);
+		}
+	};
+}
+
+makeGlobalListeners('onDomReady', 'domready');
+makeGlobalListeners('onConnected', 'connected');
 
 (function () {
 				
@@ -406,7 +411,7 @@ function setProperty(node, prop) {
 			this.setAttribute(prop, value);
 			var fn = this[onify(prop)];
 			if (fn) {
-				onDomReady(this, function () {
+				onConnected(this, function () {
 					if (value !== undefined) {
 						propValue = value;
 					}
