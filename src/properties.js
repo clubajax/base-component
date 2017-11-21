@@ -36,8 +36,9 @@ function setProperty (node, prop) {
 			this.isSettingAttribute = true;
 			this.setAttribute(prop, value);
 			const fn = this[onify(prop)];
+			const eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
 			if(fn){
-				onConnected(this, () => {
+				window[eventName](this, () => {
 					if(value !== undefined){
 						propValue = value;
 					}
