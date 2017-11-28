@@ -339,7 +339,7 @@ function makeGlobalListeners(name, eventName) {
 				node.removeEventListener(eventName, onReady);
 			}
 
-			if (node.DOMSTATE === eventName) {
+			if (node.DOMSTATE === eventName || node.DOMSTATE === 'domready') {
 				cb(node);
 			} else {
 				node.addEventListener(eventName, onReady);
