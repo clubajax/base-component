@@ -158,6 +158,9 @@
 <script>
 	window.mocha.setup('tdd');
 
+	var on = window.on;
+	var dom = window.dom;
+
 	suite('BaseComponent', function () {
 		this.timeout(3000);
 		var suite = window.suite,
@@ -167,7 +170,7 @@
 			expect = chai.expect,
 			body = document.body;
 
-		suite('create / destroy', function () {
+		suite.only('create / destroy', function () {
 
 			test('it should create a component', function () {
 				var node = dom('test-lifecycle', { css: 'foo' }, body);
@@ -202,7 +205,7 @@
 			// TODO: test inheritance
 		});
 
-		suite('plugins', function () {
+		suite.only('plugins', function () {
 			test('it should connect to a plugin\'s events', function (done) {
 				var
 					called = 0,
@@ -228,7 +231,7 @@
 			});
 		});
 
-		suite('lifecycle methods', function () {
+		suite.only('lifecycle methods', function () {
 			test('onDomReady should handle a sngle node', function (done) {
 				var node = dom('test-a', {}, body);
 				onDomReady(node, function (n) {
@@ -242,7 +245,7 @@
 				var n1 = dom('test-a', {}, body);
 				var n2 = dom('test-a', {}, body);
 				var n3 = dom('test-a');
-				onDomReady([n1,n2,n3], function (array) {
+				onDomReady([n1, n2, n3], function (array) {
 					expect(dom.isNode(array[0])).to.equal(true);
 					expect(dom.isNode(array[1])).to.equal(true);
 					expect(dom.isNode(array[2])).to.equal(true);
@@ -293,6 +296,7 @@
 				node.destroy();
 				h.remove();
 			});
+
 			test('it should call component\'s `disconnected` method', function () {
 				var
 					node,
@@ -311,6 +315,7 @@
 				h1.remove();
 				h2.remove();
 			});
+
 			test('it should call component\'s `domReady` method', function (done) {
 				var
 					node,
@@ -326,6 +331,7 @@
 					done();
 				});
 			});
+
 			test('it should call component\'s `domReady` method when children are ready', function (done) {
 				var
 					parent,
@@ -348,6 +354,7 @@
 					//});
 				})
 			});
+
 			test('it should call component\'s `domReady` method when descendants are ready', function (done) {
 				var
 					node,
@@ -540,7 +547,24 @@
 			});
 		});
 
-		suite('properties', function () {
+		suite.only('properties', function () {
+
+			test('it should set properties and booleans only once', function (done) {
+				var events = [];
+				on(document, 'foo-called', function () {
+					events.push(1);
+				});
+				on(document, 'nbc-called', function () {
+					events.push(1);
+				});
+				var node = dom('test-props', { attr: { nbc: true } }, body);
+				onDomReady(node, function () {
+					expect(events.join(',')).to.equal('1');
+					done();
+				});
+
+
+			});
 
 			test('it should set properties from naked attributes', function () {
 				var node = dom.byId('test-1');
@@ -551,46 +575,51 @@
 				expect(node.readonly).to.equal(true);
 			});
 
-			test('it should sync properties and attributes', function () {
+			test('it should sync properties and attributes', function (done) {
 				var node = dom('test-props', { attr: { foo: true } }, body);
-				expect(node.getAttribute('foo')).to.equal('true');
-				expect(node.foo).to.equal(true);
+				onDomReady(node, function () {
+					expect(node.getAttribute('foo')).to.equal('true');
+					expect(node.foo).to.equal(true);
 
-				node.foo = 99;
-				expect(node.getAttribute('foo')).to.equal('99');
-				expect(node.foo).to.equal(99);
+					node.foo = 99;
+					expect(node.getAttribute('foo')).to.equal('99');
+					expect(node.foo).to.equal(99);
 
-				expect(node.getAttribute('bar')).to.equal(null);
-				expect(node.bar).to.equal(null);
+					expect(node.getAttribute('bar')).to.equal(null);
+					expect(node.bar).to.equal(null);
 
-				node.bar = 88;
-				expect(node.getAttribute('bar')).to.equal('88');
-				expect(node.bar).to.equal(88);
-				expect(node['bar-changed']).to.equal(88);
+					node.bar = 88;
+					expect(node.getAttribute('bar')).to.equal('88');
+					expect(node.bar).to.equal(88);
+					expect(node['bar-changed']).to.equal(88);
 
-				node.setAttribute('bar', true);
-				expect(node.getAttribute('bar')).to.equal('true');
-				expect(node.bar).to.equal(true);
+					node.setAttribute('bar', true);
+					expect(node.getAttribute('bar')).to.equal('true');
+					expect(node.bar).to.equal(true);
 
-				node.tabindex = 0;
-				expect(node.getAttribute('tabindex')).to.equal('0');
+					node.tabindex = 0;
+					expect(node.getAttribute('tabindex')).to.equal('0');
 
-				expect(node['bar-changed']).to.equal(true);
+					expect(node['bar-changed']).to.equal(true);
+					done();
+				});
 			});
 
-			test('it should handle properties', function () {
+			test('it should handle properties', function (done) {
 				var node = dom('test-props', {}, body);
-				node.setAttribute('min', '50%');
-				node.setAttribute('max', '-75%');
+				onDomReady(node, function () {
+					node.setAttribute('min', '50%');
+					node.setAttribute('max', '-75%');
 
-				// values changed in
-				expect(node.min).to.equal(50);
-				expect(node.max).to.equal(-75);
-				expect(node.getAttribute('min')).to.equal('50');
-				expect(node.getAttribute('max')).to.equal('-75');
+					expect(node.min).to.equal('50%');
+					expect(node.max).to.equal('-75%');
+					expect(node.getAttribute('min')).to.equal('50%');
+					expect(node.getAttribute('max')).to.equal('-75%');
+					done();
+				});
 			});
 
-			test('it should handle property callbacks and changed values', function () {
+			test('it should handle property callbacks and changed values', function (done) {
 				var node = dom('test-props', {}, body);
 
 				node.onMin = function (value) {
@@ -603,10 +632,9 @@
 				node.setAttribute('max', '-75%');
 
 				onDomReady(node, function () {
-					//					expect(node.min).to.equal(62);
-					//					expect(node.max).to.equal(-76);
-					expect(node.getAttribute('min')).to.equal('50');
-					expect(node.getAttribute('max')).to.equal('-75');
+					expect(node.getAttribute('min')).to.equal('50%');
+					expect(node.getAttribute('max')).to.equal('-75%');
+					done();
 				});
 			});
 
@@ -619,7 +647,6 @@
 				node.setAttribute('my-complex-prop', 'yes');
 
 				onDomReady(node, function () {
-					//expect(node['my-complex-prop']).to.equal('no');
 					expect(node.getAttribute('my-complex-prop')).to.equal('yes');
 					done();
 				});

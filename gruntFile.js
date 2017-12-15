@@ -161,9 +161,13 @@ module.exports = function (grunt) {
         
         watch: {
             scripts: {
-                files: ['tests/src/*.js', 'src/*.js', 'tests/*.html'],
+                files: ['tests/src/*.js', 'src/*.js'],
                 tasks: ['build-dev']
             },
+			html: {
+				files: ['tests/*.html'],
+				tasks: []
+			},
             options: {
                 livereload: watchPort
             }
@@ -200,8 +204,8 @@ module.exports = function (grunt) {
     // watch build task
     grunt.registerTask('build-dev', function (which) {
         console.time('build');
-        //grunt.task.run('browserify:dev');
-		grunt.task.run('browserify:test');
+        grunt.task.run('browserify:dev');
+		//grunt.task.run('browserify:test');
     });
 
     // task that builds vendor and dev files during development

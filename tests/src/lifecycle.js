@@ -7,13 +7,26 @@ window.rand = require('randomizer');
 
 class TestProps extends BaseComponent {
 
+	constructor(...args) {
+		super();
+		// this.connectedProps = true;
+	}
+
     static get observedAttributes() { return ['min', 'max', 'foo', 'bar', 'nbc', 'cbs', 'disabled', 'readonly', 'tabindex', 'my-complex-prop']; }
     get props () { return ['foo', 'bar', 'tabindex', 'min', 'max', 'my-complex-prop']; }
     get bools () { return ['nbc', 'cbs', 'disabled', 'readonly']; }
 
+    onFoo () {
+		on.fire(document, 'foo-called');
+	}
+
+	onNbc () {
+		on.fire(document, 'nbc-called');
+	}
+
     attributeChanged (name, value) {
         this[name + '-changed'] = dom.normalize(value) || value !== null;
-    }
+	}
 }
 
 customElements.define('test-props', TestProps);

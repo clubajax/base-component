@@ -1,6 +1,6 @@
 const BaseComponent = require('./BaseComponent');
 
-function setBoolean (node, prop) {
+function XsetBoolean (node, prop) {
 	Object.defineProperty(node, prop, {
 		enumerable: true,
 		configurable: true,
@@ -24,6 +24,42 @@ function setBoolean (node, prop) {
 	});
 }
 
+function setBoolean (node, prop) {
+	let propValue;
+	Object.defineProperty(node, prop, {
+		enumerable: true,
+		configurable: true,
+		get () {
+			const att = this.getAttribute(prop);
+			return propValue !== undefined ? propValue : (att !== null && att !== 'false');
+		},
+		set (value) {
+			this.isSettingAttribute = true;
+			if (value) {
+				this.setAttribute(prop, '');
+			} else {
+				this.removeAttribute(prop);
+			}
+			if (this.attributeChanged) {
+				this.attributeChanged(prop, value);
+			}
+			const fn = this[onify(prop)];
+			if (fn) {
+				const eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
+				window[eventName](this, () => {
+
+					if (value !== undefined && propValue !== value) {
+						value = fn.call(this, value) || value;
+					}
+					propValue = value;
+				});
+			}
+
+			this.isSettingAttribute = false;
+		}
+	});
+}
+
 function setProperty (node, prop) {
 	let propValue;
 	Object.defineProperty(node, prop, {
@@ -35,13 +71,17 @@ function setProperty (node, prop) {
 		set (value) {
 			this.isSettingAttribute = true;
 			this.setAttribute(prop, value);
+			if (this.attributeChanged) {
+				this.attributeChanged(prop, value);
+			}
 			const fn = this[onify(prop)];
-			const eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
 			if(fn){
+				const eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
 				window[eventName](this, () => {
 					if(value !== undefined){
 						propValue = value;
 					}
+
 					value = fn.call(this, value) || value;
 				});
 			}
