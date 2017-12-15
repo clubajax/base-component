@@ -100,9 +100,11 @@ var BaseComponent = function (_HTMLElement) {
 	}, {
 		key: 'attributeChangedCallback',
 		value: function attributeChangedCallback(attrName, oldVal, newVal) {
-			plugin('preAttributeChanged', this, attrName, newVal, oldVal);
-			if (this.attributeChanged) {
-				this.attributeChanged(attrName, newVal, oldVal);
+			if (!this.isSettingAttribute) {
+				plugin('preAttributeChanged', this, attrName, newVal, oldVal);
+				if (this.attributeChanged) {
+					this.attributeChanged(attrName, newVal, oldVal);
+				}
 			}
 		}
 	}, {
@@ -372,7 +374,7 @@ makeGlobalListeners('onConnected', 'connected');
 (function () {
 				
 
-function setBoolean(node, prop) {
+function XsetBoolean(node, prop) {
 	Object.defineProperty(node, prop, {
 		enumerable: true,
 		configurable: true,
@@ -396,6 +398,44 @@ function setBoolean(node, prop) {
 	});
 }
 
+function setBoolean(node, prop) {
+	var propValue = void 0;
+	Object.defineProperty(node, prop, {
+		enumerable: true,
+		configurable: true,
+		get: function get() {
+			var att = this.getAttribute(prop);
+			return propValue !== undefined ? propValue : att !== null && att !== 'false';
+		},
+		set: function set(value) {
+			var _this = this;
+
+			this.isSettingAttribute = true;
+			if (value) {
+				this.setAttribute(prop, '');
+			} else {
+				this.removeAttribute(prop);
+			}
+			if (this.attributeChanged) {
+				this.attributeChanged(prop, value);
+			}
+			var fn = this[onify(prop)];
+			if (fn) {
+				var eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
+				window[eventName](this, function () {
+
+					if (value !== undefined && propValue !== value) {
+						value = fn.call(_this, value) || value;
+					}
+					propValue = value;
+				});
+			}
+
+			this.isSettingAttribute = false;
+		}
+	});
+}
+
 function setProperty(node, prop) {
 	var propValue = void 0;
 	Object.defineProperty(node, prop, {
@@ -405,18 +445,22 @@ function setProperty(node, prop) {
 			return propValue !== undefined ? propValue : normalize(this.getAttribute(prop));
 		},
 		set: function set(value) {
-			var _this = this;
+			var _this2 = this;
 
 			this.isSettingAttribute = true;
 			this.setAttribute(prop, value);
+			if (this.attributeChanged) {
+				this.attributeChanged(prop, value);
+			}
 			var fn = this[onify(prop)];
-			var eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
 			if (fn) {
+				var eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
 				window[eventName](this, function () {
 					if (value !== undefined) {
 						propValue = value;
 					}
-					value = fn.call(_this, value) || value;
+
+					value = fn.call(_this2, value) || value;
 				});
 			}
 			this.isSettingAttribute = false;
