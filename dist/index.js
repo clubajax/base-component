@@ -374,30 +374,6 @@ makeGlobalListeners('onConnected', 'connected');
 (function () {
 				
 
-function XsetBoolean(node, prop) {
-	Object.defineProperty(node, prop, {
-		enumerable: true,
-		configurable: true,
-		get: function get() {
-			return node.hasAttribute(prop);
-		},
-		set: function set(value) {
-			this.isSettingAttribute = true;
-			if (value) {
-				this.setAttribute(prop, '');
-			} else {
-				this.removeAttribute(prop);
-			}
-			var fn = this[onify(prop)];
-			if (fn) {
-				fn.call(this, value);
-			}
-
-			this.isSettingAttribute = false;
-		}
-	});
-}
-
 function setBoolean(node, prop) {
 	var propValue = void 0;
 	Object.defineProperty(node, prop, {
@@ -405,7 +381,7 @@ function setBoolean(node, prop) {
 		configurable: true,
 		get: function get() {
 			var att = this.getAttribute(prop);
-			return propValue !== undefined ? propValue : att !== null && att !== 'false';
+			return att !== undefined && att !== null && att !== 'false' && att !== false;
 		},
 		set: function set(value) {
 			var _this = this;

@@ -1,29 +1,5 @@
 const BaseComponent = require('./BaseComponent');
 
-function XsetBoolean (node, prop) {
-	Object.defineProperty(node, prop, {
-		enumerable: true,
-		configurable: true,
-		get () {
-			return node.hasAttribute(prop);
-		},
-		set (value) {
-			this.isSettingAttribute = true;
-			if (value) {
-				this.setAttribute(prop, '');
-			} else {
-				this.removeAttribute(prop);
-			}
-			const fn = this[onify(prop)];
-			if(fn){
-				fn.call(this, value);
-			}
-
-			this.isSettingAttribute = false;
-		}
-	});
-}
-
 function setBoolean (node, prop) {
 	let propValue;
 	Object.defineProperty(node, prop, {
@@ -31,7 +7,7 @@ function setBoolean (node, prop) {
 		configurable: true,
 		get () {
 			const att = this.getAttribute(prop);
-			return propValue !== undefined ? propValue : (att !== null && att !== 'false');
+			return (att !== undefined && att !== null && att !== 'false' && att !== false);
 		},
 		set (value) {
 			this.isSettingAttribute = true;
