@@ -90,7 +90,7 @@
 	</li>
 </template>
 
-<test-props disabled readonly id="test-1"></test-props>
+<!--<test-props disabled readonly id="test-1"></test-props>-->
 
 <div id="mocha"></div>
 
@@ -548,6 +548,17 @@
 		});
 
 		suite('properties', function () {
+			test.skip('it should dynamically set observedAttributes', function (done) {
+				// putting observedAttributes on the constructor doesn't work
+				// because the magic happens in customElements.define, well before
+				// BaseComponent has a chance to do anything
+				var node = dom('test-new-props', { nbc: 'A', foo: 'B'}, body);
+				onDomReady(node, function () {
+					node.setAttribute('foo', 'C');
+					node.setAttribute('nbc', 'D');
+					done();
+				});
+			});
 
 			test('it should set properties and booleans only once', function (done) {
 				var events = [];
@@ -562,8 +573,6 @@
 					expect(events.join(',')).to.equal('1');
 					done();
 				});
-
-
 			});
 
 			test('it should set properties from naked attributes', function () {

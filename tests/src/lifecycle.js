@@ -28,8 +28,32 @@ class TestProps extends BaseComponent {
         this[name + '-changed'] = dom.normalize(value) || value !== null;
 	}
 }
-
 customElements.define('test-props', TestProps);
+
+
+class TestNewProps extends BaseComponent {
+
+	constructor(...args) {
+		super();
+		console.log('NEW!');
+		//this.setProps(['foo']);
+	}
+
+	getProps () {
+		return ['foo']
+	}
+
+	// static get observedAttributes() {
+	// 	debugger
+	// 	return ['nbc']
+	// }
+
+	attributeChanged (name, value) {
+		console.log(' ---- change', name, value);
+	}
+}
+customElements.define('test-new-props', TestNewProps);
+window.TestNewProps = TestNewProps;
 
 class TestLifecycle extends BaseComponent {
 
