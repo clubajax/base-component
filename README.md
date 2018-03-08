@@ -412,6 +412,11 @@ Q. **Why are my component methods undefined?**
 
 A. Did you remember to do: `customElements.define('my-component', MyComponent)`?
 
+
+Q. I get this error on build: `Error: Couldn't find preset "latest" relative to directory ".../node_modules/@clubajax/base-component"`
+
+A. Babel is not set up correctly. Try installing `babel-preset-latest` to your package.
+
 ## Developing
 
 Clone the repository with your generic clone commands as a standalone repository or submodule.
