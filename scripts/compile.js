@@ -14,11 +14,11 @@ function getPrefix(DEFINES, REQUIRES, ROOTS, ARGS, NAME) {
 	}(this, function (${ARGS}) {`;
 }
 
-const babel = require("babel-core");
+const babel = require('@babel/core');
 
 function babelize (code) {
 	let options = {
-		presets: ["latest"]
+		presets: ['@babel/preset-env']
 	};
 	let result = babel.transform(code, options);
 	return result.code;
