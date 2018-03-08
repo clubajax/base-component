@@ -4,11 +4,11 @@ const outputPath = `./dist/${outputName}.js`;
 const files = ['./src/BaseComponent.js', './src/properties.js', './src/template.js', './src/refs.js'];
 
 console.log('');
-const babel = require("babel-core");
+const babel = require('@babel/core');
 
 function babelize (code) {
 	let options = {
-		presets: ["latest"]
+		presets: ['@babel/preset-env']
 	};
 	let result = babel.transform(code, options);
 	return result.code;

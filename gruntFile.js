@@ -14,7 +14,7 @@ module.exports = function (grunt) {
         sourceMaps = true,
         watch = false,
         watchPort = 35750,
-        babelTransform = [['babelify', { presets: ['latest'] }]],
+        babelTransform = [['babelify', { presets: ['@babel/preset-env'] }]],
         devBabel = false;
     
     grunt.initConfig({
