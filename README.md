@@ -374,6 +374,10 @@ If only targeting browsers with native elements, the polyfill is not necessary, 
 `src/BaseComponent`. Otherwise, your `import` should be pointed to `dist/BaseComponent`, which is transpiled to work 
 with ES5. The polyfill includes the native-shim, which allows Chrome to work with the transpiled class. 
 
+Q. **Uncaught TypeError: Illegal invocation**
+
+A. The native shim is not in use, when BaseComponent is compiled with Babel, and it is being access by an extending class.
+
 Q. **Uncaught TypeError: Failed to construct 'HTMLElement': Please use the 'new' operator, this DOM object constructor cannot be called as a function.**
 
 A. The web components native-shim.js (in the custom elements polyfill) is missing. 
