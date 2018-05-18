@@ -46,9 +46,13 @@ function setProperty (node, prop) {
 		},
 		set (value) {
 			this.isSettingAttribute = true;
-			this.setAttribute(prop, value);
-			if (this.attributeChanged) {
-				this.attributeChanged(prop, value);
+			if (typeof value === 'object') {
+				propValue = value;
+			} else {
+				this.setAttribute(prop, value);
+				if (this.attributeChanged) {
+					this.attributeChanged(prop, value);
+				}
 			}
 			const fn = this[onify(prop)];
 			if(fn){
@@ -62,19 +66,6 @@ function setProperty (node, prop) {
 				});
 			}
 			this.isSettingAttribute = false;
-		}
-	});
-}
-
-function setObject (node, prop) {
-	Object.defineProperty(node, prop, {
-		enumerable: true,
-		configurable: true,
-		get () {
-			return this['__' + prop];
-		},
-		set (value) {
-			this['__' + prop] = value;
 		}
 	});
 }
@@ -98,15 +89,6 @@ function setBooleans (node) {
 	if (props) {
 		props.forEach(function (prop) {
 			setBoolean(node, prop);
-		});
-	}
-}
-
-function setObjects (node) {
-	let props = node.objects;
-	if (props) {
-		props.forEach(function (prop) {
-			setObject(node, prop);
 		});
 	}
 }
