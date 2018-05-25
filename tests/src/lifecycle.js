@@ -5,6 +5,12 @@ const refs = require('../../src/refs');
 const itemTemplate = require('../../src/item-template');
 window.rand = require('randomizer');
 
+function injectProps (constructor, { props = [], bools = [] }) {
+	constructor.observedAttributes = [...props, ...bools];
+	constructor.bools = bools;
+	constructor.props = props;
+}
+
 class TestProps extends BaseComponent {
 
 	constructor(...args) {
@@ -12,9 +18,9 @@ class TestProps extends BaseComponent {
 		// this.connectedProps = true;
 	}
 
-    static get observedAttributes() { return ['min', 'max', 'foo', 'bar', 'nbc', 'cbs', 'disabled', 'readonly', 'tabindex', 'my-complex-prop']; }
-    get props () { return ['foo', 'bar', 'tabindex', 'min', 'max', 'my-complex-prop']; }
-    get bools () { return ['nbc', 'cbs', 'disabled', 'readonly']; }
+    // static get observedAttributes() { return ['min', 'max', 'foo', 'bar', 'nbc', 'cbs', 'disabled', 'readonly', 'tabindex', 'my-complex-prop']; }
+    // get props () { return ['foo', 'bar', 'tabindex', 'min', 'max', 'my-complex-prop']; }
+    // get bools () { return ['nbc', 'cbs', 'disabled', 'readonly']; }
 
     onFoo () {
 		on.fire(document, 'foo-called');
@@ -28,6 +34,14 @@ class TestProps extends BaseComponent {
         this[name + '-changed'] = dom.normalize(value) || value !== null;
 	}
 }
+
+// injectProps(TestProps, ['foo'], ['nbc']);
+
+BaseComponent.injectProps(TestProps, {
+	props: ['foo'],
+	bools: ['nbc']
+});
+
 customElements.define('test-props', TestProps);
 
 

@@ -71,7 +71,7 @@ function setProperty (node, prop) {
 }
 
 function setProperties (node) {
-	let props = node.props || node.properties;
+	let props = node.constructor.props;
 	if (props) {
 		props.forEach(function (prop) {
 			if (prop === 'disabled') {
@@ -85,7 +85,7 @@ function setProperties (node) {
 }
 
 function setBooleans (node) {
-	let props = node.bools || node.booleans;
+	let props = node.constructor.bools;
 	if (props) {
 		props.forEach(function (prop) {
 			setBoolean(node, prop);

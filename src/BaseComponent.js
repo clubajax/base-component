@@ -316,4 +316,10 @@ function makeGlobalListeners (name, eventName) {
 makeGlobalListeners('onDomReady', 'domready');
 makeGlobalListeners('onConnected', 'connected');
 
+BaseComponent.injectProps = function (constructor, { props = [], bools = [] }) {
+	constructor.observedAttributes = [...props, ...bools];
+	constructor.bools = bools;
+	constructor.props = props;
+};
+
 module.exports = BaseComponent;

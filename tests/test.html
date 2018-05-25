@@ -547,6 +547,23 @@
 			});
 		});
 
+		suite('properties v3', function () {
+			test.only('it should set properties and booleans only once', function (done) {
+				var events = [];
+				on(document, 'foo-called', function () {
+					events.push(1);
+				});
+				on(document, 'nbc-called', function () {
+					events.push(1);
+				});
+				var node = dom('test-props', { attr: { nbc: true } }, body);
+				onDomReady(node, function () {
+					expect(events.join(',')).to.equal('1');
+					done();
+				});
+			});
+		});
+
 		suite('properties', function () {
 			test.skip('it should dynamically set observedAttributes', function (done) {
 				// putting observedAttributes on the constructor doesn't work
