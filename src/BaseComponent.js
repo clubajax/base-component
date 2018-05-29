@@ -316,10 +316,15 @@ function makeGlobalListeners (name, eventName) {
 makeGlobalListeners('onDomReady', 'domready');
 makeGlobalListeners('onConnected', 'connected');
 
-BaseComponent.injectProps = function (constructor, { props = [], bools = [] }) {
-	constructor.observedAttributes = [...props, ...bools];
-	constructor.bools = bools;
-	constructor.props = props;
+BaseComponent.injectProps = function (Constructor, { props = [], bools = [] }) {
+	Constructor.observedAttributes = [...props, ...bools];
+	Constructor.bools = bools;
+	Constructor.props = props;
+};
+
+BaseComponent.define = function (tagName, Constructor, options) {
+	BaseComponent.injectProps(Constructor, options);
+	customElements.define(tagName, Constructor);
 };
 
 module.exports = BaseComponent;

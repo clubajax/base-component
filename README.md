@@ -10,16 +10,13 @@ A good resource to learn about web components is [Google Developers](https://dev
  
 ## To Install
 
-    npm install @clubajax/base-component --save
+    yarn add @clubajax/base-component
     
 You will most likely want to use the polyfill as well (explained below)
     
-    npm install @clubajax/custom-elements-polyfill --save
+    yarn add @clubajax/custom-elements-polyfill
     
-You may also use `bower` if you prefer, although build tools like Webpack prefer *node_modules*. 
-    
-    bower install clubajax/base-component --save
-    bower install clubajax/custom-elements-polyfill --save
+You may also use `npm` if you prefer.
 
 ## Adding to a Project
 
@@ -87,6 +84,10 @@ Because of this, BaseComponent provides additional lifecycle methods:
  * `domReady()`
  * `destroy()`
  
+### connected
+
+`connected` is called after the node is built. Note that it may not be attached to the document yet (and therefore not have a parentNode) and any children may not yet be added or built.
+
 ### domReady
 
 `domReady` is called after the following criteria has been met:
@@ -279,6 +280,21 @@ will automatically add those getters and setters.
 
 ```jsx harmony
 class TestProps extends BaseComponent {
+    domReady () {
+    	console.log(this.disabled);
+    	console.log(this.foo);
+    }
+}
+BaseComponent.injectProps(TestProps, { 
+	props: ['foo', 'bar'], 
+	bools: ['disabled', 'readonly']
+});
+``` 
+
+The way to do it in version 2.1.0 and older:
+
+```jsx harmony
+class TestProps extends BaseComponent {
 
     static get observedAttributes() { return ['foo', 'bar', 'disabled', 'readonly']; }
     get props () { return ['foo', 'bar']; }
@@ -366,13 +382,12 @@ Q: **What are the steps for using webpack?**
 
 A: The [custom elements polyfill](https://github.com/clubajax/custom-elements-polyfill) makes this easy. See *Adding to a Project* above.:
 
-Use babel: `{"presets": ["es2015"]}`
+Use babel: `{"presets": ["@babel/preset-env"]}`
 
 Decide if you want to use ES6 (Chrome only) or ES5 (all browsers)
 
 If only targeting browsers with native elements, the polyfill is not necessary, and your `import` can be pointed to 
-`src/BaseComponent`. Otherwise, your `import` should be pointed to `dist/BaseComponent`, which is transpiled to work 
-with ES5. The polyfill includes the native-shim, which allows Chrome to work with the transpiled class. 
+`src/BaseComponent`. Otherwise, your `import` should be pointed to `dist/BaseComponent`, which is transpiled to work with ES5. The polyfill includes the native-shim, which allows Chrome to work with the transpiled class. 
 
 Q. **Uncaught TypeError: Illegal invocation**
 
@@ -419,28 +434,27 @@ A. Did you remember to do: `customElements.define('my-component', MyComponent)`?
 
 Q. I get this error on build: `Error: Couldn't find preset "latest" relative to directory ".../node_modules/@clubajax/base-component"`
 
-A. Babel is not set up correctly. Try installing `babel-preset-latest` to your package.
+A. Babel is not set up correctly. Try installing `@babel/preset-env` to your package.
 
 ## Developing
 
 Clone the repository with your generic clone commands as a standalone repository or submodule.
 
-	git clone git://github.com/clubajax/BaseComponent.git
+	git clone git://github.com/clubajax/base-component.git
 	
-To run the tests in `tests/test-v1.html`, start the webpack build and webpack-dev-server:
+To run the tests in `tests/test.html`, start the webpack build and webpack-dev-server:
 
-    npm start
+    yarn start
     
 To run the webpack build for distribution to be accessed by `tests/test-dist.html`:
 
-    npm run deploy
+    yarn deploy
     
 A "globalized" version can be built and accessed with `tests/globalES6.html`. This converts the ES6 `import` and `export` into window globals, but otherwise leaves
-the remaining code as ES6. This way the code can be run in Chrome natively, and in Firefox and Edge with the webcomponents
-shim. `import` and `export` and not yet a specification standard and are not yet supported in any browers (although it is
-closest in Edge).
+the remaining code as ES6. This way the code can be run in Chrome natively, and in Firefox and Edge with the webcomponents shim.
 
-    npm run globalize
+    yarn globalize
+    
 ## Resources
 
 [webreflection](https://www.webreflection.co.uk/blog/2016/08/21/custom-elements-v1)  

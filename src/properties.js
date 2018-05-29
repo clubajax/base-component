@@ -11,6 +11,7 @@ function setBoolean (node, prop) {
 		},
 		set (value) {
 			this.isSettingAttribute = true;
+			value = (value !== false && value !== null && value !== undefined);
 			if (value) {
 				this.setAttribute(prop, '');
 			} else {
@@ -71,7 +72,7 @@ function setProperty (node, prop) {
 }
 
 function setProperties (node) {
-	let props = node.constructor.props;
+	let props = node.constructor.props || node.props;
 	if (props) {
 		props.forEach(function (prop) {
 			if (prop === 'disabled') {
@@ -85,7 +86,7 @@ function setProperties (node) {
 }
 
 function setBooleans (node) {
-	let props = node.constructor.bools;
+	let props = node.constructor.bools || node.bools;
 	if (props) {
 		props.forEach(function (prop) {
 			setBoolean(node, prop);

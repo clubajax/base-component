@@ -5,22 +5,35 @@ const refs = require('../../src/refs');
 const itemTemplate = require('../../src/item-template');
 window.rand = require('randomizer');
 
-function injectProps (constructor, { props = [], bools = [] }) {
-	constructor.observedAttributes = [...props, ...bools];
-	constructor.bools = bools;
-	constructor.props = props;
+class TestDefine extends BaseComponent {
+
+	constructor(...args) {
+		super();
+	}
+
+	onFoo () {
+		on.fire(document, 'foo-called');
+	}
+
+	onNbc () {
+		on.fire(document, 'nbc-called');
+	}
+
+	attributeChanged (name, value) {
+		this[name + '-changed'] = dom.normalize(value) || value !== null;
+	}
 }
+
+BaseComponent.define('test-define', TestDefine, {
+	props: ['foo'],
+	bools: ['nbc']
+});
 
 class TestProps extends BaseComponent {
 
 	constructor(...args) {
 		super();
-		// this.connectedProps = true;
 	}
-
-    // static get observedAttributes() { return ['min', 'max', 'foo', 'bar', 'nbc', 'cbs', 'disabled', 'readonly', 'tabindex', 'my-complex-prop']; }
-    // get props () { return ['foo', 'bar', 'tabindex', 'min', 'max', 'my-complex-prop']; }
-    // get bools () { return ['nbc', 'cbs', 'disabled', 'readonly']; }
 
     onFoo () {
 		on.fire(document, 'foo-called');
@@ -31,19 +44,16 @@ class TestProps extends BaseComponent {
 	}
 
     attributeChanged (name, value) {
+		// console.log('attributeChanged', name, value);
         this[name + '-changed'] = dom.normalize(value) || value !== null;
 	}
 }
 
-// injectProps(TestProps, ['foo'], ['nbc']);
 
-BaseComponent.injectProps(TestProps, {
-	props: ['foo'],
-	bools: ['nbc']
+BaseComponent.define('test-props', TestProps, {
+	props: ['foo', 'bar', 'tabindex', 'min', 'max', 'my-complex-prop'],
+	bools: ['nbc', 'cbs', 'disabled', 'readonly']
 });
-
-customElements.define('test-props', TestProps);
-
 
 class TestNewProps extends BaseComponent {
 

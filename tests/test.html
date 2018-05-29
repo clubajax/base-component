@@ -153,6 +153,8 @@
 			}
 		];
 	}
+
+
 </script>
 
 <script>
@@ -548,7 +550,7 @@
 		});
 
 		suite('properties v3', function () {
-			test.only('it should set properties and booleans only once', function (done) {
+			test('it should set properties and booleans only once', function (done) {
 				var events = [];
 				on(document, 'foo-called', function () {
 					events.push(1);
@@ -556,7 +558,7 @@
 				on(document, 'nbc-called', function () {
 					events.push(1);
 				});
-				var node = dom('test-props', { attr: { nbc: true } }, body);
+				var node = dom('test-define', { attr: { nbc: true } }, body);
 				onDomReady(node, function () {
 					expect(events.join(',')).to.equal('1');
 					done();
@@ -565,17 +567,6 @@
 		});
 
 		suite('properties', function () {
-			test.skip('it should dynamically set observedAttributes', function (done) {
-				// putting observedAttributes on the constructor doesn't work
-				// because the magic happens in customElements.define, well before
-				// BaseComponent has a chance to do anything
-				var node = dom('test-new-props', { nbc: 'A', foo: 'B'}, body);
-				onDomReady(node, function () {
-					node.setAttribute('foo', 'C');
-					node.setAttribute('nbc', 'D');
-					done();
-				});
-			});
 
 			test('it should set properties and booleans only once', function (done) {
 				var events = [];
@@ -694,15 +685,16 @@
 					expect(node.nbc).to.equal(true);
 					expect(node.cbs).to.equal(false);
 
-					node.setAttribute('nbc', false);
-					node.setAttribute('cbs', true);
-
-					expect(node.cbs).to.equal(true);
+					node.setAttribute('nbc', null);
 					expect(node.nbc).to.equal(false);
 
+					node.setAttribute('cbs', true);
+					expect(node.cbs).to.equal(true);
+
 					node.cbs = false;
-					node.nbc = true;
 					expect(node.hasAttribute('cbs')).to.equal(false);
+
+					node.nbc = true;
 					expect(node.hasAttribute('nbc')).to.equal(true);
 
 					node.disabled = true;
