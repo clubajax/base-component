@@ -325,6 +325,7 @@ BaseComponent.injectProps = function (Constructor, { props = [], bools = [] }) {
 BaseComponent.define = function (tagName, Constructor, options) {
 	BaseComponent.injectProps(Constructor, options);
 	customElements.define(tagName, Constructor);
+	return Constructor;
 };
 
 module.exports = BaseComponent;
