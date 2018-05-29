@@ -11,6 +11,8 @@
     }
 	}(this, function (on) {
 "use strict";
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -414,8 +416,28 @@ function makeGlobalListeners(name, eventName) {
 makeGlobalListeners('onDomReady', 'domready');
 makeGlobalListeners('onConnected', 'connected');
 
+BaseComponent.injectProps = function (Constructor, _ref) {
+  var _ref$props = _ref.props,
+      props = _ref$props === void 0 ? [] : _ref$props,
+      _ref$bools = _ref.bools,
+      bools = _ref$bools === void 0 ? [] : _ref$bools,
+      _ref$attrs = _ref.attrs,
+      attrs = _ref$attrs === void 0 ? [] : _ref$attrs;
+  Constructor.observedAttributes = _toConsumableArray(props).concat(_toConsumableArray(bools), _toConsumableArray(attrs));
+  Constructor.bools = bools;
+  Constructor.props = props;
+};
+
+BaseComponent.define = function (tagName, Constructor, options) {
+  BaseComponent.injectProps(Constructor, options);
+  customElements.define(tagName, Constructor);
+  return Constructor;
+};
+
 (function () {
-				function setBoolean(node, prop) {
+				function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function setBoolean(node, prop) {
   var propValue;
   Object.defineProperty(node, prop, {
     enumerable: true,
@@ -428,6 +450,7 @@ makeGlobalListeners('onConnected', 'connected');
       var _this = this;
 
       this.isSettingAttribute = true;
+      value = value !== false && value !== null && value !== undefined;
 
       if (value) {
         this.setAttribute(prop, '');
@@ -469,10 +492,15 @@ function setProperty(node, prop) {
       var _this2 = this;
 
       this.isSettingAttribute = true;
-      this.setAttribute(prop, value);
 
-      if (this.attributeChanged) {
-        this.attributeChanged(prop, value);
+      if (_typeof(value) === 'object') {
+        propValue = value;
+      } else {
+        this.setAttribute(prop, value);
+
+        if (this.attributeChanged) {
+          this.attributeChanged(prop, value);
+        }
       }
 
       var fn = this[onify(prop)];
@@ -493,21 +521,8 @@ function setProperty(node, prop) {
   });
 }
 
-function setObject(node, prop) {
-  Object.defineProperty(node, prop, {
-    enumerable: true,
-    configurable: true,
-    get: function get() {
-      return this['__' + prop];
-    },
-    set: function set(value) {
-      this['__' + prop] = value;
-    }
-  });
-}
-
 function setProperties(node) {
-  var props = node.props || node.properties;
+  var props = node.constructor.props || node.props;
 
   if (props) {
     props.forEach(function (prop) {
@@ -521,21 +536,11 @@ function setProperties(node) {
 }
 
 function setBooleans(node) {
-  var props = node.bools || node.booleans;
+  var props = node.constructor.bools || node.bools;
 
   if (props) {
     props.forEach(function (prop) {
       setBoolean(node, prop);
-    });
-  }
-}
-
-function setObjects(node) {
-  var props = node.objects;
-
-  if (props) {
-    props.forEach(function (prop) {
-      setObject(node, prop);
     });
   }
 }

@@ -287,7 +287,8 @@ class TestProps extends BaseComponent {
 }
 BaseComponent.injectProps(TestProps, { 
 	props: ['foo', 'bar'], 
-	bools: ['disabled', 'readonly']
+	bools: ['disabled', 'readonly'],
+	attrs: ['value'] // to be handled manually with attributeChanged()
 });
 ``` 
 

@@ -5,6 +5,29 @@ const refs = require('../../src/refs');
 const itemTemplate = require('../../src/item-template');
 window.rand = require('randomizer');
 
+class TestValue extends BaseComponent {
+
+	attributeChanged (name, value) {
+		if (name === 'value') {
+			this.value = dom.normalize(value);
+		}
+	}
+
+	set value (value) {
+		this.__value = value;
+	}
+
+	get value () {
+		return this.__value;
+	}
+}
+
+BaseComponent.define('test-value', TestValue, {
+	props: [],
+	bools: [],
+	attrs: ['value']
+});
+
 class TestDefine extends BaseComponent {
 
 	constructor(...args) {
