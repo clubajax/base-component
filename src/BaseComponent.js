@@ -316,13 +316,32 @@ function makeGlobalListeners (name, eventName) {
 makeGlobalListeners('onDomReady', 'domready');
 makeGlobalListeners('onConnected', 'connected');
 
+function testOptions(options) {
+	const tests = {
+		'prop': 'props',
+		'bool': 'bools',
+		'attr': 'attrs',
+		'properties': 'props',
+		'booleans': 'bools',
+		'property': 'props',
+		'boolean': 'bools'
+	}
+	Object.keys(tests).forEach((key) => { 
+		if (options[key]) {
+			console.error(`BaseComponent.define found "${key}"; Did you mean: "${tests[key]}"?` );
+		}
+	})
+}
+
 BaseComponent.injectProps = function (Constructor, { props = [], bools = [], attrs = [] }) {
-	Constructor.observedAttributes = [...props, ...bools, ...attrs];
-	Constructor.bools = bools;
-	Constructor.props = props;
+	Constructor.bools = [...(Constructor.bools || []), ...bools];
+	Constructor.props = [...(Constructor.props || []), ...props];
+	Constructor.attrs = [...(Constructor.attrs || []), ...attrs];
+	Constructor.observedAttributes = [...Constructor.bools, ...Constructor.props, ...Constructor.attrs];
 };
 
-BaseComponent.define = function (tagName, Constructor, options) {
+BaseComponent.define = function (tagName, Constructor, options = {}) {
+	testOptions(options);
 	BaseComponent.injectProps(Constructor, options);
 	customElements.define(tagName, Constructor);
 	return Constructor;

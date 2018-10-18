@@ -211,7 +211,11 @@
 			test('it should connect to a plugin\'s events', function (done) {
 				let
 					called = 0,
-					onCalled = function () { called++; },
+					onCalled = function (e) { 
+						// log prevents an odd timing issue which triggers an extra call
+						// console.log('e', e.type);
+						called++;
+					 },
 					h = on.makeMultiHandle([
 						on(document, 'init-called', onCalled),
 						on(document, 'preConnected-called', onCalled),
@@ -566,6 +570,31 @@
 		});
 
 		suite('properties', function () {
+			test('it should inherit props', function (done) {
+				const node = dom('test-inherit-props', { 
+					foo: 'yoo',
+					bar: 'car',
+					bazz: 'bazzy',
+					buzz: 'buzzy',
+					readonly: true,
+					disabled: true,
+					value: 123,
+					display: 'yes'
+				}, body);
+				onDomReady(node, function () {
+					expect(node.disabled).to.equal(true);
+					expect(node.readonly).to.equal(true);
+					expect(node.foo).to.equal('yoo');
+					expect(node.bar).to.equal('car');
+					expect(node.bazz).to.equal('bazzy');
+					expect(node.buzz).to.equal('buzzy');
+					expect(node['attr-value']).to.equal('123');
+					expect(node['attr-display']).to.equal('yes');
+					expect(node.fooBaseCalled).to.equal(true);
+					expect(node.barBaseCalled).to.equal(true);
+					done();
+				});
+			});
 
 			test('it should sync non-bools/props', function (done) {
 				const node = dom('test-value', { value: 27 }, body);

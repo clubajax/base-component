@@ -5,6 +5,55 @@ const refs = require('../../src/refs');
 const itemTemplate = require('../../src/item-template');
 window.rand = require('randomizer');
 
+// no actual test for this - it should just not cause an error
+class TestNoProps extends BaseComponent {
+	constructor() { 
+		super();
+	}
+}
+BaseComponent.define('test-no-props', TestNoProps);
+
+
+
+class TestInheritPropsBase extends BaseComponent {
+	constructor() {
+		super();
+		this.fooBaseCalled = false;
+		this.barBaseCalled = false;
+	}
+	onFoo(value) {
+		this.fooBaseCalled = true;
+	}
+	onBar(value) {
+		this.barBaseCalled = true;
+	}
+}
+BaseComponent.define('test-inherit-props-base', TestInheritPropsBase, {
+	props: ['foo', 'bar'],
+	bools: ['readonly'],
+	attrs: ['display']
+});
+
+class TestInheritProps extends TestInheritPropsBase {
+	constructor() {
+		super();
+	}
+	attributeChanged(prop, value) {
+		this[`attr-${prop}`] = value;
+	}
+	onFoo(value) {
+		super.onFoo(value);
+	}
+}
+BaseComponent.define('test-inherit-props', TestInheritProps, {
+	props: ['bazz', 'buzz'],
+	bools: ['disabled'],
+	attrs: ['value']
+});
+
+
+
+
 class TestValue extends BaseComponent {
 
 	attributeChanged (name, value) {
