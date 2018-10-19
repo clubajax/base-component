@@ -116,7 +116,6 @@ class TestProps extends BaseComponent {
 	}
 
     attributeChanged (name, value) {
-		// console.log('attributeChanged', name, value);
         this[name + '-changed'] = dom.normalize(value) || value !== null;
 	}
 }

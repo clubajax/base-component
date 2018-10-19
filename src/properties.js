@@ -22,7 +22,7 @@ function setBoolean (node, prop) {
 			}
 			const fn = this[onify(prop)];
 			if (fn) {
-				const eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
+				const eventName = this.propsOnReady ? 'onDomReady' : 'onConnected';
 				window[eventName](this, () => {
 
 					if (value !== undefined && propValue !== value) {
@@ -57,7 +57,7 @@ function setProperty (node, prop) {
 			}
 			const fn = this[onify(prop)];
 			if(fn){
-				const eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
+				const eventName = this.propsOnReady ? 'onDomReady' : 'onConnected';
 				window[eventName](this, () => {
 					if(value !== undefined){
 						propValue = value;
@@ -113,10 +113,6 @@ function boolNorm (value) {
 	return normalize(value);
 }
 
-function propNorm (value) {
-	return normalize(value);
-}
-
 function normalize(val) {
 	if (typeof val === 'string') {
 		val = val.trim();
@@ -138,7 +134,7 @@ function normalize(val) {
 	}
 	return val;
 }
-
+BaseComponent.normalize = normalize;
 BaseComponent.addPlugin({
 	name: 'properties',
 	order: 10,
@@ -164,6 +160,8 @@ BaseComponent.addPlugin({
 			return;
 		}
 
-		node[name] = propNorm(value);
+		const v = normalize(value);
+
+		node[name] = v;
 	}
 });

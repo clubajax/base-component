@@ -1,6 +1,6 @@
 {
   "name": "@clubajax/base-component",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A base for more powerful web components",
   "main": "src/index.js",
   "scripts": {
