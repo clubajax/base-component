@@ -128,9 +128,10 @@ function (_HTMLElement) {
     key: "attributeChangedCallback",
     value: function attributeChangedCallback(attrName, oldVal, newVal) {
       if (!this.isSettingAttribute) {
+        newVal = BaseComponent.normalize(newVal);
         plugin('preAttributeChanged', this, attrName, newVal, oldVal);
 
-        if (this.attributeChanged) {
+        if (this.attributeChanged && BaseComponent.normalize(oldVal) !== newVal) {
           this.attributeChanged(attrName, newVal, oldVal);
         }
       }
@@ -416,6 +417,23 @@ function makeGlobalListeners(name, eventName) {
 makeGlobalListeners('onDomReady', 'domready');
 makeGlobalListeners('onConnected', 'connected');
 
+function testOptions(options) {
+  var tests = {
+    'prop': 'props',
+    'bool': 'bools',
+    'attr': 'attrs',
+    'properties': 'props',
+    'booleans': 'bools',
+    'property': 'props',
+    'boolean': 'bools'
+  };
+  Object.keys(tests).forEach(function (key) {
+    if (options[key]) {
+      console.error("BaseComponent.define found \"".concat(key, "\"; Did you mean: \"").concat(tests[key], "\"?"));
+    }
+  });
+}
+
 BaseComponent.injectProps = function (Constructor, _ref) {
   var _ref$props = _ref.props,
       props = _ref$props === void 0 ? [] : _ref$props,
@@ -423,12 +441,15 @@ BaseComponent.injectProps = function (Constructor, _ref) {
       bools = _ref$bools === void 0 ? [] : _ref$bools,
       _ref$attrs = _ref.attrs,
       attrs = _ref$attrs === void 0 ? [] : _ref$attrs;
-  Constructor.observedAttributes = _toConsumableArray(props).concat(_toConsumableArray(bools), _toConsumableArray(attrs));
-  Constructor.bools = bools;
-  Constructor.props = props;
+  Constructor.bools = _toConsumableArray(Constructor.bools || []).concat(_toConsumableArray(bools));
+  Constructor.props = _toConsumableArray(Constructor.props || []).concat(_toConsumableArray(props));
+  Constructor.attrs = _toConsumableArray(Constructor.attrs || []).concat(_toConsumableArray(attrs));
+  Constructor.observedAttributes = _toConsumableArray(Constructor.bools).concat(_toConsumableArray(Constructor.props), _toConsumableArray(Constructor.attrs));
 };
 
-BaseComponent.define = function (tagName, Constructor, options) {
+BaseComponent.define = function (tagName, Constructor) {
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  testOptions(options);
   BaseComponent.injectProps(Constructor, options);
   customElements.define(tagName, Constructor);
   return Constructor;
@@ -465,7 +486,7 @@ function setBoolean(node, prop) {
       var fn = this[onify(prop)];
 
       if (fn) {
-        var eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
+        var eventName = this.propsOnReady ? 'onDomReady' : 'onConnected';
         window[eventName](this, function () {
           if (value !== undefined && propValue !== value) {
             value = fn.call(_this, value) || value;
@@ -506,7 +527,7 @@ function setProperty(node, prop) {
       var fn = this[onify(prop)];
 
       if (fn) {
-        var eventName = this.connectedProps ? 'onConnected' : 'onDomReady';
+        var eventName = this.propsOnReady ? 'onDomReady' : 'onConnected';
         window[eventName](this, function () {
           if (value !== undefined) {
             propValue = value;
@@ -567,10 +588,6 @@ function boolNorm(value) {
   return normalize(value);
 }
 
-function propNorm(value) {
-  return normalize(value);
-}
-
 function normalize(val) {
   if (typeof val === 'string') {
     val = val.trim();
@@ -597,6 +614,7 @@ function normalize(val) {
   return val;
 }
 
+BaseComponent.normalize = normalize;
 BaseComponent.addPlugin({
   name: 'properties',
   order: 10,
@@ -625,7 +643,8 @@ BaseComponent.addPlugin({
       return;
     }
 
-    node[name] = propNorm(value);
+    var v = normalize(value);
+    node[name] = v;
   }
 });			
 }());

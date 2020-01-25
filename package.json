@@ -1,6 +1,6 @@
 {
   "name": "@clubajax/base-component",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "A base for more powerful web components",
   "main": "src/index.js",
   "scripts": {
@@ -38,7 +38,7 @@
     "mocha": "^3.4.2"
   },
   "dependencies": {
-    "@clubajax/on": "^2.1.8"
+    "@clubajax/on": "^2.2.0"
   },
   "directories": {
     "test": "tests"

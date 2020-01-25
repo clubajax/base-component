@@ -507,10 +507,10 @@
   resolved "https://registry.yarnpkg.com/@clubajax/dom/-/dom-2.7.1.tgz#7ec6781d182414a0f11dd0e299b9f6be752e35f5"
   integrity sha512-x+uyYkGQ3McmJcONhb3J0i6o0DxsgB8P0nMlv37aD13vBJR16RKOrcW0uwfeKVvz1YxohOd5guqLRIr72hZczA==
 
-"@clubajax/on@^2.1.8":
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/@clubajax/on/-/on-2.1.8.tgz#b04fa40ef0b1a5d697d7dcea82def98a3b0329c3"
-  integrity sha1-sE+kDvCxpdaX19zqgt75ijsDKcM=
+"@clubajax/on@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@clubajax/on/-/on-2.2.0.tgz#b0f1be8c2b02a641a4b41856cbad48589aac2c39"
+  integrity sha512-hJb67QTgkJpkGzRC8ySiAn7nCSOdHK/ii0inFNia1GkWz9QKAv1j+x9NaRLTh1cdVC/NKpquJAwOLNP9BMFT0g==
   dependencies:
     grunt "^1.0.1"
     grunt-contrib-uglify "^2.3.0"
