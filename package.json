@@ -1,11 +1,11 @@
 {
   "name": "@clubajax/base-component",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "A base for more powerful web components",
   "main": "dist/index.js",
   "scripts": {
     "start": "grunt dev",
-    "build": "grunt deploy",
+    "build": "grunt build",
     "deploy": "grunt deploy"
   },
   "repository": {

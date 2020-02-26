@@ -20,10 +20,11 @@ function run () {
 
 
 	const codes = files.map((fileName) => {
-		lines = fs.readFileSync(fileName).toString().split('\n').filter(function (line) {
+		const lines = fs.readFileSync(fileName).toString().split('\n').filter(function (line) {
 			return !hasModule.test(line);
 		});
-		return babelize(lines.join('\n'));
+		// return babelize(lines.join('\n'));
+		return lines.join('\n');
 	});
 
 	const code = codes.map((str, index) => {

@@ -61,7 +61,7 @@ class BaseComponent extends HTMLElement {
 
     attributeChangedCallback(attrName, oldVal, newVal) {
 		if (this.isSettingAttribute !== attrName) {
-			// newVal = BaseComponent.normalize(newVal);
+			newVal = BaseComponent.normalize(newVal);
 			plugin('preAttributeChanged', this, attrName, newVal, oldVal);
 			if (this.attributeChanged && BaseComponent.normalize(oldVal) !== newVal) {
 				this.attributeChanged(attrName, newVal, oldVal);

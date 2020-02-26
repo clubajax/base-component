@@ -149,7 +149,7 @@ module.exports = function (grunt) {
 						'TestComponent': './src/TestComponent.js',
 					},
 					external: [...vendorAliases],
-					transform: babelTransform,
+					// transform: babelTransform,
 					browserifyOptions: {
 						//standalone: 'BaseComponent',
 						standalone: 'TestComponent',
