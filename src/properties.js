@@ -10,7 +10,7 @@ function setBoolean (node, prop) {
 			return (att !== undefined && att !== null && att !== 'false' && att !== false);
 		},
 		set (value) {
-			this.isSettingAttribute = true;
+			this.isSettingAttribute = prop;
 			value = (value !== false && value !== null && value !== undefined);
 			if (value) {
 				this.setAttribute(prop, '');
@@ -46,7 +46,7 @@ function setProperty (node, prop) {
 			return propValue !== undefined ? propValue : normalize(this.getAttribute(prop));
 		},
 		set (value) {
-			this.isSettingAttribute = true;
+			this.isSettingAttribute = prop;
 			if (typeof value === 'object') {
 				propValue = value;
 			} else {
@@ -151,7 +151,7 @@ BaseComponent.addPlugin({
 			node[name] = !!value;
 			if(!value){
 				node[name] = false;
-				node.isSettingAttribute = true;
+				node.isSettingAttribute = name;
 				node.removeAttribute(name);
 				node.isSettingAttribute = false;
 			} else {

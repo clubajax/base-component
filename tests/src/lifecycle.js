@@ -14,6 +14,19 @@ class TestNoProps extends BaseComponent {
 BaseComponent.define('test-no-props', TestNoProps);
 
 
+class TestValueLast extends BaseComponent {
+	attributeChanged (name, value) {
+        if (name === 'value') {
+			this.value = value;
+		}
+	}
+}
+BaseComponent.define('test-value-last', TestValueLast, {
+    props: ['min'],
+    attrs: ['value']
+});
+
+
 
 class TestInheritPropsBase extends BaseComponent {
 	constructor() {

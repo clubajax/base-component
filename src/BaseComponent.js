@@ -59,9 +59,9 @@ class BaseComponent extends HTMLElement {
 		}
 	}
 
-	attributeChangedCallback (attrName, oldVal, newVal) {
-		if (!this.isSettingAttribute) {
-			newVal = BaseComponent.normalize(newVal);
+    attributeChangedCallback(attrName, oldVal, newVal) {
+		if (this.isSettingAttribute !== attrName) {
+			// newVal = BaseComponent.normalize(newVal);
 			plugin('preAttributeChanged', this, attrName, newVal, oldVal);
 			if (this.attributeChanged && BaseComponent.normalize(oldVal) !== newVal) {
 				this.attributeChanged(attrName, newVal, oldVal);
@@ -99,8 +99,8 @@ class BaseComponent extends HTMLElement {
 				on.once(this, node, eventName, selector, callback));
 	}
 
-	attr (key, value, toggle) {
-		this.isSettingAttribute = true;
+    attr(key, value, toggle) {
+		this.isSettingAttribute = key;
 		const add = toggle === undefined ? true : !!toggle;
 		if (add) {
 			this.setAttribute(key, value);

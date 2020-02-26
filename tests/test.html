@@ -90,9 +90,24 @@
 	</li>
 </template>
 
-<test-props disabled readonly id="test-1"></test-props>
-
 <div id="mocha"></div>
+
+
+<!-- <test-props disabled readonly id="test-1"></test-props> -->
+
+<test-value-last 
+    min="min!!"    
+    value="value!!"
+/>
+
+<script>
+    const node = dom.query('test-value-last');
+    node.onDomReady(function(){
+        console.log('ready -> ', node.value);
+        console.log('ready -> ', node.min);
+    })
+    console.log('test-value-last', node.value);
+</script>
 
 <script>
 
@@ -164,6 +179,7 @@
 	const dom = window.dom;
 
 	suite('BaseComponent', function () {
+        return
 		this.timeout(3000);
 		const suite = window.suite,
 			test = window.test,
