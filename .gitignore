@@ -23,3 +23,5 @@ testem.log
 ebuild.bat
 
 tests/dist/dist-output.js
+tests/dist/vendor.js
+tests/dist/output.js
