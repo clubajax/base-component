@@ -48,9 +48,10 @@ class BaseComponent extends HTMLElement {
 		}
 		this.fire('disconnected');
 
-		let time, dod = BaseComponent.destroyOnDisconnect;
+        let time
+        const dod = this.destroyOnDisconnect !== undefined ? this.destroyOnDisconnect : BaseComponent.destroyOnDisconnect;
 		if (dod) {
-			time = typeof dod === 'number' ? doc : 300;
+			time = typeof dod === 'number' ? dod : 300;
 			setTimeout(() => {
 				if (this.DOMSTATE === 'disconnected') {
 					this.destroy();
