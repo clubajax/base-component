@@ -141,7 +141,7 @@ module.exports = function (grunt) {
 			deploy: {
 				files: {
 					// remember to include the extension
-					'dist/index.js': ['./src/deploy.js']
+					'build/index.js': ['./src/deploy.js']
 				},
 				options: {
 					alias: {
@@ -233,7 +233,7 @@ module.exports = function (grunt) {
 		// compile('refs');
 		// compile('item-template');
 		//grunt.task.run('browserify:deploy');
-
+        grunt.file.mkdir('build');
 		const compile = require('./scripts/compile-all');
 	});
 
