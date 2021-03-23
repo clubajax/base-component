@@ -1,3 +1,9 @@
+/* eslint-disable no-new-func */
+/* eslint-disable prefer-template */
+/* eslint-disable no-console */
+/* eslint-disable no-undef */
+/* eslint-disable prefer-spread */
+/* eslint-disable max-classes-per-file */
 const BaseComponent  = require('../../src/BaseComponent');
 const properties = require('../../src/properties');
 const template = require('../../src/template');
@@ -7,24 +13,9 @@ window.rand = require('randomizer');
 
 // no actual test for this - it should just not cause an error
 class TestNoProps extends BaseComponent {
-	constructor() { 
-		super();
-	}
+
 }
 BaseComponent.define('test-no-props', TestNoProps);
-
-
-class TestValueLast extends BaseComponent {
-	attributeChanged (name, value) {
-        if (name === 'value') {
-			this.value = value;
-		}
-	}
-}
-BaseComponent.define('test-value-last', TestValueLast, {
-    props: ['min'],
-    attrs: ['value']
-});
 
 
 
@@ -48,9 +39,7 @@ BaseComponent.define('test-inherit-props-base', TestInheritPropsBase, {
 });
 
 class TestInheritProps extends TestInheritPropsBase {
-	constructor() {
-		super();
-	}
+
 	attributeChanged(prop, value) {
 		this[`attr-${prop}`] = value;
 	}
@@ -204,19 +193,19 @@ class TestLifecycle extends BaseComponent {
 customElements.define('test-lifecycle', TestLifecycle);
 
 BaseComponent.addPlugin({
-    init: function (node, a, b, c) {
+    init (node, a, b, c) {
         on.fire(document, 'init-called');
     },
-    preConnected: function (node, a, b, c) {
+    preConnected (node, a, b, c) {
         on.fire(document, 'preConnected-called');
     },
-    postConnected: function (node, a, b, c) {
+    postConnected (node, a, b, c) {
         on.fire(document, 'postConnected-called');
     },
-    preDomReady: function (node, a, b, c) {
+    preDomReady (node, a, b, c) {
         on.fire(document, 'preDomReady-called');
     },
-    postDomReady: function (node, a, b, c) {
+    postDomReady (node, a, b, c) {
         on.fire(document, 'postDomReady-called');
     }
 });
@@ -309,9 +298,6 @@ class TestTmplNestedA extends BaseComponent {
 customElements.define('test-tmpl-nested-a', TestTmplNestedA);
 
 class TestTmplNestedB extends TestTmplNestedA {
-    constructor () {
-        super();
-    }
     get templateString () {
         return `<div>content B</div>`;
     }
@@ -321,9 +307,6 @@ customElements.define('test-tmpl-nested-b', TestTmplNestedB);
 
 // nested plus light dom
 class TestTmplNestedC extends TestTmplNestedA {
-    constructor () {
-        super();
-    }
     get templateString () {
         return `<section>
             <div>content C before</div>
@@ -338,9 +321,6 @@ customElements.define('test-tmpl-nested-c', TestTmplNestedC);
 // 5-deep nested templates
 class TestA extends BaseComponent {}
 class TestB extends TestA {
-    constructor () {
-        super();
-    }
     get templateString () {
         return `<section>
             <div>content B before</div>
@@ -351,9 +331,6 @@ class TestB extends TestA {
 }
 class TestC extends TestB {}
 class TestD extends TestC {
-    constructor () {
-        super();
-    }
     get templateString () {
         return `<div>content D</div>`;
     }
@@ -374,10 +351,6 @@ class TestList extends BaseComponent {
 
     static get observedAttributes() { return ['list-title']; }
     get props () { return ['list-title']; }
-
-    constructor () {
-        super();
-    }
 
     get templateString () {
         return `
@@ -400,10 +373,6 @@ class TestListComponent extends BaseComponent {
 	static get observedAttributes() { return ['item-tag']; }
 	get props () { return ['item-tag']; }
 
-	constructor () {
-		super();
-	}
-
 	set data (items) {
 		this.items = items;
 		this.onConnected(this.renderItems.bind(this));
@@ -413,7 +382,7 @@ class TestListComponent extends BaseComponent {
 		const frag = document.createDocumentFragment();
 		const tag = this['item-tag'];
 		const self = this;
-		this.items.forEach(function (item) {
+		this.items.forEach((item) => {
 			const node = dom(tag, {}, frag);
 			node.data = item;
 		});
@@ -446,10 +415,6 @@ class TestListComponentItem extends BaseComponent {
 
 	static get observedAttributes() { return ['list-title']; }
 	get props () { return ['list-title']; }
-
-	constructor () {
-		super();
-	}
 
 	set data (item) {
 		this.item = item;
@@ -503,10 +468,6 @@ class TestListComponentTmpl extends BaseComponent {
 	static get observedAttributes() { return ['list-title']; }
 	get props () { return ['list-title']; }
 
-	constructor () {
-		super();
-	}
-
 	get templateString () {
 		return `
             <div>
@@ -537,9 +498,9 @@ class TestListComponentTmpl extends BaseComponent {
 	renderItem () {
 		const item = this.item;
 		const self = this;
-		Object.keys(item).forEach(function (key) {
+		Object.keys(item).forEach((key) => {
 			if(self[key]){
-				let node = document.createTextNode(item[key]);
+				const node = document.createTextNode(item[key]);
 				self[key].appendChild(node);
 			}
 		})
@@ -570,16 +531,15 @@ window.ifAttrTemplateString = `<template>
 </template>`;
 
 function dev () {
-    var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
-    var s = '{{amount}} + {{num}} + 3';
-    var list = [{amount: 1, num: 2}, {amount: 3, num: 4}, {amount: 5, num: 6}];
-    var r = /\{\{\w*}}/g;
-    var fn = [];
-    var args = [];
-    var f;
-    s = s.replace(r, function(w){
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    let s = '{{amount}} + {{num}} + 3';
+    const list = [{amount: 1, num: 2}, {amount: 3, num: 4}, {amount: 5, num: 6}];
+    const r = /\{\{\w*}}/g;
+    const fn = [];
+    const args = [];
+    s = s.replace(r, (w) => {
         console.log('word', w);
-        var v = alphabet.shift();
+        const v = alphabet.shift();
         fn.push(v);
         args.push(/\w+/g.exec(w)[0]);
         return v;
@@ -593,19 +553,19 @@ function dev () {
 
     window.f = new Function(s);
 
-    var dynFn = function (a,b,c,d,e,f) {
-        var r = eval(s);
+    const dynFn = function (a,b,c,d,e,f) {
+        const r = eval(s);
         return r;
     };
 
     console.log('  f:', dynFn(1,2));
     //
-    list.forEach(function (item) {
-        var a = args.map(function (arg) {
+    list.forEach((item) => {
+        const a = args.map((arg) => {
             return item[arg];
         });
-        var r = dynFn.apply(null, a);
-        console.log('r', r);
+        const re = dynFn.apply(null, a);
+        console.log('r', re);
     });
 
 

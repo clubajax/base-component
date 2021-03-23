@@ -1,21 +1,23 @@
-'use strict';
+/* eslint-disable global-require */
+/* eslint-disable no-console */
+
 
 const path = require('path');
 
 module.exports = function (grunt) {
     
     // collect dependencies from node_modules
-    let nm = path.resolve(__dirname, 'node_modules'),
-        vendorAliases = ['@clubajax/on', '@clubajax/dom', 'randomizer', '@clubajax/custom-elements-polyfill'],
-		devAliases = [...vendorAliases],
-		baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template'],  //, './src/item-template'
+    const nm = path.resolve(__dirname, 'node_modules');
+        const vendorAliases = ['@clubajax/on', '@clubajax/dom', 'randomizer', '@clubajax/custom-elements-polyfill'];
+		const devAliases = [...vendorAliases];
+		const baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template'];  //, './src/item-template'
 		// allAliases = vendorAliases.concat(baseAliases),
-		pluginAliases = ['@clubajax/on', 'BaseComponent'],
-        sourceMaps = true,
-        watch = false,
-        watchPort = 35750,
-        babelTransform = [['babelify', { presets: ['@babel/preset-env'] }]],
-        devBabel = false;
+		const pluginAliases = ['@clubajax/on', 'BaseComponent'];
+        const sourceMaps = true;
+        const watch = false;
+        const watchPort = 35750;
+        const babelTransform = [['babelify', { presets: ['@babel/preset-env'] }]];
+        const devBabel = false;
     
     grunt.initConfig({
         
@@ -32,8 +34,8 @@ module.exports = function (grunt) {
                 dest: 'tests/dist/vendor.js',
                 options: {
                     // expose the modules
-                    alias: devAliases.map(function (module) {
-                        return module + ':';
+                    alias: devAliases.map((module) => {
+                        return `${module  }:`;
                     }),
                     // not consuming any modules
                     external: null,
@@ -61,7 +63,7 @@ module.exports = function (grunt) {
                     // if developing in IE or using very new features,
                     // change devBabel to `true`
                     transform: devBabel ? babelTransform : [],
-                    postBundleCB: function (err, src, next) {
+                    postBundleCB (err, src, next) {
                         console.timeEnd('build');
                         next(err, src);
                     }
@@ -87,7 +89,7 @@ module.exports = function (grunt) {
 					},
 					// since this is testing the distro, we need to babelize the test
 					transform: babelTransform,
-					postBundleCB: function (err, src, next) {
+					postBundleCB (err, src, next) {
 						console.timeEnd('build');
 						next(err, src);
 					}
@@ -141,7 +143,7 @@ module.exports = function (grunt) {
 			deploy: {
 				files: {
 					// remember to include the extension
-					'build/index.js': ['./src/deploy.js']
+					'dist/index.js': ['./src/deploy.js']
 				},
 				options: {
 					alias: {
@@ -149,7 +151,7 @@ module.exports = function (grunt) {
 						'TestComponent': './src/TestComponent.js',
 					},
 					external: [...vendorAliases],
-					// transform: babelTransform,
+					transform: babelTransform,
 					browserifyOptions: {
 						//standalone: 'BaseComponent',
 						standalone: 'TestComponent',
@@ -178,7 +180,7 @@ module.exports = function (grunt) {
                 // where to serve from (root is least confusing)
                 root: '.',
                 // port (if you run several projects at once these should all be different)
-                port: '8200',
+                port: '8202',
                 // host (0.0.0.0 is most versatile: it gives localhost, and it works over an Intranet)
                 host: '0.0.0.0',
                 cache: -1,
@@ -202,30 +204,30 @@ module.exports = function (grunt) {
     });
 
     // watch build task
-    grunt.registerTask('build-dev', function (which) {
+    grunt.registerTask('build-dev', (which) => {
         console.time('build');
         grunt.task.run('browserify:dev');
 		//grunt.task.run('browserify:test');
     });
 
     // task that builds vendor and dev files during development
-    grunt.registerTask('build', function (which) {
+    grunt.registerTask('build', (which) => {
         grunt.task.run('browserify:vendor');
         grunt.task.run('build-dev');
     });
 
     // The general task: builds, serves and watches
-    grunt.registerTask('dev', function (which) {
+    grunt.registerTask('dev', (which) => {
         grunt.task.run('build');
         grunt.task.run('concurrent:target');
     });
 
     // alias for server
-    grunt.registerTask('serve', function (which) {
+    grunt.registerTask('serve', (which) => {
         grunt.task.run('http-server');
     });
 
-	grunt.registerTask('deploy', function (which) {
+	grunt.registerTask('deploy', (which) => {
 		// const compile = require('./scripts/compile');
 		// compile('BaseComponent');
 		// compile('properties');
@@ -233,7 +235,7 @@ module.exports = function (grunt) {
 		// compile('refs');
 		// compile('item-template');
 		//grunt.task.run('browserify:deploy');
-        grunt.file.mkdir('build');
+
 		const compile = require('./scripts/compile-all');
 	});
 

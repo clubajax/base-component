@@ -47,7 +47,7 @@ function setProperty (node, prop) {
 		},
 		set (value) {
 			this.isSettingAttribute = prop;
-			if (typeof value === 'object') {
+			if (typeof value === 'object' || typeof value === 'function') {
 				propValue = value;
 			} else {
 				this.setAttribute(prop, value);

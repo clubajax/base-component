@@ -1,7 +1,11 @@
 const exName = 'BaseComponent';
+const mng = require('@clubajax/node-file-managment');
 const outputName = 'index';
 const outputPath = `./build/${outputName}.js`;
 const files = ['./src/BaseComponent.js', './src/properties.js', './src/template.js', './src/refs.js'];
+
+mng.updateBuildPackage('./scripts', './build');
+mng.copyFile('./README.md', './build/README.md');
 
 console.log('');
 const babel = require('@babel/core');

@@ -95,7 +95,7 @@
 
 <!-- <test-props disabled readonly id="test-1"></test-props> -->
 
-<test-value-last 
+<!-- <test-value-last 
     min="min!!"    
     value="value!!"
 />
@@ -107,7 +107,7 @@
         console.log('ready -> ', node.min);
     })
     console.log('test-value-last', node.value);
-</script>
+</script> -->
 
 <script>
 
@@ -169,35 +169,30 @@
 		];
 	}
 
-
-</script>
-
-<script>
-	window.mocha.setup('tdd');
+	window.mocha.setup('bdd');
 
 	const on = window.on;
 	const dom = window.dom;
 
-	suite('BaseComponent', function () {
-        return
+	describe('BaseComponent', function () {
 		this.timeout(3000);
-		const suite = window.suite,
+		const describe = window.describe,
 			test = window.test,
 			dom = window.dom,
 			on = window.on,
 			expect = chai.expect,
 			body = document.body;
 
-		suite('create / destroy', function () {
+		describe('create / destroy', function () {
 
-			test('it should create a component', function () {
+			it('it should create a component', function () {
 				const node = dom('test-lifecycle', { css: 'foo' }, body);
 				expect(dom.isNode(node)).to.equal(true);
 				expect(typeof node.on).to.equal('function');
 				expect(node.DOMSTATE).to.equal('connected');
 			});
 
-			test('it should be destroyable', function () {
+			it('it should be destroyable', function () {
 				// uses node created in test above
 				let node = dom.query('test-lifecycle');
 				expect(dom.isNode(node)).to.equal(true);
@@ -207,7 +202,7 @@
 				expect(dom.isNode(node)).to.equal(false);
 			});
 
-			test('it should destroy event listeners', function () {
+			it('it should destroy event listeners', function () {
 				let
 					called = 0,
 					node = dom('test-lifecycle', { css: 'foo' }, body);
@@ -223,8 +218,8 @@
 			// TODO: test inheritance
 		});
 
-		suite('plugins', function () {
-			test('it should connect to a plugin\'s events', function (done) {
+		describe('plugins', function () {
+			it('it should connect to a plugin\'s events', function (done) {
 				let
 					called = 0,
 					onCalled = function (e) { 
@@ -253,8 +248,8 @@
 			});
 		});
 
-		suite('lifecycle methods', function () {
-			test('onDomReady should handle a sngle node', function (done) {
+		describe('lifecycle methods', function () {
+			it('onDomReady should handle a sngle node', function (done) {
 				const node = dom('test-a', {}, body);
 				onDomReady(node, function (n) {
 					expect(dom.isNode(n)).to.equal(true);
@@ -263,7 +258,7 @@
 				});
 			});
 
-			test('onDomReady should handle an array of nodes', function (done) {
+			it('onDomReady should handle an array of nodes', function (done) {
 				const n1 = dom('test-a', {}, body);
 				const n2 = dom('test-a', {}, body);
 				const n3 = dom('test-a');
@@ -283,7 +278,7 @@
 				}, 30);
 			});
 
-			test('it should should be in the domready state when re-added to the DOM', function (done) {
+			it('it should should be in the domready state when re-added to the DOM', function (done) {
 				let
 					node,
 					called = false,
@@ -306,7 +301,7 @@
 				}, 300);
 			});
 
-			test('it should call component\'s `connected` method', function () {
+			it('it should call component\'s `connected` method', function () {
 				let
 					node,
 					called = false,
@@ -319,7 +314,7 @@
 				h.remove();
 			});
 
-			test('it should call component\'s `disconnected` method', function () {
+			it('it should call component\'s `disconnected` method', function () {
 				let
 					node,
 					called = 0,
@@ -338,7 +333,7 @@
 				h2.remove();
 			});
 
-			test('it should call component\'s `domReady` method', function (done) {
+			it('it should call component\'s `domReady` method', function (done) {
 				let
 					node,
 					called = false,
@@ -354,7 +349,7 @@
 				});
 			});
 
-			test('it should call component\'s `domReady` method when children are ready', function (done) {
+			it('it should call component\'s `domReady` method when children are ready', function (done) {
 				let
 					parent,
 					called = 0,
@@ -377,7 +372,7 @@
 				})
 			});
 
-			test('it should call component\'s `domReady` method when descendants are ready', function (done) {
+			it('it should call component\'s `domReady` method when descendants are ready', function (done) {
 				let node;
 				let called = 0;
 				h = on(document, 'domready-called', function () {
@@ -400,7 +395,7 @@
 				});
 			});
 
-			test('it should fire `connected` multiple times but `domready` once', function (done) {
+			it('it should fire `connected` multiple times but `domready` once', function (done) {
 				let
 					called = 0,
 					onCalled = function () { called++; },
@@ -428,7 +423,7 @@
 				}, 10);
 			});
 
-			test('it should fire `connected` in creation order, and `domready` in instantiation order', function (done) {
+			it('it should fire `connected` in creation order, and `domready` in instantiation order', function (done) {
 				let
 					node,
 					connected = [],
@@ -464,15 +459,15 @@
 			});
 		});
 
-		suite('templates', function () {
-			test('it should create a component with a templateString', function () {
+		describe('templates', function () {
+			it('it should create a component with a templateString', function () {
 				const node = dom('test-tmpl-string', {}, body);
 				expect(dom.isNode(node)).to.equal(true);
 				expect(node.innerHTML.indexOf('simple template') > -1).to.equal(true);
 				node.destroy();
 			});
 
-			test('it should create a component with a templateId', function () {
+			it('it should create a component with a templateId', function () {
 				const node = dom('test-tmpl-id', {}, body);
 				expect(node).to.not.equal(null);
 				expect(node.innerHTML.indexOf('template byId') > -1).to.equal(true);
@@ -481,9 +476,9 @@
 			});
 		});
 
-		suite('template refs', function () {
+		describe('template refs', function () {
 
-			test('it should handle deep child templates with refs', function (done) {
+			it('it should handle deep child templates with refs', function (done) {
 				const node = dom('test-tmpl-cmpt-refs', {}, body);
 				onDomReady(node, function () {
 					const results = [];
@@ -500,14 +495,14 @@
 
 			});
 
-			test('it should reference nodes with the `ref` attribute', function () {
+			it('it should reference nodes with the `ref` attribute', function () {
 				const node = dom('test-tmpl-refs', {}, body);
 				expect(dom.isNode(node.labelNode)).to.equal(true);
 				expect(dom.isNode(node.valueNode)).to.equal(true);
 				node.destroy();
 			});
 
-			test('it should attach events using the `ref` attribute', function () {
+			it('it should attach events using the `ref` attribute', function () {
 				let
 					called = false,
 					node = dom('test-tmpl-refs', {}, body),
@@ -522,7 +517,7 @@
 				node.destroy();
 			});
 
-			test('it should insert light nodes into the container', function () {
+			it('it should insert light nodes into the container', function () {
 				const
 					content = 'I should be in the container',
 					node = dom('test-tmpl-container', { html: content }, body);
@@ -532,8 +527,8 @@
 			});
 		});
 
-		suite('nested templates', function () {
-			test('it should nest templates', function () {
+		describe('nested templates', function () {
+			it('it should nest templates', function () {
 				const
 					node = dom('test-tmpl-nested-b', {}, body),
 					content = dom.queryAll(node, 'div').map(function (n) {
@@ -545,7 +540,7 @@
 				node.destroy();
 			});
 
-			test('it should deeply nest sparse templates', function () {
+			it('it should deeply nest sparse templates', function () {
 				const
 					node = dom('test-e', {}, body),
 					content = dom.queryAll(node, 'div').map(function (n) {
@@ -556,7 +551,7 @@
 				node.destroy();
 			});
 
-			test('it should nest templates and insert light dom', function () {
+			it('it should nest templates and insert light dom', function () {
 				const
 					node = dom('test-tmpl-nested-c', { html: 'Light DOM' }, body),
 					content = dom.queryAll(node, 'div').map(function (n) {
@@ -568,8 +563,8 @@
 			});
 		});
 
-		suite('properties v3', function () {
-			test('it should set properties and booleans only once', function (done) {
+		describe('properties v3', function () {
+			it('it should set properties and booleans only once', function (done) {
 				const events = [];
 				on(document, 'foo-called', function () {
 					events.push(1);
@@ -585,8 +580,8 @@
 			});
 		});
 
-		suite('properties', function () {
-			test('it should inherit props', function (done) {
+		describe('properties', function () {
+			it('it should inherit props', function (done) {
 				const node = dom('test-inherit-props', { 
 					foo: 'yoo',
 					bar: 'car',
@@ -612,7 +607,7 @@
 				});
 			});
 
-			test('it should sync non-bools/props', function (done) {
+			it('it should sync non-bools/props', function (done) {
 				const node = dom('test-value', { value: 27 }, body);
 				onDomReady(node, function () {
 					expect(node.value).to.equal(27);
@@ -620,7 +615,7 @@
 				});
 			});
 
-			test('it should set properties and booleans only once', function (done) {
+			it('it should set properties and booleans only once', function (done) {
 				const events = [];
 				on(document, 'foo-called', function () {
 					events.push(1);
@@ -635,7 +630,7 @@
 				});
 			});
 
-			test('it should set properties from naked attributes', function () {
+			it('it should set properties from naked attributes', function () {
 				const node = dom.byId('test-1');
 				expect(node.hasAttribute('disabled')).to.equal(true);
 				expect(node.hasAttribute('readonly')).to.equal(true);
@@ -644,7 +639,7 @@
 				expect(node.readonly).to.equal(true);
 			});
 
-			test('it should sync properties and attributes', function (done) {
+			it('it should sync properties and attributes', function (done) {
 				const node = dom('test-props', { attr: { foo: true } }, body);
 				onDomReady(node, function () {
 					expect(node.getAttribute('foo')).to.equal('true');
@@ -674,7 +669,7 @@
 				});
 			});
 
-			test('it should handle properties', function (done) {
+			it('it should handle properties', function (done) {
 				const node = dom('test-props', {}, body);
 				onDomReady(node, function () {
 					node.setAttribute('min', '50%');
@@ -688,7 +683,7 @@
 				});
 			});
 
-			test('it should handle property callbacks and changed values', function (done) {
+			it('it should handle property callbacks and changed values', function (done) {
 				const node = dom('test-props', {}, body);
 
 				node.onMin = function (value) {
@@ -707,7 +702,7 @@
 				});
 			});
 
-			test('it should handle a complex property callback', function (done) {
+			it('it should handle a complex property callback', function (done) {
 				const node = dom('test-props', {}, body);
 
 				node.onMyComplexProp = function (value) {
@@ -722,7 +717,7 @@
 
 			});
 
-			test('it should sync booleans and attributes (2)', function (done) {
+			it('it should sync booleans and attributes (2)', function (done) {
 				const node = dom('test-props', { attr: { nbc: true, disabled: true } }, body);
 				let onDisabled;
 				let onReadonly;
@@ -777,8 +772,8 @@
 			});
 		});
 
-		suite('item-template', function () {
-			test('it should recognize a template in the innerHTML', function (done) {
+		describe('item-template', function () {
+			it('it should recognize a template in the innerHTML', function (done) {
 				const node = dom('test-list', { html: window.itemTemplateString, attr: { 'list-title': 'This is my title' } }, body);
 				onDomReady(node, function () {
 					node.data = data();
@@ -787,7 +782,7 @@
 				});
 			});
 
-			test('it should handle {{if}}', function (done) {
+			it('it should handle {{if}}', function (done) {
 				const node = dom('test-list', { html: window.ifAttrTemplateString, attr: { 'list-title': 'This is my title' } }, body);
 				onDomReady(node, function () {
 					node.data = data();
@@ -797,8 +792,8 @@
 			});
 		});
 
-		suite('item-template/component', function () {
-			test('it should render a dom-based list', function () {
+		describe('item-template/component', function () {
+			it('it should render a dom-based list', function () {
 				const data = rand.data(10);
 				const node = dom('test-list-component', {
 					attr: {
@@ -812,7 +807,7 @@
 				}, 1)
 			});
 
-			test('it should render a template-based list', function () {
+			it('it should render a template-based list', function () {
 				const data = rand.data(10);
 				const node = dom('test-list-component', {
 					attr: {
@@ -828,7 +823,7 @@
 			});
 		});
 
-		suite('temp', function () {
+		describe('temp', function () {
 
 		});
 	});
