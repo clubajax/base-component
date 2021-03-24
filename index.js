@@ -1,5 +1,5 @@
 module.exports = {
-	BaseComponent: require('./dist/BaseComponent'),
+	BaseComponent: require('./dist/base-component'),
 	BaseComponentES6: require('./src/base-component'),
 	itemTemplate: require('./src/item-template'),
 	properties: require('./src/properties'),

@@ -12,12 +12,10 @@ function fromRequire (line) {
 }
 
 function fromImport (line) {
-    // import BaseComponent from './BaseComponent';
     return line.split(' ')[1];
 }
 
 function fromExports (line) {
-    // export default BaseComponent;
     let name = line.split(' ')[2].replace(';', '');
     if(name.indexOf('{}') > -1){ return null; }
     return name;

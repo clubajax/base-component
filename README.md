@@ -388,7 +388,7 @@ Use babel: `{"presets": ["@babel/preset-env"]}`
 Decide if you want to use ES6 (Chrome only) or ES5 (all browsers)
 
 If only targeting browsers with native elements, the polyfill is not necessary, and your `import` can be pointed to 
-`src/BaseComponent`. Otherwise, your `import` should be pointed to `dist/BaseComponent`, which is transpiled to work with ES5. The polyfill includes the native-shim, which allows Chrome to work with the transpiled class. 
+`src/base-component`. Otherwise, your `import` should be pointed to `dist/BaseComponent`, which is transpiled to work with ES5. The polyfill includes the native-shim, which allows Chrome to work with the transpiled class. 
 
 Q. **Uncaught TypeError: Illegal invocation**
 

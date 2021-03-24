@@ -8,14 +8,17 @@ module.exports = function (grunt) {
     const nm = path.resolve(__dirname, 'node_modules');
     const vendorAliases = ['@clubajax/on', '@clubajax/dom', 'randomizer', '@clubajax/custom-elements-polyfill'];
     const devAliases = [...vendorAliases];
-    const baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template']; //, './src/item-template'
+    const baseAliases = ['./src/base-component', './src/properties', './src/refs', './src/template']; //, './src/item-template'
     // allAliases = vendorAliases.concat(baseAliases),
-    const pluginAliases = ['@clubajax/on', 'BaseComponent'];
+    const pluginAliases = ['@clubajax/on', 'base-component'];
     const sourceMaps = true;
     const watch = false;
     const watchPort = 35750;
     const babelTransform = [['babelify', { presets: ['@babel/preset-env'] }]];
     const devBabel = false;
+    const excludes = [
+        '!**/node_modules/**'
+    ];
 
     grunt.initConfig({
         browserify: {
@@ -51,7 +54,7 @@ module.exports = function (grunt) {
                     keepAlive: false,
                     external: devAliases,
                     alias: {
-                        BaseComponent: './src/BaseComponent',
+                        BaseComponent: './src/base-component',
                     },
                     browserifyOptions: {
                         debug: sourceMaps,
@@ -78,11 +81,11 @@ module.exports = function (grunt) {
 
                     alias: {
                         // needed for internal references
-                        BaseComponent: './src/BaseComponent',
+                        BaseComponent: './src/base-component',
                     },
                     browserifyOptions: {
                         debug: sourceMaps,
-                        standalone: 'BaseComponent',
+                        standalone: 'base-component',
                     },
                     // since this is testing the distro, we need to babelize the test
                     transform: babelTransform,
@@ -94,13 +97,13 @@ module.exports = function (grunt) {
             },
             BaseComponent: {
                 files: {
-                    'dist/BaseComponent.js': ['src/BaseComponent.js'],
+                    'dist/base-component.js': ['src/base-component.js'],
                 },
                 options: {
                     external: [...vendorAliases, ...pluginAliases],
                     transform: babelTransform,
                     browserifyOptions: {
-                        standalone: 'BaseComponent',
+                        standalone: 'base-component',
                         debug: false,
                     },
                 },
@@ -121,17 +124,17 @@ module.exports = function (grunt) {
             xdeploy: {
                 files: {
                     // remember to include the extension
-                    'dist/index.js': ['./src/BaseComponent.js'],
+                    'dist/index.js': ['./src/base-component.js'],
                 },
                 options: {
                     alias: {
                         // needed for internal references
-                        BaseComponent: './src/BaseComponent.js',
+                        BaseComponent: './src/base-component.js',
                     },
                     external: [...vendorAliases],
                     transform: babelTransform,
                     browserifyOptions: {
-                        standalone: 'BaseComponent',
+                        standalone: 'base-component',
                         //standalone: 'TestComponent',
                         debug: false,
                     },
@@ -150,7 +153,7 @@ module.exports = function (grunt) {
                     external: [...vendorAliases],
                     transform: babelTransform,
                     browserifyOptions: {
-                        //standalone: 'BaseComponent',
+                        //standalone: 'base-component',
                         standalone: 'TestComponent',
                         debug: false,
                     },
@@ -190,12 +193,16 @@ module.exports = function (grunt) {
             },
         },
 
+        excludes,
+
         connect: {
             server: {
                 keepalive:true,
                 options: {
-                    port: 8202,
+                    port: '8002',
                     hostname: '*',
+                    livereload: true,
+                    open : true,
                     onCreateServer: function (server, connect, options) {
                         console.log('\n\nserver running\n\n');
                         // var io = require('socket.io').listen(server);
@@ -209,7 +216,8 @@ module.exports = function (grunt) {
 
         concurrent: {
             target: {
-                tasks: ['watch', 'connect'],
+                // tasks: ['watch', 'connect'],
+                tasks: ['watch', 'http-server'],
                 options: {
                     logConcurrentOutput: true,
                 },
@@ -233,6 +241,8 @@ module.exports = function (grunt) {
     // The general task: builds, serves and watches
     grunt.registerTask('dev', (which) => {
         grunt.task.run('build');
+        // grunt.task.run('connect');
+        // grunt.task.run('serve');
         grunt.task.run('concurrent:target');
     });
 
@@ -242,20 +252,12 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('deploy', (which) => {
-        // const compile = require('./scripts/compile');
-        // compile('BaseComponent');
-        // compile('properties');
-        // compile('template');
-        // compile('refs');
-        // compile('item-template');
-        //grunt.task.run('browserify:deploy');
-
         const compile = require('./scripts/compile-all');
     });
 
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
-    // grunt.loadNpmTasks('grunt-http-server');
-    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-http-server');
+    // grunt.loadNpmTasks('grunt-contrib-connect');
 };

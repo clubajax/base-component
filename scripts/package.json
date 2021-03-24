@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/clubajax/BaseComponent.git"
+    "url": "git+https://github.com/clubajax/base-component.git"
   },
   "author": "clubajax",
   "license": "MIT",
