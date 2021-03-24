@@ -1,26 +1,23 @@
 /* eslint-disable global-require */
 /* eslint-disable no-console */
 
-
 const path = require('path');
 
 module.exports = function (grunt) {
-    
     // collect dependencies from node_modules
     const nm = path.resolve(__dirname, 'node_modules');
-        const vendorAliases = ['@clubajax/on', '@clubajax/dom', 'randomizer', '@clubajax/custom-elements-polyfill'];
-		const devAliases = [...vendorAliases];
-		const baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template'];  //, './src/item-template'
-		// allAliases = vendorAliases.concat(baseAliases),
-		const pluginAliases = ['@clubajax/on', 'BaseComponent'];
-        const sourceMaps = true;
-        const watch = false;
-        const watchPort = 35750;
-        const babelTransform = [['babelify', { presets: ['@babel/preset-env'] }]];
-        const devBabel = false;
-    
+    const vendorAliases = ['@clubajax/on', '@clubajax/dom', 'randomizer', '@clubajax/custom-elements-polyfill'];
+    const devAliases = [...vendorAliases];
+    const baseAliases = ['./src/BaseComponent', './src/properties', './src/refs', './src/template']; //, './src/item-template'
+    // allAliases = vendorAliases.concat(baseAliases),
+    const pluginAliases = ['@clubajax/on', 'BaseComponent'];
+    const sourceMaps = true;
+    const watch = false;
+    const watchPort = 35750;
+    const babelTransform = [['babelify', { presets: ['@babel/preset-env'] }]];
+    const devBabel = false;
+
     grunt.initConfig({
-        
         browserify: {
             // source maps have to be inline.
             // grunt-exorcise promises to do this, but it seems overly complicated
@@ -35,144 +32,144 @@ module.exports = function (grunt) {
                 options: {
                     // expose the modules
                     alias: devAliases.map((module) => {
-                        return `${module  }:`;
+                        return `${module}:`;
                     }),
                     // not consuming any modules
                     external: null,
                     browserifyOptions: {
-                        debug: sourceMaps
-                    }
-                }
+                        debug: sourceMaps,
+                    },
+                },
             },
             dev: {
                 files: {
-                    'tests/dist/output.js': ['tests/src/globals.js', 'tests/src/lifecycle.js']
+                    'tests/dist/output.js': ['tests/src/globals.js', 'tests/src/lifecycle.js'],
                 },
                 options: {
                     // not using browserify-watch; it did not trigger a page reload
                     watch: false,
                     keepAlive: false,
                     external: devAliases,
-					alias: {
-                    	'BaseComponent': './src/BaseComponent'
-					},
+                    alias: {
+                        BaseComponent: './src/BaseComponent',
+                    },
                     browserifyOptions: {
-                        debug: sourceMaps
+                        debug: sourceMaps,
                     },
                     // transform not using babel in dev-mode.
                     // if developing in IE or using very new features,
                     // change devBabel to `true`
                     transform: devBabel ? babelTransform : [],
-                    postBundleCB (err, src, next) {
+                    postBundleCB(err, src, next) {
                         console.timeEnd('build');
                         next(err, src);
-                    }
-                }
+                    },
+                },
             },
-			test: {
-				files: {
-					'tests/dist/dist-output.js': ['tests/src/globals.js', 'tests/src/dist-test.js']
-				},
-				options: {
-					// not using browserify-watch; it did not trigger a page reload
-					watch: false,
-					keepAlive: false,
-					external: devAliases,
+            test: {
+                files: {
+                    'tests/dist/dist-output.js': ['tests/src/globals.js', 'tests/src/dist-test.js'],
+                },
+                options: {
+                    // not using browserify-watch; it did not trigger a page reload
+                    watch: false,
+                    keepAlive: false,
+                    external: devAliases,
 
-					alias: {
-						// needed for internal references
-						'BaseComponent': './src/BaseComponent'
-					},
-					browserifyOptions: {
-						debug: sourceMaps,
-						standalone: 'BaseComponent',
-					},
-					// since this is testing the distro, we need to babelize the test
-					transform: babelTransform,
-					postBundleCB (err, src, next) {
-						console.timeEnd('build');
-						next(err, src);
-					}
-				}
-			},
-			BaseComponent:{
-            	files:{
-            		'dist/BaseComponent.js': ['src/BaseComponent.js']
-				},
-				options: {
-					external: [...vendorAliases, ...pluginAliases],
-					transform: babelTransform,
-					browserifyOptions: {
-						standalone: 'BaseComponent',
-						debug: false
-					}
-				}
-			},
-			properties:{
-				files:{
-					'dist/properties.js': ['src/properties.js']
-				},
-				options: {
-					external: pluginAliases,
-					transform: babelTransform,
-					browserifyOptions: {
-						standalone: 'properties',
-						debug: false
-					}
-				}
-			},
+                    alias: {
+                        // needed for internal references
+                        BaseComponent: './src/BaseComponent',
+                    },
+                    browserifyOptions: {
+                        debug: sourceMaps,
+                        standalone: 'BaseComponent',
+                    },
+                    // since this is testing the distro, we need to babelize the test
+                    transform: babelTransform,
+                    postBundleCB(err, src, next) {
+                        console.timeEnd('build');
+                        next(err, src);
+                    },
+                },
+            },
+            BaseComponent: {
+                files: {
+                    'dist/BaseComponent.js': ['src/BaseComponent.js'],
+                },
+                options: {
+                    external: [...vendorAliases, ...pluginAliases],
+                    transform: babelTransform,
+                    browserifyOptions: {
+                        standalone: 'BaseComponent',
+                        debug: false,
+                    },
+                },
+            },
+            properties: {
+                files: {
+                    'dist/properties.js': ['src/properties.js'],
+                },
+                options: {
+                    external: pluginAliases,
+                    transform: babelTransform,
+                    browserifyOptions: {
+                        standalone: 'properties',
+                        debug: false,
+                    },
+                },
+            },
             xdeploy: {
                 files: {
-                	// remember to include the extension
-                    'dist/index.js': ['./src/BaseComponent.js']
+                    // remember to include the extension
+                    'dist/index.js': ['./src/BaseComponent.js'],
                 },
-				options: {
-					alias: {
-						// needed for internal references
-						'BaseComponent': './src/BaseComponent.js'
-					},
-					external: [...vendorAliases],
-					transform: babelTransform,
+                options: {
+                    alias: {
+                        // needed for internal references
+                        BaseComponent: './src/BaseComponent.js',
+                    },
+                    external: [...vendorAliases],
+                    transform: babelTransform,
                     browserifyOptions: {
-						standalone: 'BaseComponent',
-						//standalone: 'TestComponent',
-                        debug: false
-                    }
-                }
+                        standalone: 'BaseComponent',
+                        //standalone: 'TestComponent',
+                        debug: false,
+                    },
+                },
             },
-			deploy: {
-				files: {
-					// remember to include the extension
-					'dist/index.js': ['./src/deploy.js']
-				},
-				options: {
-					alias: {
-						// needed for internal references
-						'TestComponent': './src/TestComponent.js',
-					},
-					external: [...vendorAliases],
-					transform: babelTransform,
-					browserifyOptions: {
-						//standalone: 'BaseComponent',
-						standalone: 'TestComponent',
-						debug: false
-					}
-				}
-			}
+            deploy: {
+                files: {
+                    // remember to include the extension
+                    'dist/index.js': ['./src/deploy.js'],
+                },
+                options: {
+                    alias: {
+                        // needed for internal references
+                        TestComponent: './src/TestComponent.js',
+                    },
+                    external: [...vendorAliases],
+                    transform: babelTransform,
+                    browserifyOptions: {
+                        //standalone: 'BaseComponent',
+                        standalone: 'TestComponent',
+                        debug: false,
+                    },
+                },
+            },
         },
-        
+
         watch: {
             scripts: {
                 files: ['tests/src/*.js', 'src/*.js'],
-                tasks: ['build-dev']
+                tasks: ['build-dev'],
             },
-			html: {
-				files: ['tests/*.html'],
-				tasks: []
-			},
+            html: {
+                files: ['tests/*.html'],
+                tasks: [],
+            },
             options: {
-                livereload: watchPort
-            }
+                livereload: watchPort,
+            },
         },
 
         'http-server': {
@@ -186,28 +183,45 @@ module.exports = function (grunt) {
                 cache: -1,
                 showDir: true,
                 autoIndex: true,
-                ext: "html",
-                runInBackground: false
+                ext: 'html',
+                runInBackground: false,
                 // route requests to another server:
                 //proxy: dev.machine:80
-            }
+            },
+        },
+
+        connect: {
+            server: {
+                keepalive:true,
+                options: {
+                    port: 8202,
+                    hostname: '*',
+                    onCreateServer: function (server, connect, options) {
+                        console.log('\n\nserver running\n\n');
+                        // var io = require('socket.io').listen(server);
+                        // io.sockets.on('connection', function (socket) {
+                        //     // do something with socket
+                        // });
+                    },
+                },
+            },
         },
 
         concurrent: {
             target: {
-                tasks: ['watch', 'http-server'],
+                tasks: ['watch', 'connect'],
                 options: {
-                    logConcurrentOutput: true
-                }
-            }
-        }
+                    logConcurrentOutput: true,
+                },
+            },
+        },
     });
 
     // watch build task
     grunt.registerTask('build-dev', (which) => {
         console.time('build');
         grunt.task.run('browserify:dev');
-		//grunt.task.run('browserify:test');
+        //grunt.task.run('browserify:test');
     });
 
     // task that builds vendor and dev files during development
@@ -224,23 +238,24 @@ module.exports = function (grunt) {
 
     // alias for server
     grunt.registerTask('serve', (which) => {
-        grunt.task.run('http-server');
+        grunt.task.run('connect');
     });
 
-	grunt.registerTask('deploy', (which) => {
-		// const compile = require('./scripts/compile');
-		// compile('BaseComponent');
-		// compile('properties');
-		// compile('template');
-		// compile('refs');
-		// compile('item-template');
-		//grunt.task.run('browserify:deploy');
+    grunt.registerTask('deploy', (which) => {
+        // const compile = require('./scripts/compile');
+        // compile('BaseComponent');
+        // compile('properties');
+        // compile('template');
+        // compile('refs');
+        // compile('item-template');
+        //grunt.task.run('browserify:deploy');
 
-		const compile = require('./scripts/compile-all');
-	});
+        const compile = require('./scripts/compile-all');
+    });
 
-	grunt.loadNpmTasks('grunt-concurrent');
+    grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
-    grunt.loadNpmTasks('grunt-http-server');
+    // grunt.loadNpmTasks('grunt-http-server');
+    grunt.loadNpmTasks('grunt-contrib-connect');
 };

@@ -1,4 +1,4 @@
-const BaseComponent = require('./BaseComponent');
+const BaseComponent = require('./base-component');
 
 const r = /\{\{\w*}}/g;
 const destroyer = document.createElement('div');
