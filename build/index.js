@@ -7,7 +7,7 @@
         module.exports = factory(require('@clubajax/on'));
     } else {
         // Browser globals (root is window)
-        root['base-component'] = factory(root.on);
+        root['BaseComponent'] = factory(root.on);
     }
 	}(this, function (on) {
 "use strict";
@@ -693,6 +693,6 @@ BaseComponent.addPlugin({
 });			
 }());
 
-	return base-component;
+	return BaseComponent;
 
 }));

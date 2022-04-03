@@ -1,4 +1,4 @@
-const exName = 'base-component';
+const exName = 'BaseComponent';
 const mng = require('@clubajax/node-file-managment');
 const outputName = 'index';
 const outputPath = `./build/${outputName}.js`;
