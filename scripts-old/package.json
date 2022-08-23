@@ -1,0 +1,23 @@
+{
+  "name": "@clubajax/base-component",
+  "version": "2.4.6",
+  "description": "A base for simplifying web components",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clubajax/base-component.git"
+  },
+  "author": "clubajax",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/clubajax/base-component/issues"
+  },
+  "homepage": "https://github.com/clubajax/base-component#readme",
+  "dependencies": {
+    "@clubajax/on": "^2.2.2"
+  },
+  "keywords": [
+    "JavaScript",
+    "UI"
+  ]
+}
