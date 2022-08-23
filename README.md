@@ -12,18 +12,11 @@ A good resource to learn about web components is [Google Developers](https://dev
 
     yarn add @clubajax/base-component
     
-You will most likely want to use the polyfill as well (explained below)
-    
-    yarn add @clubajax/custom-elements-polyfill
-    
 You may also use `npm` if you prefer.
 
 ## Adding to a Project
 
-Import the polyfill, then BaseComponent, then write your code:
-
 ```jsx harmony
-import '@clubajax/custom-elements-polyfill';
 import BaseComponent from '@clubajax/base-component';
 
 class MyWidget extends BaseComponent {
@@ -41,10 +34,6 @@ Using polyfills, this will work in all modern browsers including IE11. It might 
 
 Custom elements use ES6 classes, so that is how this library is written, and how your code should be written.
 
-The built code in */dist* is transpiled into ES5 and will work out of the box, using the 
-[custom elements polyfill](https://github.com/clubajax/custom-elements-polyfill), 
-which is based on the efforts from the [webcomponents polyfills](https://github.com/webcomponents/custom-elements) 
-   
 ## Docs
 
 Basic element creation and usage:
@@ -196,9 +185,6 @@ Also mixed into the custom element are `on`'s `emit` and `fire` methods. Typical
 this.emit('change', {value: this.value});
 this.fire('closed');
 ```
-
-See the [clubajax/on](https://github.com/clubajax/on) documentation for a complete list of features.
-
 ## Plugins
 
 `BaseComponent` uses a plugin architecture, which not only helps keep the code clean and maintainable, it allows for
@@ -378,17 +364,6 @@ difficulty in styling, the cons outweigh the pros. This also keeps the library s
 This should not prevent you from using Shadow DOM in your custom elements.
 
 ## ES6 FAQ
-
-Q: **What are the steps for using webpack?**
-
-A: The [custom elements polyfill](https://github.com/clubajax/custom-elements-polyfill) makes this easy. See *Adding to a Project* above.:
-
-Use babel: `{"presets": ["@babel/preset-env"]}`
-
-Decide if you want to use ES6 (Chrome only) or ES5 (all browsers)
-
-If only targeting browsers with native elements, the polyfill is not necessary, and your `import` can be pointed to 
-`src/base-component`. Otherwise, your `import` should be pointed to `dist/BaseComponent`, which is transpiled to work with ES5. The polyfill includes the native-shim, which allows Chrome to work with the transpiled class. 
 
 Q. **Uncaught TypeError: Illegal invocation**
 

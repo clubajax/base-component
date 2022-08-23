@@ -1,11 +1,12 @@
 {
   "name": "@clubajax/base-component",
-  "version": "2.4.8",
+  "version": "2.4.10",
   "description": "A base for more powerful web components",
   "main": "index.js",
   "scripts": {
     "start": "echo [[[webpack dev not set up]]]",
     "build": "webpack --mode production --config ./webpack.config.js && node ./scripts/deploy.js",
+    "jk": "webpack --mode production --config ./webpack.config.js && node ./scripts/deploy.js --jk"
   },
   "repository": {
     "type": "git",

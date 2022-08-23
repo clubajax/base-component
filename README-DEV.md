@@ -10,14 +10,21 @@ A good resource to learn about web components is [Google Developers](https://dev
  
 ## To Install
 
-    yarn add @janiking/base-component
+    yarn add @clubajax/base-component
+    
+You will most likely want to use the polyfill as well (explained below)
+    
+    yarn add @clubajax/custom-elements-polyfill
     
 You may also use `npm` if you prefer.
 
 ## Adding to a Project
 
+Import the polyfill, then BaseComponent, then write your code:
+
 ```jsx harmony
-import BaseComponent from '@janiking/base-component';
+import '@clubajax/custom-elements-polyfill';
+import BaseComponent from '@clubajax/base-component';
 
 class MyWidget extends BaseComponent {
     // your code here
@@ -34,6 +41,10 @@ Using polyfills, this will work in all modern browsers including IE11. It might 
 
 Custom elements use ES6 classes, so that is how this library is written, and how your code should be written.
 
+The built code in */dist* is transpiled into ES5 and will work out of the box, using the 
+[custom elements polyfill](https://github.com/clubajax/custom-elements-polyfill), 
+which is based on the efforts from the [webcomponents polyfills](https://github.com/webcomponents/custom-elements) 
+   
 ## Docs
 
 Basic element creation and usage:
@@ -52,7 +63,7 @@ customElements.define('my-custom', MyCustom);
 // programmatic usage:
 var element = document.createElement('my-custom');
 ```
-If using [janiking/dom](https://github.com/janiking/dom) you could use shorthand:
+If using [clubajax/dom](https://github.com/clubajax/dom) you could use shorthand:
 ```jsx harmony
 dom('my-custom', {}, parentNode);
 ```
@@ -149,7 +160,7 @@ state the callback will still fire. Also, the event listener is cleaned up under
    
 ## Event Handling
  
-BaseComponent uses the [janiking/on](https://github.com/janiking/on) library to handle events. To add even more power
+BaseComponent uses the [clubajax/on](https://github.com/clubajax/on) library to handle events. To add even more power
 to custom elements, `on` is included, and its context set to itself. For example:
 ```jsx harmony
 myCustomElement.on('click', function (event) {
@@ -185,6 +196,9 @@ Also mixed into the custom element are `on`'s `emit` and `fire` methods. Typical
 this.emit('change', {value: this.value});
 this.fire('closed');
 ```
+
+See the [clubajax/on](https://github.com/clubajax/on) documentation for a complete list of features.
+
 ## Plugins
 
 `BaseComponent` uses a plugin architecture, which not only helps keep the code clean and maintainable, it allows for
@@ -365,6 +379,17 @@ This should not prevent you from using Shadow DOM in your custom elements.
 
 ## ES6 FAQ
 
+Q: **What are the steps for using webpack?**
+
+A: The [custom elements polyfill](https://github.com/clubajax/custom-elements-polyfill) makes this easy. See *Adding to a Project* above.:
+
+Use babel: `{"presets": ["@babel/preset-env"]}`
+
+Decide if you want to use ES6 (Chrome only) or ES5 (all browsers)
+
+If only targeting browsers with native elements, the polyfill is not necessary, and your `import` can be pointed to 
+`src/base-component`. Otherwise, your `import` should be pointed to `dist/BaseComponent`, which is transpiled to work with ES5. The polyfill includes the native-shim, which allows Chrome to work with the transpiled class. 
+
 Q. **Uncaught TypeError: Illegal invocation**
 
 A. The native shim is not in use, when BaseComponent is compiled with Babel, and it is being access by an extending class.
@@ -408,7 +433,7 @@ Q. **Why are my component methods undefined?**
 A. Did you remember to do: `customElements.define('my-component', MyComponent)`?
 
 
-Q. I get this error on build: `Error: Couldn't find preset "latest" relative to directory ".../node_modules/@janiking/base-component"`
+Q. I get this error on build: `Error: Couldn't find preset "latest" relative to directory ".../node_modules/@clubajax/base-component"`
 
 A. Babel is not set up correctly. Try installing `@babel/preset-env` to your package.
 
@@ -416,7 +441,7 @@ A. Babel is not set up correctly. Try installing `@babel/preset-env` to your pac
 
 Clone the repository with your generic clone commands as a standalone repository or submodule.
 
-	git clone git://github.com/janiking/base-component.git
+	git clone git://github.com/clubajax/base-component.git
 	
 To run the tests in `tests/test.html`, start the webpack build and webpack-dev-server:
 

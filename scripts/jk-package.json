@@ -1,7 +1,10 @@
 {
-    "name": "@janiking/base-component",
-    "author": "Jani-King",
-    "version": "2.4.6",
-    "description": "A base for more powerful web components",
-    "main": "index.js"
+  "name": "@janiking/base-component",
+  "author": "Jani-King",
+  "version": "2.4.10",
+  "description": "A base for more powerful web components",
+  "main": "index.js",
+  "dependencies": {
+    "@clubajax/on": "^2.2.x"
+  }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@clubajax/base-component",
   "author": "anm9tr@gmail.com",
-  "version": "2.4.8",
+  "version": "2.4.10",
   "description": "A base for more powerful web components",
   "main": "index.js",
   "dependencies": {
