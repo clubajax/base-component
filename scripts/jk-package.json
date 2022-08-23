@@ -1,0 +1,7 @@
+{
+    "name": "@janiking/base-component",
+    "author": "Jani-King",
+    "version": "2.4.6",
+    "description": "A base for more powerful web components",
+    "main": "index.js"
+}
